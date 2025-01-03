@@ -14,14 +14,15 @@ secret_key = os.getenv('BINANCE_SECRET_KEY')
 
 # CONFIGURAÇÕES
 
-STOCK_CODE = "SOL"
-OPERATION_CODE = "SOLBRL" # Cliente.KLINE_INTERVAL_1MINUTE
+STOCK_CODE = "DOGE"
+OPERATION_CODE = "DOGEBRL" # Cliente.KLINE_INTERVAL_1MINUTE
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 0.1
+TRADED_QUANTITY = 16
 
 
 # Classe Principal
 class BinanceTraderBot():
+
 
     last_trade_decision: bool = False # Última decisão de posição (False = Vender | True = Comprar)
 
@@ -74,17 +75,17 @@ class BinanceTraderBot():
         candles = self.client_binance.get_klines(symbol = self.operation_code, interval = self.candle_period, limit = 500)
         
         prices = pd.DataFrame(candles)
-        prices.columns = ['Open time', 'Open price', 'High price', 'Low price', 'Close price', 
-                     'Volume', 'Close Time', 'Quote asset volume', 'Number of trades',
-                     'Taker buy base asset volume', 'Taker buy quote asset volume', 'Ignore']
+        prices.columns = ['open_time', 'open_price', 'high_price', 'low_price', 'close_price', 
+                     'volume', 'close_Time', 'quote_asset_volume', 'number_of_trades',
+                     'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', '-']
 
-        prices = prices[['Open time', 'Open price']]
+        prices = prices[['close_price', 'open_time']]
 
         # Corrige o tempo de fechamento
-        prices['Open time'] = pd.to_datetime(prices['Open time'], unit = 'ms').dt.tz_localize('UTC')
+        prices['open_time'] = pd.to_datetime(prices['open_time'], unit = 'ms').dt.tz_localize('UTC')
 
         # Converte para o fuso horário UTC - 3
-        prices['Open time'] = prices['Open time'].dt.tz_convert('America/Sao_Paulo')
+        prices['open_time'] = prices['open_time'].dt.tz_convert('America/Sao_Paulo')
 
         return prices
 
@@ -92,8 +93,8 @@ class BinanceTraderBot():
     def getMovingAverageTradeStrategy(self, fast_window = 7, slow_window = 40):
 
         # Calcula as Médias Móveis Rápida e Lenta
-        self.stock_data['ma_fast'] = self.stock_data['Close price'].rolling(window=fast_window).mean() # Média Rápida
-        self.stock_data['ma_slow'] = self.stock_data['Close price'].rolling(window=slow_window).mean() # Média Lenta
+        self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean() # Média Rápida
+        self.stock_data['ma_slow'] = self.stock_data['close_price'].rolling(window=slow_window).mean() # Média Lenta
 
 
         # Pega as últimas Moving Average
@@ -105,7 +106,7 @@ class BinanceTraderBot():
         ma_trade_decision = last_ma_fast > last_ma_slow
 
         print('-----')
-        print(f'Estratégia executada: Moving Average')
+        print(f'Estratégia executada: Média Móvel')
         print(f'{self.operation_code}: {last_ma_fast:.3f} - Última Média Rápida \n {last_ma_slow:.3f} - Última Média Lenta')
         print(f'Decisão de posição: {"Comprar" if ma_trade_decision == True else "Vender"}')
         print('-----')
@@ -115,16 +116,16 @@ class BinanceTraderBot():
     def getBolingerBandsTradeStrategy(self, window = 20, factor = 2):
         # Executa a estratégia de bollinger bands
 
-        self.stock_data['bb_mean'] = self.stock_data['Close price'].rolling(window=window).mean()
-        self.stock_data['bb_std'] = self.stock_data['Close price'].rolling(window=window).std()
+        self.stock_data['bb_mean'] = self.stock_data['close_price'].rolling(window=window).mean()
+        self.stock_data['bb_std'] = self.stock_data['close_price'].rolling(window=window).std()
         self.stock_data['bb_upper'] = self.stock_data['bb_mean'] + factor * self.stock_data['bb_std']
         self.stock_data['bb_lower'] = self.stock_data['bb_mean'] - factor * self.stock_data['bb_std']
 
-        bb_trade_decision = self.stock_data['bb_lower'].iloc[-1] > self.stock_data['Close price'].iloc[-1]  # True = Comprar
+        bb_trade_decision = self.stock_data['bb_lower'].iloc[-1] > self.stock_data['close_price'].iloc[-1]  # True = Comprar
 
         print('-----')
         print(f'Estratégia executada: Bollinger Bands')
-        print(f'{self.operation_code}: {self.stock_data["bb_mean"].iloc[-1]:.3f} - Média Bollinger \n {self.stock_data["bb_upper"].iloc[-1]:.3f} - Bollinger Superior \n {self.stock_data["bb_lower"].iloc[-1]:.3f} - Bollinger Inferior \n {self.stock_data["Close price"].iloc[-1]:.3f} - Valor Atual')
+        print(f'{self.operation_code}: {self.stock_data["bb_mean"].iloc[-1]:.3f} - Média Bollinger \n {self.stock_data["bb_upper"].iloc[-1]:.3f} - Bollinger Superior \n {self.stock_data["bb_lower"].iloc[-1]:.3f} - Bollinger Inferior \n {self.stock_data["close_price"].iloc[-1]:.3f} - Valor Atual')
         print(f'Decisão de posição: {"Comprar" if bb_trade_decision == True else "Vender"}')
         print('-----')
 
@@ -135,9 +136,9 @@ class BinanceTraderBot():
         # Executa a estratégia de média móvel com volatilidade e gradiente
 
 
-        self.stock_data['ma_fast'] = self.stock_data['Close price'].rolling(window=fast_window).mean()
-        self.stock_data['ma_slow'] = self.stock_data['Close price'].rolling(window=slow_window).mean()
-        self.stock_data['volatility'] = self.stock_data['Close price'].rolling(window=slow_window).std()
+        self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
+        self.stock_data['ma_slow'] = self.stock_data['close_price'].rolling(window=slow_window).mean()
+        self.stock_data['volatility'] = self.stock_data['close_price'].rolling(window=slow_window).std()
         last_ma_fast = self.stock_data['ma_fast'].iloc[-1]
         last_ma_slow = self.stock_data['ma_slow'].iloc[-1]
         prev_ma_slow = self.stock_data['ma_slow'].iloc[-2]
@@ -216,10 +217,10 @@ class BinanceTraderBot():
 
     def buyStock(self):
         # Compra a ação
-
         if self.actual_trade_position == False: # Se a posição for vendida
 
             order_buy = self.client_binance.create_order(
+                
                 symbol = self.operation_code,
                 side = SIDE_BUY,
                 type = ORDER_TYPE_MARKET,
@@ -267,6 +268,7 @@ class BinanceTraderBot():
 
 
         # Executa a estratégia de média móvel
+
         ma_trade_decision = self.getMovingAverageTradeStrategy()
 
         # Neste caso, a decisão final será a mesma da média móvel.
