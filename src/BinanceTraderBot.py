@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 import time
 from logger import *
+from binance.exceptions import BinanceAPIException
 from binance.client import Client
 from binance.enums import *
 import pandas as pd
@@ -17,7 +18,7 @@ secret_key = os.getenv('BINANCE_SECRET_KEY')
 STOCK_CODE = "DOGE"
 OPERATION_CODE = "DOGEBRL" # Cliente.KLINE_INTERVAL_1MINUTE
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 16
+TRADED_QUANTITY = 15
 
 
 # Classe Principal
@@ -237,24 +238,32 @@ class BinanceTraderBot():
             return False
 
     def sellStock(self):
-        # Vende a ação
+        try:
+            # Obtenha informações do símbolo para obter stepSize e minQty (quantidade mínima)
+            symbol_info = self.client_binance.get_symbol_info(self.operation_code)
+            step_size = float(symbol_info['filters'][2]['stepSize'])
+            min_quantity = float(symbol_info['filters'][2]['minQty'])
 
-        if self.actual_trade_position == True:  # Se a posição for comprada
+            # Verifique o saldo disponível e ajuste a quantidade a ser vendida
+            available_balance = float(self.getStock()['free'])
+            quantity_to_sell = min(available_balance, self.traded_quantity) # Não vende mais que o que possui
+
+            # Garanta que a quantidade seja um múltiplo de stepSize e maior ou igual a minQty
+            quantity_to_sell = max(min_quantity, round(quantity_to_sell / step_size) * step_size)
 
             order_sell = self.client_binance.create_order(
-                symbol = self.operation_code,
-                side = SIDE_SELL,
-                type = ORDER_TYPE_MARKET,
-                quantity = int(self.last_stock_account_balance * 1000) / 1000,
+                symbol=self.operation_code,
+                side=SIDE_SELL,
+                type=ORDER_TYPE_MARKET,
+                quantity=quantity_to_sell,
             )
             self.actual_trade_position = False # Define posição como vendida
 
             createLogOrder(order_sell) # Cria um log
             return order_sell # Retorna a ordem
 
-        else:  # Se ocorreu algum erro
-            logging.warning('Erro ao vender')
-            print('Erro ao vender')
+        except BinanceAPIException as e:
+            logging.error(f"Erro ao vender: {e}")
             return False
 
     def execute(self):
@@ -269,6 +278,7 @@ class BinanceTraderBot():
 
         # Executa a estratégia de média móvel
 
+        
         ma_trade_decision = self.getMovingAverageTradeStrategy()
 
         # Neste caso, a decisão final será a mesma da média móvel.
