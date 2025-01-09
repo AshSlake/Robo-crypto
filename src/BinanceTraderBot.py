@@ -1,12 +1,17 @@
 import os
+import trace
 from dotenv import load_dotenv
 from datetime import datetime
 import time
+import TradingStrategies
 from logger import *
 from binance.exceptions import BinanceAPIException
 from binance.client import Client
 from binance.enums import *
 import pandas as pd
+import logging
+from flask import Flask, send_file
+import threading
 
 
 api_key = os.getenv('BINANCE_API_KEY')
@@ -15,11 +20,31 @@ secret_key = os.getenv('BINANCE_SECRET_KEY')
 
 # CONFIGURAÇÕES
 
-STOCK_CODE = "DOGE"
-OPERATION_CODE = "DOGEBRL" # Cliente.KLINE_INTERVAL_1MINUTE
+STOCK_CODE = "ADA"
+OPERATION_CODE = "ADAUSDT" # Cliente.KLINE_INTERVAL_1MINUTE
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 15
+TRADED_QUANTITY = 8
 
+
+# Criação da instância Flask
+app = Flask(__name__)
+
+# Função para servir o arquivo de log
+@app.route('/logs')
+def get_logs():
+    log_file_path = 'C:/Users/paulo/python/Robo crypto/src/logs/trading_bot.log'  # Caminho do arquivo de log
+    if os.path.exists(log_file_path):
+        return send_file(log_file_path, as_attachment=True)
+    else:
+        return f"Arquivo de log não encontrado no caminho: {log_file_path}", 404
+
+# Função para rodar o servidor Flask
+def run_server():
+    app.run(host='0.0.0.0', port=5000)
+
+# Cria e inicia a thread para o servidor
+server_thread = threading.Thread(target=run_server)
+server_thread.start()
 
 # Classe Principal
 class BinanceTraderBot():
@@ -90,97 +115,6 @@ class BinanceTraderBot():
 
         return prices
 
-    # Executa a estratégia de média móvel
-    def getMovingAverageTradeStrategy(self, fast_window = 7, slow_window = 40):
-
-        # Calcula as Médias Móveis Rápida e Lenta
-        self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean() # Média Rápida
-        self.stock_data['ma_slow'] = self.stock_data['close_price'].rolling(window=slow_window).mean() # Média Lenta
-
-
-        # Pega as últimas Moving Average
-        last_ma_fast = self.stock_data['ma_fast'].iloc[-1]
-        last_ma_slow = self.stock_data['ma_slow'].iloc[-1]
-
-        # Toma a decisão, baseada na posição da média móvel
-        # (False = Vender, True = Comprar)
-        ma_trade_decision = last_ma_fast > last_ma_slow
-
-        print('-----')
-        print(f'Estratégia executada: Média Móvel')
-        print(f'{self.operation_code}: {last_ma_fast:.3f} - Última Média Rápida \n {last_ma_slow:.3f} - Última Média Lenta')
-        print(f'Decisão de posição: {"Comprar" if ma_trade_decision == True else "Vender"}')
-        print('-----')
-
-        return ma_trade_decision
-
-    def getBolingerBandsTradeStrategy(self, window = 20, factor = 2):
-        # Executa a estratégia de bollinger bands
-
-        self.stock_data['bb_mean'] = self.stock_data['close_price'].rolling(window=window).mean()
-        self.stock_data['bb_std'] = self.stock_data['close_price'].rolling(window=window).std()
-        self.stock_data['bb_upper'] = self.stock_data['bb_mean'] + factor * self.stock_data['bb_std']
-        self.stock_data['bb_lower'] = self.stock_data['bb_mean'] - factor * self.stock_data['bb_std']
-
-        bb_trade_decision = self.stock_data['bb_lower'].iloc[-1] > self.stock_data['close_price'].iloc[-1]  # True = Comprar
-
-        print('-----')
-        print(f'Estratégia executada: Bollinger Bands')
-        print(f'{self.operation_code}: {self.stock_data["bb_mean"].iloc[-1]:.3f} - Média Bollinger \n {self.stock_data["bb_upper"].iloc[-1]:.3f} - Bollinger Superior \n {self.stock_data["bb_lower"].iloc[-1]:.3f} - Bollinger Inferior \n {self.stock_data["close_price"].iloc[-1]:.3f} - Valor Atual')
-        print(f'Decisão de posição: {"Comprar" if bb_trade_decision == True else "Vender"}')
-        print('-----')
-
-
-        return bb_trade_decision
-
-    def getMovingAverageVergenceTradeStrategy(self, fast_window=7, slow_window=40):
-        # Executa a estratégia de média móvel com volatilidade e gradiente
-
-
-        self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
-        self.stock_data['ma_slow'] = self.stock_data['close_price'].rolling(window=slow_window).mean()
-        self.stock_data['volatility'] = self.stock_data['close_price'].rolling(window=slow_window).std()
-        last_ma_fast = self.stock_data['ma_fast'].iloc[-1]
-        last_ma_slow = self.stock_data['ma_slow'].iloc[-1]
-        prev_ma_slow = self.stock_data['ma_slow'].iloc[-2]
-        prev_ma_fast = self.stock_data['ma_fast'].iloc[-2]
-
-        last_volatility = self.stock_data['volatility'].iloc[-1]
-        volatility = self.stock_data['volatility'][len(self.stock_data) - slow_window:].mean()  # Média da volatilidade dos últimos n valores
-        fast_gradient = last_ma_fast - prev_ma_fast
-        slow_gradient = last_ma_slow - prev_ma_slow
-
-        current_difference = last_ma_fast - last_ma_slow
-
-
-        ma_trade_decision = False
-
-        if current_difference > volatility * self.volatility_factor and last_volatility < volatility: # Comprar com base em volatilidade e gradiente
-            if last_ma_fast > last_ma_slow and fast_gradient > slow_gradient and last_ma_fast < last_ma_slow:
-                ma_trade_decision = True
-            elif last_ma_fast > last_ma_slow and fast_gradient > slow_gradient and last_ma_fast > last_ma_slow:
-                ma_trade_decision = True
-            elif fast_gradient > 0 and fast_gradient < slow_gradient and last_ma_fast > last_ma_slow:
-                ma_trade_decision = False
-
-        elif last_volatility > volatility:  # Vender com base em volatilidade
-            if self.stock_data['ma_fast'].iloc[-3] > self.stock_data['ma_fast'].iloc[-2] and self.stock_data['ma_slow'].iloc[-3] > self.stock_data['ma_slow'].iloc[-2]:
-                ma_trade_decision = False
-
-        print('-----')
-        print(f'Estratégia executada: Moving Average com Volatilidade + Gradiente')
-        print(f'{self.operation_code}: {last_ma_fast:.3f} - Última Média Rápida \n {last_ma_slow:.3f} - Última Média Lenta')
-        print(f'Última Volatilidade: {last_volatility:.3f} \\ Média da Volatilidade: {volatility:.3f}')
-        print(f'Diferença Atual: {current_difference:.3f}')
-        print(f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })')
-        print(f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > 0 else "Descendo" })')
-        print(f'Decisão: {"Comprar" if ma_trade_decision == True else "Vender"}')
-        print('-----')
-
-
-        return ma_trade_decision
-
-
     # Prints
 
     def printAllWallet(self):
@@ -217,54 +151,104 @@ class BinanceTraderBot():
 
 
     def buyStock(self):
-        # Compra a ação
-        if self.actual_trade_position == False: # Se a posição for vendida
+      try:
+        # Obtenha informações do símbolo para obter stepSize e minQty (quantidade mínima)
+        symbol_info = self.client_binance.get_symbol_info(self.operation_code)
+        
+        step_size = min_quantity = 0
+        for filter in symbol_info['filters']:
+            if filter['filterType'] == 'LOT_SIZE':
+                step_size = float(filter['stepSize'])
+                min_quantity = float(filter['minQty'])
+                break
+        
+        if step_size == 0 or min_quantity == 0:
+            raise ValueError("Não foi possível obter 'stepSize' ou 'minQty'")
+        
+        # Ajuste a quantidade a ser comprada para garantir que seja um múltiplo de stepSize e maior ou igual a minQty
+        quantity_to_buy = max(min_quantity, round(self.traded_quantity / step_size) * step_size)
 
+        if self.actual_trade_position == False:  # Se a posição for vendida
             order_buy = self.client_binance.create_order(
-                
-                symbol = self.operation_code,
-                side = SIDE_BUY,
-                type = ORDER_TYPE_MARKET,
-                quantity = self.traded_quantity,
+                symbol=self.operation_code,
+                side=SIDE_BUY,
+                type=ORDER_TYPE_MARKET,
+                quantity=quantity_to_buy,
             )
-            self.actual_trade_position = True # Define posição como comprada
+            self.actual_trade_position = True  # Define posição como comprada
 
-            createLogOrder(order_buy) # Cria um log
-            return order_buy # Retorna a ordem
+            createLogOrder(order_buy)  # Cria um log
+            return order_buy  # Retorna a ordem
 
-        else: # Se ocorreu algum erro
-            logging.warning('Erro ao comprar')
+        else:  # Se já está comprado ou ocorre algum outro erro
+            logging.warning('Erro: Posição já comprada ou erro ao comprar')
             print('Erro ao comprar')
             return False
 
+      except BinanceAPIException as e:
+        logging.error(f"Erro ao comprar: {e}")
+        return False
+      except ValueError as ve:
+        logging.error(f"Erro nos dados do símbolo: {ve}")
+        return False
+
+
     def sellStock(self):
-        try:
-            # Obtenha informações do símbolo para obter stepSize e minQty (quantidade mínima)
-            symbol_info = self.client_binance.get_symbol_info(self.operation_code)
-            step_size = float(symbol_info['filters'][2]['stepSize'])
-            min_quantity = float(symbol_info['filters'][2]['minQty'])
+      try:
+        # Obtenha informações do símbolo para obter stepSize e minQty (quantidade mínima)
+        symbol_info = self.client_binance.get_symbol_info(self.operation_code)
+        
+        step_size = min_quantity = 0
+        for filter in symbol_info['filters']:
+            if filter['filterType'] == 'LOT_SIZE':
+                step_size = float(filter['stepSize'])
+                min_quantity = float(filter['minQty'])
+                break
+        
+        if step_size == 0 or min_quantity == 0:
+            raise ValueError("Não foi possível obter 'stepSize' ou 'minQty'")
 
-            # Verifique o saldo disponível e ajuste a quantidade a ser vendida
-            available_balance = float(self.getStock()['free'])
-            quantity_to_sell = min(available_balance, self.traded_quantity) # Não vende mais que o que possui
+        # Verifique o saldo disponível e ajuste a quantidade a ser vendida
+        available_balance = float(self.getStock()['free'])
+        quantity_to_sell = min(available_balance, self.traded_quantity)  # Não vende mais que o que possui
 
-            # Garanta que a quantidade seja um múltiplo de stepSize e maior ou igual a minQty
-            quantity_to_sell = max(min_quantity, round(quantity_to_sell / step_size) * step_size)
-
-            order_sell = self.client_binance.create_order(
-                symbol=self.operation_code,
-                side=SIDE_SELL,
-                type=ORDER_TYPE_MARKET,
-                quantity=quantity_to_sell,
-            )
-            self.actual_trade_position = False # Define posição como vendida
-
-            createLogOrder(order_sell) # Cria um log
-            return order_sell # Retorna a ordem
-
-        except BinanceAPIException as e:
-            logging.error(f"Erro ao vender: {e}")
+        # Se a quantidade desejada de venda for inferior à quantidade mínima, não permita a venda
+        if quantity_to_sell < min_quantity:
+            logging.warning(f"Saldo insuficiente para vender. Quantidade mínima: {min_quantity}, quantidade disponível: {quantity_to_sell}")
             return False
+
+        # Garanta que a quantidade seja um múltiplo de stepSize
+        quantity_to_sell = max(min_quantity, round(quantity_to_sell / step_size) * step_size)
+
+        # Verifique se a quantidade a ser vendida não excede o saldo disponível
+        if quantity_to_sell > available_balance:
+            logging.warning(f"Tentativa de vender mais do que o saldo disponível. Quantidade ajustada: {available_balance}")
+            quantity_to_sell = available_balance
+
+        # Verifique se a quantidade é válida
+        if quantity_to_sell < min_quantity:
+            logging.warning(f"Quantidade ajustada para venda é menor que o mínimo permitido. Não vendendo.")
+            return False
+
+        # Realize a venda
+        order_sell = self.client_binance.create_order(
+            symbol=self.operation_code,
+            side=SIDE_SELL,
+            type=ORDER_TYPE_MARKET,
+            quantity=quantity_to_sell,
+        )
+        self.actual_trade_position = False  # Define posição como vendida
+
+        createLogOrder(order_sell)  # Cria um log
+        return order_sell  # Retorna a ordem
+
+      except BinanceAPIException as e:
+        logging.error(f"Erro ao vender: {e}")
+        return False
+      except ValueError as ve:
+        logging.error(f"Erro nos dados do símbolo: {ve}")
+        return False
+
 
     def execute(self):
         # Atualiza todos os dados
@@ -277,9 +261,7 @@ class BinanceTraderBot():
 
 
         # Executa a estratégia de média móvel
-
-        
-        ma_trade_decision = self.getMovingAverageTradeStrategy()
+        ma_trade_decision = TradingStrategies.TradingStrategies.getMovingAverageVergenceTradeStrategy(self,fast_window=7, slow_window=40)
 
         # Neste caso, a decisão final será a mesma da média móvel.
         self.last_trade_decision = ma_trade_decision
@@ -300,6 +282,7 @@ class BinanceTraderBot():
             time.sleep(2)
 
 
+
         elif self.actual_trade_position == True and self.last_trade_decision == False:
 
             self.printStock()
@@ -312,6 +295,7 @@ class BinanceTraderBot():
             self.printStock()
             self.printBrl()
             time.sleep(2)
+            
 
 
         print('----------------')
@@ -321,6 +305,5 @@ MaTrader = BinanceTraderBot(STOCK_CODE, OPERATION_CODE, TRADED_QUANTITY, 100, CA
 
 
 while(1):
-    MaTrader.execute()
-    time.sleep(60)
-    #MaTrader.sellStock()
+ MaTrader.execute()
+ time.sleep(60)

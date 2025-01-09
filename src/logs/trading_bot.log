@@ -1,60 +1,11 @@
-2025-01-02 13:15:57,536 - INFO - 
-  ____________________________________________
-ORDEM EXECUTADA:
-Side: SELL
-Ativo: SOLBRL
-Quantidade: 0.00900000
-Valor no momento: 1282.80000000
-Moeda: 11.54520000
-Valor em 11.54520000: 11.54520000
-Type: MARKET
-Data/Hora: 16:15:57 - 2025-01-02
-Complete order:
-{'symbol': 'SOLBRL', 'orderId': 195909218, 'orderListId': -1, 'clientOrderId': 'x-HNA2TXFJbed8dd42a6a764cd68f2a7', 'transactTime': 1735834557334, 'price': '0.00000000', 'origQty': '0.00900000', 'executedQty': '0.00900000', 'origQuoteOrderQty': '0.00000000', 'cummulativeQuoteQty': '11.54520000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'SELL', 'workingTime': 1735834557334, 'fills': [{'price': '1282.80000000', 'qty': '0.00900000', 'commission': '0.01154520', 'commissionAsset': 'BRL', 'tradeId': 4607165}], 'selfTradePreventionMode': 'EXPIRE_MAKER'}
-  ____________________________________________
 
-2025-01-02 21:15:47,611 - INFO - 
-  ____________________________________________
-ORDEM EXECUTADA:
-Side: BUY
-Ativo: SOLBRL
-Quantidade: 0.02800000
-Valor no momento: 1285.00000000
-Moeda: 35.98000000
-Valor em 35.98000000: 35.98000000
-Type: MARKET
-Data/Hora: 00:15:47 - 2025-01-03
-Complete order:
-{'symbol': 'SOLBRL', 'orderId': 196048352, 'orderListId': -1, 'clientOrderId': 'x-HNA2TXFJb82204e69ea49e38df0522', 'transactTime': 1735863347428, 'price': '0.00000000', 'origQty': '0.02800000', 'executedQty': '0.02800000', 'origQuoteOrderQty': '0.00000000', 'cummulativeQuoteQty': '35.98000000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'workingTime': 1735863347428, 'fills': [{'price': '1285.00000000', 'qty': '0.02800000', 'commission': '0.00002800', 'commissionAsset': 'SOL', 'tradeId': 4611236}], 'selfTradePreventionMode': 'EXPIRE_MAKER'}
-  ____________________________________________
-
-2025-01-02 22:30:37,362 - INFO - 
-  ____________________________________________
-ORDEM EXECUTADA:
-Side: SELL
-Ativo: SOLBRL
-Quantidade: 0.02700000
-Valor no momento: 1275.60000000
-Moeda: 34.44120000
-Valor em 34.44120000: 34.44120000
-Type: MARKET
-Data/Hora: 01:30:37 - 2025-01-03
-Complete order:
-{'symbol': 'SOLBRL', 'orderId': 196068313, 'orderListId': -1, 'clientOrderId': 'x-HNA2TXFJ4ec89e8a7aefa411d69f71', 'transactTime': 1735867837145, 'price': '0.00000000', 'origQty': '0.02700000', 'executedQty': '0.02700000', 'origQuoteOrderQty': '0.00000000', 'cummulativeQuoteQty': '34.44120000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'SELL', 'workingTime': 1735867837145, 'fills': [{'price': '1275.60000000', 'qty': '0.00200000', 'commission': '0.00255120', 'commissionAsset': 'BRL', 'tradeId': 4611784}, {'price': '1275.60000000', 'qty': '0.02500000', 'commission': '0.03189000', 'commissionAsset': 'BRL', 'tradeId': 4611785}], 'selfTradePreventionMode': 'EXPIRE_MAKER'}
-  ____________________________________________
-
-2025-01-02 23:36:17,872 - INFO - 
-  ____________________________________________
-ORDEM EXECUTADA:
-Side: BUY
-Ativo: DOGEBRL
-Quantidade: 16.00000000
-Valor no momento: 2.10710000
-Moeda: 33.71360000
-Valor em 33.71360000: 33.71360000
-Type: MARKET
-Data/Hora: 02:36:17 - 2025-01-03
-Complete order:
-{'symbol': 'DOGEBRL', 'orderId': 251856024, 'orderListId': -1, 'clientOrderId': 'x-HNA2TXFJ286066b8c58fffa40a5795', 'transactTime': 1735871777577, 'price': '0.00000000', 'origQty': '16.00000000', 'executedQty': '16.00000000', 'origQuoteOrderQty': '0.00000000', 'cummulativeQuoteQty': '33.71360000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'workingTime': 1735871777577, 'fills': [{'price': '2.10710000', 'qty': '16.00000000', 'commission': '0.01600000', 'commissionAsset': 'DOGE', 'tradeId': 7242961}], 'selfTradePreventionMode': 'EXPIRE_MAKER'}
-  ____________________________________________
-
+2025-01-09 03:58:01,141 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.132:5000
+2025-01-09 03:58:01,141 - INFO - [33mPress CTRL+C to quit[0m
+2025-01-09 04:11:34,599 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.132:5000
+2025-01-09 04:11:34,600 - INFO - [33mPress CTRL+C to quit[0m
