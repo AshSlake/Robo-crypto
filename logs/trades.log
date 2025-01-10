@@ -1,0 +1,16 @@
+2025-01-10 07:22:33,552 - INFO - 
+  ____________________________________________
+ORDEM EXECUTADA:
+Side: BUY
+Ativo: SOLUSDT
+Quantidade: 0.03000000
+Valor no momento: 191.54000000
+Moeda: 5.74620000
+Valor em 5.74620000: 5.74620000
+Type: MARKET
+Data/Hora: 10:22:32 - 2025-01-10
+Complete order:
+{'symbol': 'SOLUSDT', 'orderId': 9348495151, 'orderListId': -1, 'clientOrderId': 'x-HNA2TXFJf45985ae54f9b8c5710b2b', 'transactTime': 1736504552565, 'price': '0.00000000', 'origQty': '0.03000000', 'executedQty': '0.03000000', 'origQuoteOrderQty': '0.00000000', 'cummulativeQuoteQty': '5.74620000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'workingTime': 1736504552565, 'fills': [{'price': '191.54000000', 'qty': '0.03000000', 'commission': '0.00003000', 'commissionAsset': 'SOL', 'tradeId': 929352622}], 'selfTradePreventionMode': 'EXPIRE_MAKER'}
+  ____________________________________________
+
+2025-01-10 07:22:33,552 - INFO - Compra realizada com sucesso. Detalhes da ordem: None

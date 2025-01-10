@@ -240,3 +240,64 @@ class estrategies:
             return False
 
        return ma_trade_decision
+     
+     def getMovingAverageVergenceTradeStrategyVersion2(self, fast_window=7, slow_window=40, volatility_factor=2.0, risk_percentage=1.0, take_profit_factor=2.0):
+      try:
+        # Cálculo de médias móveis e volatilidade
+        self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
+        self.stock_data['ma_slow'] = self.stock_data['close_price'].rolling(window=slow_window).mean()
+        self.stock_data['volatility'] = self.stock_data['close_price'].rolling(window=slow_window).std()
+
+        last_ma_fast = self.stock_data['ma_fast'].iloc[-1]
+        last_ma_slow = self.stock_data['ma_slow'].iloc[-1]
+        prev_ma_slow = self.stock_data['ma_slow'].iloc[-2]
+        prev_ma_fast = self.stock_data['ma_fast'].iloc[-2]
+        last_volatility = self.stock_data['volatility'].iloc[-1]
+        volatility = self.stock_data['volatility'][len(self.stock_data) - slow_window:].mean()
+        
+        fast_gradient = last_ma_fast - prev_ma_fast
+        slow_gradient = last_ma_slow - prev_ma_slow
+        current_difference = last_ma_fast - last_ma_slow
+
+        # Volume de negociação
+        self.stock_data['volume'] = self.client_binance.get_klines(
+            symbol=self.operation_code, 
+            interval=self.candle_period, 
+            limit=fast_window
+        )[:, 5].astype(float).mean()
+
+        # Decisão de trade com base em médias móveis, volatilidade e volume
+        ma_trade_decision = False
+        if current_difference > volatility * volatility_factor and last_volatility < volatility:
+            if last_ma_fast > last_ma_slow and fast_gradient > slow_gradient:
+                if self.stock_data['volume'] > self.stock_data['volume'].mean():  # Confirmação de volume
+                    ma_trade_decision = True
+        elif last_volatility > volatility:
+            if prev_ma_fast > last_ma_fast and prev_ma_slow > last_ma_slow:
+                ma_trade_decision = False
+
+        # Gerenciamento de risco
+        current_balance = self.get_balance()
+        max_risk_amount = current_balance * (risk_percentage / 100)
+        stop_loss_price = last_ma_slow - (volatility * volatility_factor)
+        take_profit_price = last_ma_fast + (volatility * take_profit_factor)
+
+        # Log detalhado
+        message = (
+            f'---------------\n'
+            f'Estratégia executada: Moving Average com Volatilidade + Gradiente\n'
+            f'{self.operation_code}: {last_ma_fast:.3f} - Última Média Rápida \n{last_ma_slow:.3f} - Última Média Lenta\n'
+            f'Última Volatilidade: {last_volatility:.3f} \\ Média da Volatilidade: {volatility:.3f}\n'
+            f'Diferença Atual: {current_difference:.3f}\n'
+            f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })\n'
+            f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > 0 else "Descendo" })\n'
+            f'Stop Loss: {stop_loss_price:.3f}, Take Profit: {take_profit_price:.3f}\n'
+            f'Decisão: {"Comprar" if ma_trade_decision else "Vender"}\n'
+            f'---------------\n'
+        )
+        bot_logger.info(message)
+
+        return ma_trade_decision, stop_loss_price, take_profit_price
+      except IndexError:
+          erro_logger.exception("Erro: Dados insuficientes para calcular a estratégia Moving Average Vergence.")
+          return False, None, None

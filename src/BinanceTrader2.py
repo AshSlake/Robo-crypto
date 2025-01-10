@@ -11,6 +11,9 @@ from binance.enums import *
 from binance.exceptions import BinanceAPIException
 import estrategias.TradingStrategies as TradingStrategies
 from logger import createLogOrder, erro_logger, trade_logger, bot_logger
+from decimal import Decimal, ROUND_DOWN
+from calculate_max_buy_quantity import QuantityCalculator
+
 
 # Load environment variables
 load_dotenv()
@@ -29,7 +32,7 @@ app = Flask(__name__)
 
 @app.route('/logs')
 def get_logs():
-    log_file_path = 'C:/Users/paulo/python/Robo crypto/src/logs/trading_bot.log'
+    log_file_path = 'C:/Users/paulo/python/Robo crypto/logs/trades.log'
     if os.path.exists(log_file_path):
         return send_file(log_file_path, as_attachment=True)
     else:
@@ -52,6 +55,7 @@ class BinanceTraderBot:
         self.traded_percentage = traded_percentage
         self.candle_period = candle_period
         self.client_binance = Client(api_key, secret_key)
+        self.quantity_calculator = QuantityCalculator(self.client_binance, self.operation_code)  # Instancia a classe
         self.updateAllData()
         print('Robo Trader iniciado...')
         bot_logger.info("Robo Trader iniciado...")
@@ -63,7 +67,8 @@ class BinanceTraderBot:
             self.actual_trade_position = self.getActualTradePosition()
             self.stock_data = self.getStockData()
         except Exception as e:
-            erro_logger.exception(f"Erro ao atualizar dados: {e}")
+            erro_logger.exception(f"------------------------------------\nErro ao atualizar dados: {e}")
+            erro_logger.exception(f"------------------------------------\n")
 
     def getUpdatedAccountData(self):
         return self.client_binance.get_account()
@@ -114,20 +119,19 @@ class BinanceTraderBot:
 
     def execute_trade(self, side):
         try:
-            symbol_info = self.client_binance.get_symbol_info(self.operation_code)
-
-            step_size = min_quantity = 0
-            for filter in symbol_info['filters']:
-                if filter['filterType'] == 'LOT_SIZE':
-                    step_size = float(filter['stepSize'])
-                    min_quantity = float(filter['minQty'])
-                    break
-            if step_size == 0 or min_quantity == 0:
-                raise ValueError("Invalid step size or min quantity.")
-            quantity = max(min_quantity, round(self.traded_quantity / step_size) * step_size)
-
+            current_price = float(self.client_binance.get_symbol_ticker(symbol=self.operation_code)['price'])
             if side == SIDE_BUY and not self.actual_trade_position:
-                order = self.client_binance.create_order(symbol=self.operation_code, side=SIDE_BUY, type=ORDER_TYPE_MARKET, quantity=quantity)
+                quantity = self.quantity_calculator.calculate_max_buy_quantity(self.get_balance(), current_price)
+                if quantity <= 0:
+                    erro_logger.exception(f"----------------------------\n ERRO NA COMPRA: Quantidade insuficiente para compra.")
+                    erro_logger.exception(f"-----------------------------\n")
+
+                order = self.client_binance.create_order(
+                    symbol=self.operation_code,
+                    side=SIDE_BUY,
+                    type=ORDER_TYPE_MARKET,
+                    quantity=quantity
+                )
                 self.actual_trade_position = True
 
                 log_message = createLogOrder(order)
@@ -135,18 +139,32 @@ class BinanceTraderBot:
 
             elif side == SIDE_SELL and self.actual_trade_position:
                 available_balance = self.getLastStockAccountBalance()
-                quantity = min(available_balance, quantity)
-                if quantity < min_quantity:
-                    raise ValueError("Insufficient balance to sell.")
-                order = self.client_binance.create_order(symbol=self.operation_code, side=SIDE_SELL, type=ORDER_TYPE_MARKET, quantity=quantity)
+                quantity = min(available_balance, self.traded_quantity)
+                if quantity < Decimal(self.client_binance.get_symbol_info(self.operation_code)['filters'][2]['minQty']):
+                    erro_logger.exception(f"----------------------------\n ERRO NA VENDA: Quantidade insuficiente para venda.")
+                    erro_logger.exception(f"-----------------------------\n")
+                order = self.client_binance.create_order(
+                    symbol=self.operation_code,
+                    side=SIDE_SELL,
+                    type=ORDER_TYPE_MARKET,
+                    quantity=quantity
+                )
                 self.actual_trade_position = False
-
-                log_message = createLogOrder(order) # Guarda a mensagem retornada de createLogOrder
+                log_message = createLogOrder(order)
                 trade_logger.info(f"Venda realizada com sucesso. Detalhes da ordem: {log_message}")
+
             return order
         except Exception as e:
-            erro_logger.exception(f"Erro na execução do bot: {e}")  # Loga a exceção completa com traceback
-        return None
+            erro_logger.exception(f"----------------------------\nErro na execução do bot: {e}")
+            erro_logger.exception(f"-----------------------------\n") 
+            return None
+
+    def get_balance(self):
+        account_info = self.client_binance.get_account()
+        for asset in account_info['balances']:
+            if asset['asset'] == 'USDT':
+                return float(asset['free'])
+        return 0.0
     
     def message_bot_logger_info(self, message):
      bot_logger.info(message)
@@ -155,7 +173,7 @@ class BinanceTraderBot:
     def execute(self):
         try:
             self.updateAllData()
-            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergenceTradeStrategy(self,fast_window=7,slow_window=40,volatility_factor=2)
+            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergenceTradeStrategyVersion2(self, fast_window = 7, slow_window = 40,volatility_factor=2,risk_percentage=1.0, take_profit_factor=2.0)
 
             print(f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}') # Adiciona o horário atual
             print(f'Posição atual: {"Comprado" if MaTrader.actual_trade_position else "Vendido" }')
@@ -192,7 +210,8 @@ class BinanceTraderBot:
                     bot_logger.info("No action")
 
         except Exception as e:
-            erro_logger.exception(f"Erro na execução do bot: {e}") 
+            erro_logger.exception(f"----------------------------\nErro na execução do bot: {e}")
+            erro_logger.exception(f"-----------------------------\n") 
 
 # Main execution loop
 MaTrader = BinanceTraderBot(STOCK_CODE, OPERATION_CODE, TRADED_QUANTITY, 100, CANDLE_PERIOD)
