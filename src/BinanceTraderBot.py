@@ -3,7 +3,7 @@ import trace
 from dotenv import load_dotenv
 from datetime import datetime
 import time
-import TradingStrategies
+import estrategias.TradingStrategies as TradingStrategies
 from logger import *
 from binance.exceptions import BinanceAPIException
 from binance.client import Client
@@ -20,10 +20,10 @@ secret_key = os.getenv('BINANCE_SECRET_KEY')
 
 # CONFIGURAÇÕES
 
-STOCK_CODE = "ADA"
-OPERATION_CODE = "ADAUSDT" # Cliente.KLINE_INTERVAL_1MINUTE
+STOCK_CODE = "SOL"
+OPERATION_CODE = "SOLUSDT" # Cliente.KLINE_INTERVAL_1MINUTE
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 8
+TRADED_QUANTITY = 0.03
 
 
 # Criação da instância Flask
@@ -261,7 +261,7 @@ class BinanceTraderBot():
 
 
         # Executa a estratégia de média móvel
-        ma_trade_decision = TradingStrategies.TradingStrategies.getMovingAverageVergenceTradeStrategy(self,fast_window=7, slow_window=40)
+        ma_trade_decision = TradingStrategies.estrategies.getMovingAverageTradeStrategy(self,fast_window=7, slow_window=40)
 
         # Neste caso, a decisão final será a mesma da média móvel.
         self.last_trade_decision = ma_trade_decision

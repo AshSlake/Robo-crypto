@@ -1,16 +1,39 @@
 from locale import currency
 import logging
 from datetime import datetime
+import os
+from logging.handlers import RotatingFileHandler
 
+# Cria o diretório 'logs' se ele não existir
+log_dir = 'logs'  # Diretório relativo ao script
+os.makedirs(log_dir, exist_ok=True)
 
-# Configura o logger
-logging.basicConfig(
-    filename='src/logs/trading_bot.log', 
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+# Logger para erros
+erro_logger = logging.getLogger('erros')
+erro_logger.setLevel(logging.ERROR)
+erro_handler = RotatingFileHandler(os.path.join(log_dir, 'erros.log'), maxBytes=5 * 1024 * 1024, backupCount=5)
+erro_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+erro_handler.setFormatter(erro_formatter)
+erro_logger.addHandler(erro_handler)
+
+# Logger para trades/ordens
+trade_logger = logging.getLogger('trades')
+trade_logger.setLevel(logging.INFO)
+trade_handler = RotatingFileHandler(os.path.join(log_dir, 'trades.log'), maxBytes=10 * 1024 * 1024, backupCount=3)
+trade_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+trade_handler.setFormatter(trade_formatter)
+trade_logger.addHandler(trade_handler)
+
+# Logger para mensagens gerais do bot
+bot_logger = logging.getLogger('bot')
+bot_logger.setLevel(logging.INFO)
+bot_handler = RotatingFileHandler(os.path.join(log_dir, 'bot.log'), maxBytes=5 * 1024 * 1024, backupCount=5)
+bot_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+bot_handler.setFormatter(bot_formatter)
+bot_logger.addHandler(bot_handler)
 
 def createLogOrder(order):
+  try:
     # Extraindo as informações necessárias
     side = order['side']
     type = order['type']
@@ -59,5 +82,10 @@ def createLogOrder(order):
 
     # Exibindo no console
     print(print_message)
-    # Registrando no log
-    logging.info(log_message)
+    # Registrando no log de trades
+    trade_logger.info(log_message)
+    # Registrando no log de bot
+    bot_logger.info(print_message)
+
+  except Exception as e:
+    erro_logger.exception(f"Erro ao registrar ordem: {e}")
