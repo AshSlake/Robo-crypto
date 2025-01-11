@@ -10544,3 +10544,1880 @@ SOLUSDT: 187.031 - Última Média Rápida
  186.386 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.751Diferença Atual: 0.646Gradiente rápido: -0.151 (Descendo)Gradiente lento: -0.019Decisão: Vender
 ---------------
 
+2025-01-11 13:20:22,376 - INFO - Robo Trader iniciado...
+2025-01-11 13:20:22,976 - INFO - Executado: 2025-01-11 13:20:22
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:20:22,981 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.017 - Última Média Rápida 
+ 186.383 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.751Diferença Atual: 0.634Gradiente rápido: -0.166 (Descendo)Gradiente lento: -0.022Decisão: Vender
+---------------
+
+2025-01-11 13:21:23,534 - INFO - Executado: 2025-01-11 13:21:23
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:21:23,538 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.014 - Última Média Rápida 
+ 186.382 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.751Diferença Atual: 0.632Gradiente rápido: -0.169 (Descendo)Gradiente lento: -0.022Decisão: Vender
+---------------
+
+2025-01-11 13:22:24,098 - INFO - Executado: 2025-01-11 13:22:24
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:22:24,100 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.027 - Última Média Rápida 
+ 186.385 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.751Diferença Atual: 0.642Gradiente rápido: -0.156 (Descendo)Gradiente lento: -0.020Decisão: Vender
+---------------
+
+2025-01-11 13:23:24,653 - INFO - Executado: 2025-01-11 13:23:24
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:23:24,656 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.010 - Última Média Rápida 
+ 186.382 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.751Diferença Atual: 0.628Gradiente rápido: -0.173 (Descendo)Gradiente lento: -0.023Decisão: Vender
+---------------
+
+2025-01-11 13:24:25,223 - INFO - Executado: 2025-01-11 13:24:25
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:24:25,226 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.011 - Última Média Rápida 
+ 186.382 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.751Diferença Atual: 0.629Gradiente rápido: -0.171 (Descendo)Gradiente lento: -0.023Decisão: Vender
+---------------
+
+2025-01-11 13:25:25,777 - INFO - Executado: 2025-01-11 13:25:25
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:25:25,779 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.009 - Última Média Rápida 
+ 186.382 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.751Diferença Atual: 0.627Gradiente rápido: -0.174 (Descendo)Gradiente lento: -0.023Decisão: Vender
+---------------
+
+2025-01-11 13:26:26,328 - INFO - Executado: 2025-01-11 13:26:26
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:26:26,330 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.010 - Última Média Rápida 
+ 186.382 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.751Diferença Atual: 0.628Gradiente rápido: -0.173 (Descendo)Gradiente lento: -0.023Decisão: Vender
+---------------
+
+2025-01-11 13:27:26,885 - INFO - Executado: 2025-01-11 13:27:26
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:27:26,888 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.996 - Última Média Rápida 
+ 186.379 - Última Média LentaÚltima Volatilidade: 0.753 \ Média da Volatilidade: 0.751Diferença Atual: 0.616Gradiente rápido: -0.187 (Descendo)Gradiente lento: -0.025Decisão: Vender
+---------------
+
+2025-01-11 13:28:27,449 - INFO - Executado: 2025-01-11 13:28:27
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:28:27,456 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.006 - Última Média Rápida 
+ 186.381 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.751Diferença Atual: 0.625Gradiente rápido: -0.177 (Descendo)Gradiente lento: -0.024Decisão: Vender
+---------------
+
+2025-01-11 13:29:28,032 - INFO - Executado: 2025-01-11 13:29:28
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:29:28,040 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.026 - Última Média Rápida 
+ 186.385 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.751Diferença Atual: 0.641Gradiente rápido: -0.157 (Descendo)Gradiente lento: -0.020Decisão: Vender
+---------------
+
+2025-01-11 13:30:28,604 - INFO - Executado: 2025-01-11 13:30:28
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:30:28,607 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.813 - Última Média Rápida 
+ 186.371 - Última Média LentaÚltima Volatilidade: 0.745 \ Média da Volatilidade: 0.745Diferença Atual: 0.442Gradiente rápido: -0.217 (Descendo)Gradiente lento: -0.014Decisão: Vender
+---------------
+
+2025-01-11 13:31:29,155 - INFO - Executado: 2025-01-11 13:31:29
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:31:29,158 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.853 - Última Média Rápida 
+ 186.378 - Última Média LentaÚltima Volatilidade: 0.747 \ Média da Volatilidade: 0.745Diferença Atual: 0.475Gradiente rápido: -0.177 (Descendo)Gradiente lento: -0.007Decisão: Vender
+---------------
+
+2025-01-11 13:32:29,711 - INFO - Executado: 2025-01-11 13:32:29
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:32:29,717 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.840 - Última Média Rápida 
+ 186.376 - Última Média LentaÚltima Volatilidade: 0.746 \ Média da Volatilidade: 0.745Diferença Atual: 0.464Gradiente rápido: -0.190 (Descendo)Gradiente lento: -0.010Decisão: Vender
+---------------
+
+2025-01-11 13:33:30,275 - INFO - Executado: 2025-01-11 13:33:30
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:33:30,278 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.837 - Última Média Rápida 
+ 186.375 - Última Média LentaÚltima Volatilidade: 0.746 \ Média da Volatilidade: 0.745Diferença Atual: 0.462Gradiente rápido: -0.193 (Descendo)Gradiente lento: -0.010Decisão: Vender
+---------------
+
+2025-01-11 13:34:30,856 - INFO - Executado: 2025-01-11 13:34:30
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:34:30,862 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.869 - Última Média Rápida 
+ 186.381 - Última Média LentaÚltima Volatilidade: 0.748 \ Média da Volatilidade: 0.745Diferença Atual: 0.488Gradiente rápido: -0.161 (Descendo)Gradiente lento: -0.005Decisão: Vender
+---------------
+
+2025-01-11 13:35:31,434 - INFO - Executado: 2025-01-11 13:35:31
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:35:31,436 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.866 - Última Média Rápida 
+ 186.380 - Última Média LentaÚltima Volatilidade: 0.748 \ Média da Volatilidade: 0.745Diferença Atual: 0.486Gradiente rápido: -0.164 (Descendo)Gradiente lento: -0.005Decisão: Vender
+---------------
+
+2025-01-11 13:36:31,996 - INFO - Executado: 2025-01-11 13:36:31
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:36:32,000 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.869 - Última Média Rápida 
+ 186.381 - Última Média LentaÚltima Volatilidade: 0.748 \ Média da Volatilidade: 0.745Diferença Atual: 0.488Gradiente rápido: -0.161 (Descendo)Gradiente lento: -0.005Decisão: Vender
+---------------
+
+2025-01-11 13:37:32,548 - INFO - Executado: 2025-01-11 13:37:32
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:37:32,552 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.874 - Última Média Rápida 
+ 186.382 - Última Média LentaÚltima Volatilidade: 0.749 \ Média da Volatilidade: 0.745Diferença Atual: 0.493Gradiente rápido: -0.156 (Descendo)Gradiente lento: -0.004Decisão: Vender
+---------------
+
+2025-01-11 13:38:33,128 - INFO - Executado: 2025-01-11 13:38:33
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:38:33,131 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.936 - Última Média Rápida 
+ 186.392 - Última Média LentaÚltima Volatilidade: 0.758 \ Média da Volatilidade: 0.746Diferença Atual: 0.543Gradiente rápido: -0.094 (Descendo)Gradiente lento: 0.007Decisão: Vender
+---------------
+
+2025-01-11 13:39:20,710 - INFO - Robo Trader iniciado...
+2025-01-11 13:39:21,416 - INFO - Executado: 2025-01-11 13:39:21
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:39:21,420 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 186.930 - Última Média Rápida 
+ 186.391 - Última Média LentaDecisão de posição: Comprar
+---------------
+
+2025-01-11 13:40:22,018 - INFO - Executado: 2025-01-11 13:40:22
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:40:22,023 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 186.939 - Última Média Rápida 
+ 186.393 - Última Média LentaDecisão de posição: Comprar
+---------------
+
+2025-01-11 13:41:13,623 - INFO - Robo Trader iniciado...
+2025-01-11 13:41:14,242 - INFO - Executado: 2025-01-11 13:41:14
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:41:14,244 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 186.947 - Última Média Rápida 
+ 186.394 - Última Média LentaDecisão de posição: Comprar
+---------------
+
+2025-01-11 13:42:01,429 - INFO - Robo Trader iniciado...
+2025-01-11 13:42:02,015 - INFO - Executado: 2025-01-11 13:42:02
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:42:02,017 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 186.953 - Última Média Rápida 
+ 186.395 - Última Média LentaDecisão de posição: Comprar
+---------------
+
+2025-01-11 13:42:38,151 - INFO - Robo Trader iniciado...
+2025-01-11 13:42:38,783 - INFO - Executado: 2025-01-11 13:42:38
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:42:38,785 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 186.966 - Última Média Rápida 
+ 186.398 - Última Média LentaDecisão de posição: Comprar
+---------------
+
+2025-01-11 13:42:38,794 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.966 - Última Média Rápida 
+ 186.398 - Última Média LentaÚltima Volatilidade: 0.765 \ Média da Volatilidade: 0.746Diferença Atual: 0.568Gradiente rápido: -0.064 (Descendo)Gradiente lento: 0.012Decisão: Vender
+---------------
+
+2025-01-11 13:42:39,343 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.966 - Última Média Rápida | 186.398 - Última Média Lenta
+Última Volatilidade: 0.765 | Média da Volatilidade: 0.746
+Diferença Atual: 0.568
+Gradiente rápido: -0.064 (Descendo)
+Gradiente lento: 0.012 (Subindo)
+Volume Médio (últimos 7): 20929.51
+Stop Loss: 185.875, Take Profit: 188.457
+Decisão: Vender
+---------------
+
+2025-01-11 13:44:06,999 - INFO - Robo Trader iniciado...
+2025-01-11 13:44:07,615 - INFO - Executado: 2025-01-11 13:44:07
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:44:07,617 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 186.951 - Última Média Rápida 
+ 186.395 - Última Média LentaDecisão de posição: Comprar
+---------------
+
+2025-01-11 13:44:07,622 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.951 - Última Média Rápida 
+ 186.395 - Última Média LentaÚltima Volatilidade: 0.762 \ Média da Volatilidade: 0.746Diferença Atual: 0.556Gradiente rápido: -0.079 (Descendo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 13:44:08,160 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.951 - Última Média Rápida | 186.395 - Última Média Lenta
+Última Volatilidade: 0.762 | Média da Volatilidade: 0.746
+Diferença Atual: 0.556
+Gradiente rápido: -0.079 (Descendo)
+Gradiente lento: 0.010 (Subindo)
+Volume Médio (últimos 7): 21225.92
+Stop Loss: 185.873, Take Profit: 188.443
+Decisão: Vender
+---------------
+
+2025-01-11 13:45:09,340 - INFO - Robo Trader iniciado...
+2025-01-11 13:45:09,929 - INFO - Executado: 2025-01-11 13:45:09
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:45:09,934 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.949 - Última Média Rápida 
+ 186.425 - Última Média LentaÚltima Volatilidade: 0.774 \ Média da Volatilidade: 0.741Diferença Atual: 0.524Gradiente rápido: 0.001 (Subindo)Gradiente lento: 0.030Decisão: Vender
+---------------
+
+2025-01-11 13:46:10,493 - INFO - Executado: 2025-01-11 13:46:10
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:46:10,496 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.924 - Última Média Rápida 
+ 186.421 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.741Diferença Atual: 0.504Gradiente rápido: -0.023 (Descendo)Gradiente lento: 0.026Decisão: Vender
+---------------
+
+2025-01-11 13:47:11,064 - INFO - Executado: 2025-01-11 13:47:11
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:47:11,066 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.941 - Última Média Rápida 
+ 186.423 - Última Média LentaÚltima Volatilidade: 0.773 \ Média da Volatilidade: 0.741Diferença Atual: 0.518Gradiente rápido: -0.006 (Descendo)Gradiente lento: 0.029Decisão: Vender
+---------------
+
+2025-01-11 13:48:11,634 - INFO - Executado: 2025-01-11 13:48:11
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:48:11,637 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.927 - Última Média Rápida 
+ 186.421 - Última Média LentaÚltima Volatilidade: 0.770 \ Média da Volatilidade: 0.741Diferença Atual: 0.506Gradiente rápido: -0.020 (Descendo)Gradiente lento: 0.027Decisão: Vender
+---------------
+
+2025-01-11 13:49:12,186 - INFO - Executado: 2025-01-11 13:49:12
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:49:12,191 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.921 - Última Média Rápida 
+ 186.420 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.741Diferença Atual: 0.501Gradiente rápido: -0.026 (Descendo)Gradiente lento: 0.026Decisão: Vender
+---------------
+
+2025-01-11 13:50:12,746 - INFO - Executado: 2025-01-11 13:50:12
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:50:12,750 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.930 - Última Média Rápida 
+ 186.421 - Última Média LentaÚltima Volatilidade: 0.770 \ Média da Volatilidade: 0.741Diferença Atual: 0.509Gradiente rápido: -0.017 (Descendo)Gradiente lento: 0.027Decisão: Vender
+---------------
+
+2025-01-11 13:51:13,325 - INFO - Executado: 2025-01-11 13:51:13
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:51:13,328 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.924 - Última Média Rápida 
+ 186.421 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.741Diferença Atual: 0.504Gradiente rápido: -0.023 (Descendo)Gradiente lento: 0.026Decisão: Vender
+---------------
+
+2025-01-11 13:52:13,899 - INFO - Executado: 2025-01-11 13:52:13
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:52:13,902 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.876 - Última Média Rápida 
+ 186.412 - Última Média LentaÚltima Volatilidade: 0.763 \ Média da Volatilidade: 0.741Diferença Atual: 0.464Gradiente rápido: -0.071 (Descendo)Gradiente lento: 0.018Decisão: Vender
+---------------
+
+2025-01-11 13:53:14,460 - INFO - Executado: 2025-01-11 13:53:14
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:53:14,467 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.880 - Última Média Rápida 
+ 186.413 - Última Média LentaÚltima Volatilidade: 0.763 \ Média da Volatilidade: 0.741Diferença Atual: 0.467Gradiente rápido: -0.067 (Descendo)Gradiente lento: 0.018Decisão: Vender
+---------------
+
+2025-01-11 13:54:15,031 - INFO - Executado: 2025-01-11 13:54:15
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:54:15,034 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.871 - Última Média Rápida 
+ 186.411 - Última Média LentaÚltima Volatilidade: 0.762 \ Média da Volatilidade: 0.741Diferença Atual: 0.460Gradiente rápido: -0.076 (Descendo)Gradiente lento: 0.017Decisão: Vender
+---------------
+
+2025-01-11 13:55:15,857 - INFO - Executado: 2025-01-11 13:55:15
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:55:15,861 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.881 - Última Média Rápida 
+ 186.413 - Última Média LentaÚltima Volatilidade: 0.763 \ Média da Volatilidade: 0.741Diferença Atual: 0.468Gradiente rápido: -0.066 (Descendo)Gradiente lento: 0.019Decisão: Vender
+---------------
+
+2025-01-11 13:56:16,442 - INFO - Executado: 2025-01-11 13:56:16
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:56:16,446 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.910 - Última Média Rápida 
+ 186.418 - Última Média LentaÚltima Volatilidade: 0.767 \ Média da Volatilidade: 0.741Diferença Atual: 0.492Gradiente rápido: -0.037 (Descendo)Gradiente lento: 0.024Decisão: Vender
+---------------
+
+2025-01-11 13:57:17,022 - INFO - Executado: 2025-01-11 13:57:17
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:57:17,026 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.934 - Última Média Rápida 
+ 186.422 - Última Média LentaÚltima Volatilidade: 0.771 \ Média da Volatilidade: 0.741Diferença Atual: 0.512Gradiente rápido: -0.013 (Descendo)Gradiente lento: 0.028Decisão: Vender
+---------------
+
+2025-01-11 13:58:17,836 - INFO - Executado: 2025-01-11 13:58:17
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:58:17,839 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.924 - Última Média Rápida 
+ 186.421 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.741Diferença Atual: 0.504Gradiente rápido: -0.023 (Descendo)Gradiente lento: 0.026Decisão: Vender
+---------------
+
+2025-01-11 13:59:18,390 - INFO - Executado: 2025-01-11 13:59:18
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 13:59:18,395 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.929 - Última Média Rápida 
+ 186.421 - Última Média LentaÚltima Volatilidade: 0.770 \ Média da Volatilidade: 0.741Diferença Atual: 0.507Gradiente rápido: -0.019 (Descendo)Gradiente lento: 0.027Decisão: Vender
+---------------
+
+2025-01-11 14:00:18,952 - INFO - Executado: 2025-01-11 14:00:18
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:00:18,959 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.976 - Última Média Rápida 
+ 186.434 - Última Média LentaÚltima Volatilidade: 0.780 \ Média da Volatilidade: 0.736Diferença Atual: 0.542Gradiente rápido: 0.047 (Subindo)Gradiente lento: 0.013Decisão: Vender
+---------------
+
+2025-01-11 14:01:19,517 - INFO - Executado: 2025-01-11 14:01:19
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:01:19,520 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.936 - Última Média Rápida 
+ 186.427 - Última Média LentaÚltima Volatilidade: 0.774 \ Média da Volatilidade: 0.736Diferença Atual: 0.509Gradiente rápido: 0.007 (Subindo)Gradiente lento: 0.006Decisão: Vender
+---------------
+
+2025-01-11 14:02:20,182 - INFO - Executado: 2025-01-11 14:02:20
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:02:20,201 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.920 - Última Média Rápida 
+ 186.424 - Última Média LentaÚltima Volatilidade: 0.772 \ Média da Volatilidade: 0.736Diferença Atual: 0.496Gradiente rápido: -0.009 (Descendo)Gradiente lento: 0.003Decisão: Vender
+---------------
+
+2025-01-11 14:03:21,584 - INFO - Executado: 2025-01-11 14:03:21
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:03:21,614 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.913 - Última Média Rápida 
+ 186.423 - Última Média LentaÚltima Volatilidade: 0.771 \ Média da Volatilidade: 0.736Diferença Atual: 0.490Gradiente rápido: -0.016 (Descendo)Gradiente lento: 0.002Decisão: Vender
+---------------
+
+2025-01-11 14:04:22,192 - INFO - Executado: 2025-01-11 14:04:22
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:04:22,194 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.914 - Última Média Rápida 
+ 186.423 - Última Média LentaÚltima Volatilidade: 0.771 \ Média da Volatilidade: 0.736Diferença Atual: 0.491Gradiente rápido: -0.014 (Descendo)Gradiente lento: 0.002Decisão: Vender
+---------------
+
+2025-01-11 14:05:23,078 - INFO - Executado: 2025-01-11 14:05:23
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:05:23,081 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.880 - Última Média Rápida 
+ 186.417 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.736Diferença Atual: 0.463Gradiente rápido: -0.049 (Descendo)Gradiente lento: -0.004Decisão: Vender
+---------------
+
+2025-01-11 14:06:23,651 - INFO - Executado: 2025-01-11 14:06:23
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:06:23,659 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.830 - Última Média Rápida 
+ 186.408 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.736Diferença Atual: 0.422Gradiente rápido: -0.099 (Descendo)Gradiente lento: -0.013Decisão: Vender
+---------------
+
+2025-01-11 14:07:24,245 - INFO - Executado: 2025-01-11 14:07:24
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:07:24,252 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.874 - Última Média Rápida 
+ 186.416 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.736Diferença Atual: 0.458Gradiente rápido: -0.054 (Descendo)Gradiente lento: -0.005Decisão: Vender
+---------------
+
+2025-01-11 14:08:24,817 - INFO - Executado: 2025-01-11 14:08:24
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:08:24,822 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.834 - Última Média Rápida 
+ 186.409 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.736Diferença Atual: 0.425Gradiente rápido: -0.094 (Descendo)Gradiente lento: -0.012Decisão: Vender
+---------------
+
+2025-01-11 14:09:25,398 - INFO - Executado: 2025-01-11 14:09:25
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:09:25,401 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.847 - Última Média Rápida 
+ 186.411 - Última Média LentaÚltima Volatilidade: 0.768 \ Média da Volatilidade: 0.736Diferença Atual: 0.436Gradiente rápido: -0.081 (Descendo)Gradiente lento: -0.010Decisão: Vender
+---------------
+
+2025-01-11 14:10:25,949 - INFO - Executado: 2025-01-11 14:10:25
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:10:25,956 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.859 - Última Média Rápida 
+ 186.413 - Última Média LentaÚltima Volatilidade: 0.768 \ Média da Volatilidade: 0.736Diferença Atual: 0.445Gradiente rápido: -0.070 (Descendo)Gradiente lento: -0.008Decisão: Vender
+---------------
+
+2025-01-11 14:11:26,502 - INFO - Executado: 2025-01-11 14:11:26
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:11:26,504 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.854 - Última Média Rápida 
+ 186.413 - Última Média LentaÚltima Volatilidade: 0.768 \ Média da Volatilidade: 0.736Diferença Atual: 0.442Gradiente rápido: -0.074 (Descendo)Gradiente lento: -0.008Decisão: Vender
+---------------
+
+2025-01-11 14:12:27,059 - INFO - Executado: 2025-01-11 14:12:27
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:12:27,062 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.786 - Última Média Rápida 
+ 186.401 - Última Média LentaÚltima Volatilidade: 0.772 \ Média da Volatilidade: 0.736Diferença Atual: 0.385Gradiente rápido: -0.143 (Descendo)Gradiente lento: -0.020Decisão: Vender
+---------------
+
+2025-01-11 14:13:27,616 - INFO - Executado: 2025-01-11 14:13:27
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:13:27,630 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.783 - Última Média Rápida 
+ 186.400 - Última Média LentaÚltima Volatilidade: 0.772 \ Média da Volatilidade: 0.736Diferença Atual: 0.383Gradiente rápido: -0.146 (Descendo)Gradiente lento: -0.021Decisão: Vender
+---------------
+
+2025-01-11 14:14:28,188 - INFO - Executado: 2025-01-11 14:14:28
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:14:28,225 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.781 - Última Média Rápida 
+ 186.400 - Última Média LentaÚltima Volatilidade: 0.773 \ Média da Volatilidade: 0.736Diferença Atual: 0.381Gradiente rápido: -0.147 (Descendo)Gradiente lento: -0.021Decisão: Vender
+---------------
+
+2025-01-11 14:15:28,789 - INFO - Executado: 2025-01-11 14:15:28
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:15:28,797 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.606 - Última Média Rápida 
+ 186.404 - Última Média LentaÚltima Volatilidade: 0.770 \ Média da Volatilidade: 0.732Diferença Atual: 0.202Gradiente rápido: -0.193 (Descendo)Gradiente lento: 0.001Decisão: Vender
+---------------
+
+2025-01-11 14:16:29,357 - INFO - Executado: 2025-01-11 14:16:29
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:16:29,365 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.629 - Última Média Rápida 
+ 186.408 - Última Média LentaÚltima Volatilidade: 0.767 \ Média da Volatilidade: 0.732Diferença Atual: 0.221Gradiente rápido: -0.170 (Descendo)Gradiente lento: 0.005Decisão: Vender
+---------------
+
+2025-01-11 14:17:29,919 - INFO - Executado: 2025-01-11 14:17:29
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:17:29,926 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.623 - Última Média Rápida 
+ 186.407 - Última Média LentaÚltima Volatilidade: 0.768 \ Média da Volatilidade: 0.732Diferença Atual: 0.216Gradiente rápido: -0.176 (Descendo)Gradiente lento: 0.004Decisão: Vender
+---------------
+
+2025-01-11 14:18:30,499 - INFO - Executado: 2025-01-11 14:18:30
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:18:30,510 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.623 - Última Média Rápida 
+ 186.407 - Última Média LentaÚltima Volatilidade: 0.768 \ Média da Volatilidade: 0.732Diferença Atual: 0.216Gradiente rápido: -0.176 (Descendo)Gradiente lento: 0.004Decisão: Vender
+---------------
+
+2025-01-11 14:19:31,085 - INFO - Executado: 2025-01-11 14:19:31
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:19:31,092 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.654 - Última Média Rápida 
+ 186.412 - Última Média LentaÚltima Volatilidade: 0.765 \ Média da Volatilidade: 0.732Diferença Atual: 0.242Gradiente rápido: -0.144 (Descendo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 14:20:31,662 - INFO - Executado: 2025-01-11 14:20:31
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:20:31,666 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.680 - Última Média Rápida 
+ 186.417 - Última Média LentaÚltima Volatilidade: 0.764 \ Média da Volatilidade: 0.732Diferença Atual: 0.263Gradiente rápido: -0.119 (Descendo)Gradiente lento: 0.014Decisão: Vender
+---------------
+
+2025-01-11 14:21:32,231 - INFO - Executado: 2025-01-11 14:21:32
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:21:32,236 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.693 - Última Média Rápida 
+ 186.419 - Última Média LentaÚltima Volatilidade: 0.764 \ Média da Volatilidade: 0.732Diferença Atual: 0.274Gradiente rápido: -0.106 (Descendo)Gradiente lento: 0.016Decisão: Vender
+---------------
+
+2025-01-11 14:22:32,783 - INFO - Executado: 2025-01-11 14:22:32
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:22:32,785 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.713 - Última Média Rápida 
+ 186.423 - Última Média LentaÚltima Volatilidade: 0.765 \ Média da Volatilidade: 0.732Diferença Atual: 0.290Gradiente rápido: -0.086 (Descendo)Gradiente lento: 0.020Decisão: Vender
+---------------
+
+2025-01-11 14:23:33,341 - INFO - Executado: 2025-01-11 14:23:33
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:23:33,346 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.706 - Última Média Rápida 
+ 186.422 - Última Média LentaÚltima Volatilidade: 0.765 \ Média da Volatilidade: 0.732Diferença Atual: 0.284Gradiente rápido: -0.093 (Descendo)Gradiente lento: 0.019Decisão: Vender
+---------------
+
+2025-01-11 14:24:33,920 - INFO - Executado: 2025-01-11 14:24:33
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:24:33,923 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.680 - Última Média Rápida 
+ 186.417 - Última Média LentaÚltima Volatilidade: 0.764 \ Média da Volatilidade: 0.732Diferença Atual: 0.263Gradiente rápido: -0.119 (Descendo)Gradiente lento: 0.014Decisão: Vender
+---------------
+
+2025-01-11 14:25:34,488 - INFO - Executado: 2025-01-11 14:25:34
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:25:34,490 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.683 - Última Média Rápida 
+ 186.417 - Última Média LentaÚltima Volatilidade: 0.764 \ Média da Volatilidade: 0.732Diferença Atual: 0.265Gradiente rápido: -0.116 (Descendo)Gradiente lento: 0.014Decisão: Vender
+---------------
+
+2025-01-11 14:26:35,062 - INFO - Executado: 2025-01-11 14:26:35
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:26:35,066 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.689 - Última Média Rápida 
+ 186.418 - Última Média LentaÚltima Volatilidade: 0.764 \ Média da Volatilidade: 0.732Diferença Atual: 0.270Gradiente rápido: -0.110 (Descendo)Gradiente lento: 0.016Decisão: Vender
+---------------
+
+2025-01-11 14:27:35,622 - INFO - Executado: 2025-01-11 14:27:35
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:27:35,625 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.670 - Última Média Rápida 
+ 186.415 - Última Média LentaÚltima Volatilidade: 0.765 \ Média da Volatilidade: 0.732Diferença Atual: 0.255Gradiente rápido: -0.129 (Descendo)Gradiente lento: 0.012Decisão: Vender
+---------------
+
+2025-01-11 14:28:36,199 - INFO - Executado: 2025-01-11 14:28:36
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:28:36,207 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.667 - Última Média Rápida 
+ 186.415 - Última Média LentaÚltima Volatilidade: 0.765 \ Média da Volatilidade: 0.732Diferença Atual: 0.252Gradiente rápido: -0.131 (Descendo)Gradiente lento: 0.012Decisão: Vender
+---------------
+
+2025-01-11 14:29:36,756 - INFO - Executado: 2025-01-11 14:29:36
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:29:36,759 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.649 - Última Média Rápida 
+ 186.411 - Última Média LentaÚltima Volatilidade: 0.766 \ Média da Volatilidade: 0.732Diferença Atual: 0.237Gradiente rápido: -0.150 (Descendo)Gradiente lento: 0.008Decisão: Vender
+---------------
+
+2025-01-11 14:30:37,313 - INFO - Executado: 2025-01-11 14:30:37
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:30:37,317 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.526 - Última Média Rápida 
+ 186.426 - Última Média LentaÚltima Volatilidade: 0.753 \ Média da Volatilidade: 0.727Diferença Atual: 0.099Gradiente rápido: -0.126 (Descendo)Gradiente lento: 0.014Decisão: Vender
+---------------
+
+2025-01-11 14:31:37,892 - INFO - Executado: 2025-01-11 14:31:37
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:31:37,895 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.550 - Última Média Rápida 
+ 186.430 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.727Diferença Atual: 0.120Gradiente rápido: -0.101 (Descendo)Gradiente lento: 0.018Decisão: Vender
+---------------
+
+2025-01-11 14:32:38,446 - INFO - Executado: 2025-01-11 14:32:38
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:32:38,448 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.554 - Última Média Rápida 
+ 186.431 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.727Diferença Atual: 0.123Gradiente rápido: -0.097 (Descendo)Gradiente lento: 0.019Decisão: Vender
+---------------
+
+2025-01-11 14:33:39,012 - INFO - Executado: 2025-01-11 14:33:39
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:33:39,014 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.579 - Última Média Rápida 
+ 186.435 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.143Gradiente rápido: -0.073 (Descendo)Gradiente lento: 0.023Decisão: Vender
+---------------
+
+2025-01-11 14:34:39,612 - INFO - Executado: 2025-01-11 14:34:39
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:34:39,616 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.579 - Última Média Rápida 
+ 186.435 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.143Gradiente rápido: -0.073 (Descendo)Gradiente lento: 0.023Decisão: Vender
+---------------
+
+2025-01-11 14:35:40,171 - INFO - Executado: 2025-01-11 14:35:40
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:35:40,176 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.576 - Última Média Rápida 
+ 186.435 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.141Gradiente rápido: -0.076 (Descendo)Gradiente lento: 0.023Decisão: Vender
+---------------
+
+2025-01-11 14:36:40,777 - INFO - Executado: 2025-01-11 14:36:40
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:36:40,781 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.580 - Última Média Rápida 
+ 186.436 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.144Gradiente rápido: -0.071 (Descendo)Gradiente lento: 0.024Decisão: Vender
+---------------
+
+2025-01-11 14:37:41,392 - INFO - Executado: 2025-01-11 14:37:41
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:37:41,397 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.577 - Última Média Rápida 
+ 186.435 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.142Gradiente rápido: -0.074 (Descendo)Gradiente lento: 0.023Decisão: Vender
+---------------
+
+2025-01-11 14:38:42,129 - INFO - Executado: 2025-01-11 14:38:42
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:38:42,135 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.576 - Última Média Rápida 
+ 186.435 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.141Gradiente rápido: -0.076 (Descendo)Gradiente lento: 0.023Decisão: Vender
+---------------
+
+2025-01-11 14:39:42,727 - INFO - Executado: 2025-01-11 14:39:42
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:39:42,732 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.591 - Última Média Rápida 
+ 186.438 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.154Gradiente rápido: -0.060 (Descendo)Gradiente lento: 0.026Decisão: Vender
+---------------
+
+2025-01-11 14:40:43,591 - INFO - Executado: 2025-01-11 14:40:43
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:40:43,608 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.600 - Última Média Rápida 
+ 186.439 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.727Diferença Atual: 0.161Gradiente rápido: -0.051 (Descendo)Gradiente lento: 0.027Decisão: Vender
+---------------
+
+2025-01-11 14:41:44,295 - INFO - Executado: 2025-01-11 14:41:44
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:41:44,305 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.587 - Última Média Rápida 
+ 186.437 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.150Gradiente rápido: -0.064 (Descendo)Gradiente lento: 0.025Decisão: Vender
+---------------
+
+2025-01-11 14:42:45,118 - INFO - Executado: 2025-01-11 14:42:45
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:42:45,125 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.586 - Última Média Rápida 
+ 186.437 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.149Gradiente rápido: -0.066 (Descendo)Gradiente lento: 0.025Decisão: Vender
+---------------
+
+2025-01-11 14:43:45,754 - INFO - Executado: 2025-01-11 14:43:45
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:43:45,759 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.573 - Última Média Rápida 
+ 186.435 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.138Gradiente rápido: -0.079 (Descendo)Gradiente lento: 0.023Decisão: Vender
+---------------
+
+2025-01-11 14:44:46,358 - INFO - Executado: 2025-01-11 14:44:46
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:44:46,363 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.581 - Última Média Rápida 
+ 186.436 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.727Diferença Atual: 0.145Gradiente rápido: -0.070 (Descendo)Gradiente lento: 0.024Decisão: Vender
+---------------
+
+2025-01-11 14:45:47,001 - INFO - Executado: 2025-01-11 14:45:47
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:45:47,022 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.547 - Última Média Rápida 
+ 186.439 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.723Diferença Atual: 0.109Gradiente rápido: -0.033 (Descendo)Gradiente lento: 0.003Decisão: Vender
+---------------
+
+2025-01-11 14:46:47,719 - INFO - Executado: 2025-01-11 14:46:47
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:46:47,723 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.509 - Última Média Rápida 
+ 186.432 - Última Média LentaÚltima Volatilidade: 0.753 \ Média da Volatilidade: 0.723Diferença Atual: 0.077Gradiente rápido: -0.071 (Descendo)Gradiente lento: -0.004Decisão: Vender
+---------------
+
+2025-01-11 14:47:48,675 - INFO - Executado: 2025-01-11 14:47:48
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:47:48,690 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.521 - Última Média Rápida 
+ 186.434 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.723Diferença Atual: 0.087Gradiente rápido: -0.059 (Descendo)Gradiente lento: -0.002Decisão: Vender
+---------------
+
+2025-01-11 14:48:49,279 - INFO - Executado: 2025-01-11 14:48:49
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:48:49,284 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.561 - Última Média Rápida 
+ 186.441 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.723Diferença Atual: 0.120Gradiente rápido: -0.019 (Descendo)Gradiente lento: 0.005Decisão: Vender
+---------------
+
+2025-01-11 14:49:49,878 - INFO - Executado: 2025-01-11 14:49:49
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:49:49,882 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.571 - Última Média Rápida 
+ 186.443 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.723Diferença Atual: 0.129Gradiente rápido: -0.009 (Descendo)Gradiente lento: 0.007Decisão: Vender
+---------------
+
+2025-01-11 14:50:50,509 - INFO - Executado: 2025-01-11 14:50:50
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:50:50,514 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.563 - Última Média Rápida 
+ 186.441 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.723Diferença Atual: 0.122Gradiente rápido: -0.017 (Descendo)Gradiente lento: 0.006Decisão: Vender
+---------------
+
+2025-01-11 14:51:51,148 - INFO - Executado: 2025-01-11 14:51:51
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:51:51,160 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.566 - Última Média Rápida 
+ 186.442 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.723Diferença Atual: 0.124Gradiente rápido: -0.014 (Descendo)Gradiente lento: 0.006Decisão: Vender
+---------------
+
+2025-01-11 14:52:55,156 - INFO - Executado: 2025-01-11 14:52:55
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:52:55,180 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.540 - Última Média Rápida 
+ 186.437 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.723Diferença Atual: 0.103Gradiente rápido: -0.040 (Descendo)Gradiente lento: 0.001Decisão: Vender
+---------------
+
+2025-01-11 14:53:55,745 - INFO - Executado: 2025-01-11 14:53:55
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:53:55,749 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.576 - Última Média Rápida 
+ 186.444 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.723Diferença Atual: 0.132Gradiente rápido: -0.004 (Descendo)Gradiente lento: 0.008Decisão: Vender
+---------------
+
+2025-01-11 14:54:56,413 - INFO - Executado: 2025-01-11 14:54:56
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:54:56,424 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.567 - Última Média Rápida 
+ 186.442 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.723Diferença Atual: 0.125Gradiente rápido: -0.013 (Descendo)Gradiente lento: 0.006Decisão: Vender
+---------------
+
+2025-01-11 14:55:57,090 - INFO - Executado: 2025-01-11 14:55:57
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:55:57,094 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.563 - Última Média Rápida 
+ 186.441 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.723Diferença Atual: 0.122Gradiente rápido: -0.017 (Descendo)Gradiente lento: 0.006Decisão: Vender
+---------------
+
+2025-01-11 14:56:57,689 - INFO - Executado: 2025-01-11 14:56:57
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:56:57,701 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.563 - Última Média Rápida 
+ 186.441 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.723Diferença Atual: 0.122Gradiente rápido: -0.017 (Descendo)Gradiente lento: 0.006Decisão: Vender
+---------------
+
+2025-01-11 14:57:58,323 - INFO - Executado: 2025-01-11 14:57:58
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:57:58,329 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.573 - Última Média Rápida 
+ 186.443 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.723Diferença Atual: 0.130Gradiente rápido: -0.007 (Descendo)Gradiente lento: 0.007Decisão: Vender
+---------------
+
+2025-01-11 14:58:58,959 - INFO - Executado: 2025-01-11 14:58:58
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:58:58,963 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.579 - Última Média Rápida 
+ 186.444 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.723Diferença Atual: 0.135Gradiente rápido: -0.001 (Descendo)Gradiente lento: 0.008Decisão: Vender
+---------------
+
+2025-01-11 14:59:59,575 - INFO - Executado: 2025-01-11 14:59:59
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 14:59:59,579 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.586 - Última Média Rápida 
+ 186.445 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.723Diferença Atual: 0.140Gradiente rápido: 0.006 (Subindo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 15:01:00,197 - INFO - Executado: 2025-01-11 15:01:00
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:01:00,200 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.641 - Última Média Rápida 
+ 186.447 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.719Diferença Atual: 0.195Gradiente rápido: 0.056 (Subindo)Gradiente lento: 0.001Decisão: Vender
+---------------
+
+2025-01-11 15:02:00,814 - INFO - Executado: 2025-01-11 15:02:00
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:02:00,817 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.636 - Última Média Rápida 
+ 186.445 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.719Diferença Atual: 0.190Gradiente rápido: 0.050 (Subindo)Gradiente lento: 0.000Decisão: Vender
+---------------
+
+2025-01-11 15:03:01,758 - INFO - Executado: 2025-01-11 15:03:01
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:03:01,763 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.619 - Última Média Rápida 
+ 186.442 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.719Diferença Atual: 0.176Gradiente rápido: 0.033 (Subindo)Gradiente lento: -0.003Decisão: Vender
+---------------
+
+2025-01-11 15:04:02,472 - INFO - Executado: 2025-01-11 15:04:02
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:04:02,475 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.639 - Última Média Rápida 
+ 186.446 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.719Diferença Atual: 0.193Gradiente rápido: 0.053 (Subindo)Gradiente lento: 0.001Decisão: Vender
+---------------
+
+2025-01-11 15:05:03,099 - INFO - Executado: 2025-01-11 15:05:03
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:05:03,103 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.627 - Última Média Rápida 
+ 186.444 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.719Diferença Atual: 0.183Gradiente rápido: 0.041 (Subindo)Gradiente lento: -0.001Decisão: Vender
+---------------
+
+2025-01-11 15:06:03,717 - INFO - Executado: 2025-01-11 15:06:03
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:06:03,721 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.607 - Última Média Rápida 
+ 186.440 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.719Diferença Atual: 0.167Gradiente rápido: 0.021 (Subindo)Gradiente lento: -0.005Decisão: Vender
+---------------
+
+2025-01-11 15:07:04,346 - INFO - Executado: 2025-01-11 15:07:04
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:07:04,351 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.604 - Última Média Rápida 
+ 186.440 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.719Diferença Atual: 0.164Gradiente rápido: 0.019 (Subindo)Gradiente lento: -0.005Decisão: Vender
+---------------
+
+2025-01-11 15:08:04,955 - INFO - Executado: 2025-01-11 15:08:04
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:08:04,959 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.606 - Última Média Rápida 
+ 186.440 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.719Diferença Atual: 0.165Gradiente rápido: 0.020 (Subindo)Gradiente lento: -0.005Decisão: Vender
+---------------
+
+2025-01-11 15:09:05,558 - INFO - Executado: 2025-01-11 15:09:05
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:09:05,561 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.626 - Última Média Rápida 
+ 186.444 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.719Diferença Atual: 0.182Gradiente rápido: 0.040 (Subindo)Gradiente lento: -0.002Decisão: Vender
+---------------
+
+2025-01-11 15:10:06,210 - INFO - Executado: 2025-01-11 15:10:06
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:10:06,214 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.621 - Última Média Rápida 
+ 186.443 - Última Média LentaÚltima Volatilidade: 0.750 \ Média da Volatilidade: 0.719Diferença Atual: 0.178Gradiente rápido: 0.036 (Subindo)Gradiente lento: -0.002Decisão: Vender
+---------------
+
+2025-01-11 15:11:06,955 - INFO - Executado: 2025-01-11 15:11:06
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:11:06,958 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.633 - Última Média Rápida 
+ 186.445 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.719Diferença Atual: 0.188Gradiente rápido: 0.047 (Subindo)Gradiente lento: -0.000Decisão: Vender
+---------------
+
+2025-01-11 15:12:07,669 - INFO - Executado: 2025-01-11 15:12:07
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:12:07,677 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.626 - Última Média Rápida 
+ 186.444 - Última Média LentaÚltima Volatilidade: 0.751 \ Média da Volatilidade: 0.719Diferença Atual: 0.182Gradiente rápido: 0.040 (Subindo)Gradiente lento: -0.002Decisão: Vender
+---------------
+
+2025-01-11 15:13:09,252 - INFO - Executado: 2025-01-11 15:13:09
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:13:09,270 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.693 - Última Média Rápida 
+ 186.456 - Última Média LentaÚltima Volatilidade: 0.757 \ Média da Volatilidade: 0.719Diferença Atual: 0.237Gradiente rápido: 0.107 (Subindo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 15:14:10,160 - INFO - Executado: 2025-01-11 15:14:10
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:14:10,205 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.689 - Última Média Rápida 
+ 186.455 - Última Média LentaÚltima Volatilidade: 0.756 \ Média da Volatilidade: 0.719Diferença Atual: 0.234Gradiente rápido: 0.103 (Subindo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 15:15:10,843 - INFO - Executado: 2025-01-11 15:15:10
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:15:10,847 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.721 - Última Média Rápida 
+ 186.478 - Última Média LentaÚltima Volatilidade: 0.773 \ Média da Volatilidade: 0.716Diferença Atual: 0.244Gradiente rápido: 0.000 (Descendo)Gradiente lento: 0.017Decisão: Vender
+---------------
+
+2025-01-11 15:16:11,453 - INFO - Executado: 2025-01-11 15:16:11
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:16:11,457 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.700 - Última Média Rápida 
+ 186.474 - Última Média LentaÚltima Volatilidade: 0.770 \ Média da Volatilidade: 0.715Diferença Atual: 0.226Gradiente rápido: -0.021 (Descendo)Gradiente lento: 0.013Decisão: Vender
+---------------
+
+2025-01-11 15:17:12,028 - INFO - Executado: 2025-01-11 15:17:12
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:17:12,042 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.727 - Última Média Rápida 
+ 186.479 - Última Média LentaÚltima Volatilidade: 0.775 \ Média da Volatilidade: 0.716Diferença Atual: 0.248Gradiente rápido: 0.006 (Subindo)Gradiente lento: 0.018Decisão: Vender
+---------------
+
+2025-01-11 15:18:12,701 - INFO - Executado: 2025-01-11 15:18:12
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:18:12,715 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.704 - Última Média Rápida 
+ 186.475 - Última Média LentaÚltima Volatilidade: 0.770 \ Média da Volatilidade: 0.715Diferença Atual: 0.230Gradiente rápido: -0.017 (Descendo)Gradiente lento: 0.014Decisão: Vender
+---------------
+
+2025-01-11 15:19:13,346 - INFO - Executado: 2025-01-11 15:19:13
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:19:13,357 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.710 - Última Média Rápida 
+ 186.476 - Última Média LentaÚltima Volatilidade: 0.771 \ Média da Volatilidade: 0.716Diferença Atual: 0.234Gradiente rápido: -0.011 (Descendo)Gradiente lento: 0.015Decisão: Vender
+---------------
+
+2025-01-11 15:20:14,058 - INFO - Executado: 2025-01-11 15:20:14
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:20:14,077 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.703 - Última Média Rápida 
+ 186.474 - Última Média LentaÚltima Volatilidade: 0.770 \ Média da Volatilidade: 0.715Diferença Atual: 0.228Gradiente rápido: -0.019 (Descendo)Gradiente lento: 0.014Decisão: Vender
+---------------
+
+2025-01-11 15:21:14,686 - INFO - Executado: 2025-01-11 15:21:14
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:21:14,690 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.679 - Última Média Rápida 
+ 186.470 - Última Média LentaÚltima Volatilidade: 0.766 \ Média da Volatilidade: 0.715Diferença Atual: 0.208Gradiente rápido: -0.043 (Descendo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 15:22:15,302 - INFO - Executado: 2025-01-11 15:22:15
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:22:15,306 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.690 - Última Média Rápida 
+ 186.472 - Última Média LentaÚltima Volatilidade: 0.768 \ Média da Volatilidade: 0.715Diferença Atual: 0.218Gradiente rápido: -0.031 (Descendo)Gradiente lento: 0.012Decisão: Vender
+---------------
+
+2025-01-11 15:23:15,889 - INFO - Executado: 2025-01-11 15:23:15
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:23:15,894 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.671 - Última Média Rápida 
+ 186.469 - Última Média LentaÚltima Volatilidade: 0.766 \ Média da Volatilidade: 0.715Diferença Atual: 0.202Gradiente rápido: -0.050 (Descendo)Gradiente lento: 0.008Decisão: Vender
+---------------
+
+2025-01-11 15:24:16,457 - INFO - Executado: 2025-01-11 15:24:16
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:24:16,463 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.680 - Última Média Rápida 
+ 186.470 - Última Média LentaÚltima Volatilidade: 0.767 \ Média da Volatilidade: 0.715Diferença Atual: 0.210Gradiente rápido: -0.041 (Descendo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 15:25:17,060 - INFO - Executado: 2025-01-11 15:25:17
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:25:17,065 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.680 - Última Média Rápida 
+ 186.470 - Última Média LentaÚltima Volatilidade: 0.767 \ Média da Volatilidade: 0.715Diferença Atual: 0.210Gradiente rápido: -0.041 (Descendo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 15:26:17,685 - INFO - Executado: 2025-01-11 15:26:17
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:26:17,688 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.671 - Última Média Rápida 
+ 186.469 - Última Média LentaÚltima Volatilidade: 0.766 \ Média da Volatilidade: 0.715Diferença Atual: 0.202Gradiente rápido: -0.050 (Descendo)Gradiente lento: 0.008Decisão: Vender
+---------------
+
+2025-01-11 15:27:18,301 - INFO - Executado: 2025-01-11 15:27:18
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:27:18,306 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.680 - Última Média Rápida 
+ 186.470 - Última Média LentaÚltima Volatilidade: 0.767 \ Média da Volatilidade: 0.715Diferença Atual: 0.210Gradiente rápido: -0.041 (Descendo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 15:28:18,927 - INFO - Executado: 2025-01-11 15:28:18
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:28:18,936 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.693 - Última Média Rápida 
+ 186.473 - Última Média LentaÚltima Volatilidade: 0.768 \ Média da Volatilidade: 0.715Diferença Atual: 0.220Gradiente rápido: -0.029 (Descendo)Gradiente lento: 0.012Decisão: Vender
+---------------
+
+2025-01-11 15:29:19,758 - INFO - Executado: 2025-01-11 15:29:19
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:29:19,765 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.681 - Última Média Rápida 
+ 186.471 - Última Média LentaÚltima Volatilidade: 0.767 \ Média da Volatilidade: 0.715Diferença Atual: 0.211Gradiente rápido: -0.040 (Descendo)Gradiente lento: 0.010Decisão: Vender
+---------------
+
+2025-01-11 15:30:20,375 - INFO - Executado: 2025-01-11 15:30:20
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:30:20,378 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.697 - Última Média Rápida 
+ 186.516 - Última Média LentaÚltima Volatilidade: 0.762 \ Média da Volatilidade: 0.713Diferença Atual: 0.181Gradiente rápido: 0.003 (Subindo)Gradiente lento: 0.043Decisão: Vender
+---------------
+
+2025-01-11 15:31:21,076 - INFO - Executado: 2025-01-11 15:31:21
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:31:21,081 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.699 - Última Média Rápida 
+ 186.516 - Última Média LentaÚltima Volatilidade: 0.762 \ Média da Volatilidade: 0.713Diferença Atual: 0.183Gradiente rápido: 0.004 (Subindo)Gradiente lento: 0.043Decisão: Vender
+---------------
+
+2025-01-11 15:32:21,715 - INFO - Executado: 2025-01-11 15:32:21
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:32:21,719 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.699 - Última Média Rápida 
+ 186.516 - Última Média LentaÚltima Volatilidade: 0.762 \ Média da Volatilidade: 0.713Diferença Atual: 0.183Gradiente rápido: 0.004 (Subindo)Gradiente lento: 0.043Decisão: Vender
+---------------
+
+2025-01-11 15:33:22,350 - INFO - Executado: 2025-01-11 15:33:22
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:33:22,355 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.680 - Última Média Rápida 
+ 186.513 - Última Média LentaÚltima Volatilidade: 0.759 \ Média da Volatilidade: 0.713Diferença Atual: 0.167Gradiente rápido: -0.014 (Descendo)Gradiente lento: 0.040Decisão: Vender
+---------------
+
+2025-01-11 15:34:22,961 - INFO - Executado: 2025-01-11 15:34:22
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:34:22,964 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.691 - Última Média Rápida 
+ 186.515 - Última Média LentaÚltima Volatilidade: 0.761 \ Média da Volatilidade: 0.713Diferença Atual: 0.177Gradiente rápido: -0.003 (Descendo)Gradiente lento: 0.042Decisão: Vender
+---------------
+
+2025-01-11 15:35:23,552 - INFO - Executado: 2025-01-11 15:35:23
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:35:23,558 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.699 - Última Média Rápida 
+ 186.516 - Última Média LentaÚltima Volatilidade: 0.762 \ Média da Volatilidade: 0.713Diferença Atual: 0.183Gradiente rápido: 0.004 (Subindo)Gradiente lento: 0.043Decisão: Vender
+---------------
+
+2025-01-11 15:36:24,202 - INFO - Executado: 2025-01-11 15:36:24
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:36:24,210 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.667 - Última Média Rápida 
+ 186.511 - Última Média LentaÚltima Volatilidade: 0.757 \ Média da Volatilidade: 0.712Diferença Atual: 0.157Gradiente rápido: -0.027 (Descendo)Gradiente lento: 0.037Decisão: Vender
+---------------
+
+2025-01-11 15:37:24,843 - INFO - Executado: 2025-01-11 15:37:24
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:37:24,853 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.641 - Última Média Rápida 
+ 186.506 - Última Média LentaÚltima Volatilidade: 0.755 \ Média da Volatilidade: 0.712Diferença Atual: 0.135Gradiente rápido: -0.053 (Descendo)Gradiente lento: 0.033Decisão: Vender
+---------------
+
+2025-01-11 15:38:25,441 - INFO - Executado: 2025-01-11 15:38:25
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:38:25,448 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.643 - Última Média Rápida 
+ 186.506 - Última Média LentaÚltima Volatilidade: 0.755 \ Média da Volatilidade: 0.712Diferença Atual: 0.137Gradiente rápido: -0.051 (Descendo)Gradiente lento: 0.033Decisão: Vender
+---------------
+
+2025-01-11 15:39:26,068 - INFO - Executado: 2025-01-11 15:39:26
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:39:26,072 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.626 - Última Média Rápida 
+ 186.503 - Última Média LentaÚltima Volatilidade: 0.754 \ Média da Volatilidade: 0.712Diferença Atual: 0.122Gradiente rápido: -0.069 (Descendo)Gradiente lento: 0.030Decisão: Vender
+---------------
+
+2025-01-11 15:40:26,710 - INFO - Executado: 2025-01-11 15:40:26
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 15:40:26,715 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 186.631 - Última Média Rápida 
+ 186.504 - Última Média LentaÚltima Volatilidade: 0.754 \ Média da Volatilidade: 0.712Diferença Atual: 0.127Gradiente rápido: -0.063 (Descendo)Gradiente lento: 0.031Decisão: Vender
+---------------
+
+2025-01-11 17:37:42,227 - INFO - Robo Trader iniciado...
+2025-01-11 17:37:42,934 - INFO - Executado: 2025-01-11 17:37:42
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:37:42,946 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.880 - Última Média Rápida 
+ 186.969 - Última Média LentaÚltima Volatilidade: 0.726 \ Média da Volatilidade: 0.712Diferença Atual: 0.911Gradiente rápido: 0.121 (Subindo)Gradiente lento: 0.095Decisão: Vender
+---------------
+
+2025-01-11 17:38:43,500 - INFO - Executado: 2025-01-11 17:38:43
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:38:43,503 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.914 - Última Média Rápida 
+ 186.975 - Última Média LentaÚltima Volatilidade: 0.740 \ Média da Volatilidade: 0.713Diferença Atual: 0.939Gradiente rápido: 0.156 (Subindo)Gradiente lento: 0.101Decisão: Vender
+---------------
+
+2025-01-11 17:39:44,071 - INFO - Executado: 2025-01-11 17:39:44
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:39:44,074 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.919 - Última Média Rápida 
+ 186.976 - Última Média LentaÚltima Volatilidade: 0.742 \ Média da Volatilidade: 0.713Diferença Atual: 0.943Gradiente rápido: 0.160 (Subindo)Gradiente lento: 0.102Decisão: Vender
+---------------
+
+2025-01-11 17:40:44,620 - INFO - Executado: 2025-01-11 17:40:44
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:40:44,621 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.920 - Última Média Rápida 
+ 186.976 - Última Média LentaÚltima Volatilidade: 0.742 \ Média da Volatilidade: 0.713Diferença Atual: 0.944Gradiente rápido: 0.161 (Subindo)Gradiente lento: 0.102Decisão: Vender
+---------------
+
+2025-01-11 17:41:45,185 - INFO - Executado: 2025-01-11 17:41:45
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:41:45,190 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.927 - Última Média Rápida 
+ 186.977 - Última Média LentaÚltima Volatilidade: 0.745 \ Média da Volatilidade: 0.713Diferença Atual: 0.950Gradiente rápido: 0.169 (Subindo)Gradiente lento: 0.104Decisão: Vender
+---------------
+
+2025-01-11 17:42:45,784 - INFO - Executado: 2025-01-11 17:42:45
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:42:45,790 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.946 - Última Média Rápida 
+ 186.981 - Última Média LentaÚltima Volatilidade: 0.754 \ Média da Volatilidade: 0.713Diferença Atual: 0.965Gradiente rápido: 0.187 (Subindo)Gradiente lento: 0.107Decisão: Vender
+---------------
+
+2025-01-11 17:43:46,357 - INFO - Executado: 2025-01-11 17:43:46
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:43:46,359 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.953 - Última Média Rápida 
+ 186.982 - Última Média LentaÚltima Volatilidade: 0.757 \ Média da Volatilidade: 0.713Diferença Atual: 0.971Gradiente rápido: 0.194 (Subindo)Gradiente lento: 0.108Decisão: Vender
+---------------
+
+2025-01-11 17:44:46,940 - INFO - Executado: 2025-01-11 17:44:46
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:44:46,943 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 187.934 - Última Média Rápida 
+ 186.978 - Última Média LentaÚltima Volatilidade: 0.749 \ Média da Volatilidade: 0.713Diferença Atual: 0.956Gradiente rápido: 0.176 (Subindo)Gradiente lento: 0.105Decisão: Vender
+---------------
+
+2025-01-11 17:45:47,513 - INFO - Executado: 2025-01-11 17:45:47
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:45:47,516 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.120 - Última Média Rápida 
+ 187.073 - Última Média LentaÚltima Volatilidade: 0.752 \ Média da Volatilidade: 0.716Diferença Atual: 1.047Gradiente rápido: 0.170 (Subindo)Gradiente lento: 0.092Decisão: Vender
+---------------
+
+2025-01-11 17:46:48,100 - INFO - Executado: 2025-01-11 17:46:48
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:46:48,104 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.159 - Última Média Rápida 
+ 187.080 - Última Média LentaÚltima Volatilidade: 0.769 \ Média da Volatilidade: 0.716Diferença Atual: 1.079Gradiente rápido: 0.209 (Subindo)Gradiente lento: 0.099Decisão: Vender
+---------------
+
+2025-01-11 17:47:49,107 - INFO - Executado: 2025-01-11 17:47:49
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:47:49,113 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.177 - Última Média Rápida 
+ 187.083 - Última Média LentaÚltima Volatilidade: 0.778 \ Média da Volatilidade: 0.716Diferença Atual: 1.094Gradiente rápido: 0.227 (Subindo)Gradiente lento: 0.102Decisão: Vender
+---------------
+
+2025-01-11 17:48:49,666 - INFO - Executado: 2025-01-11 17:48:49
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:48:49,670 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.200 - Última Média Rápida 
+ 187.087 - Última Média LentaÚltima Volatilidade: 0.790 \ Média da Volatilidade: 0.717Diferença Atual: 1.113Gradiente rápido: 0.250 (Subindo)Gradiente lento: 0.106Decisão: Vender
+---------------
+
+2025-01-11 17:49:50,220 - INFO - Executado: 2025-01-11 17:49:50
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:49:50,223 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.201 - Última Média Rápida 
+ 187.087 - Última Média LentaÚltima Volatilidade: 0.790 \ Média da Volatilidade: 0.717Diferença Atual: 1.114Gradiente rápido: 0.251 (Subindo)Gradiente lento: 0.106Decisão: Vender
+---------------
+
+2025-01-11 17:50:51,038 - INFO - Executado: 2025-01-11 17:50:51
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:50:51,040 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.239 - Última Média Rápida 
+ 187.094 - Última Média LentaÚltima Volatilidade: 0.811 \ Média da Volatilidade: 0.717Diferença Atual: 1.145Gradiente rápido: 0.289 (Subindo)Gradiente lento: 0.113Decisão: Vender
+---------------
+
+2025-01-11 17:51:51,591 - INFO - Executado: 2025-01-11 17:51:51
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:51:51,602 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.239 - Última Média Rápida 
+ 187.094 - Última Média LentaÚltima Volatilidade: 0.811 \ Média da Volatilidade: 0.717Diferença Atual: 1.145Gradiente rápido: 0.289 (Subindo)Gradiente lento: 0.113Decisão: Vender
+---------------
+
+2025-01-11 17:52:52,158 - INFO - Executado: 2025-01-11 17:52:52
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:52:52,161 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.261 - Última Média Rápida 
+ 187.098 - Última Média LentaÚltima Volatilidade: 0.824 \ Média da Volatilidade: 0.717Diferença Atual: 1.164Gradiente rápido: 0.311 (Subindo)Gradiente lento: 0.117Decisão: Vender
+---------------
+
+2025-01-11 17:53:52,729 - INFO - Executado: 2025-01-11 17:53:52
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:53:52,732 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.317 - Última Média Rápida 
+ 187.108 - Última Média LentaÚltima Volatilidade: 0.859 \ Média da Volatilidade: 0.718Diferença Atual: 1.210Gradiente rápido: 0.367 (Subindo)Gradiente lento: 0.126Decisão: Vender
+---------------
+
+2025-01-11 17:54:53,285 - INFO - Executado: 2025-01-11 17:54:53
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:54:53,287 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.336 - Última Média Rápida 
+ 187.111 - Última Média LentaÚltima Volatilidade: 0.871 \ Média da Volatilidade: 0.719Diferença Atual: 1.225Gradiente rápido: 0.386 (Subindo)Gradiente lento: 0.130Decisão: Vender
+---------------
+
+2025-01-11 17:55:53,836 - INFO - Executado: 2025-01-11 17:55:53
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:55:53,839 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.379 - Última Média Rápida 
+ 187.118 - Última Média LentaÚltima Volatilidade: 0.900 \ Média da Volatilidade: 0.719Diferença Atual: 1.260Gradiente rápido: 0.429 (Subindo)Gradiente lento: 0.137Decisão: Vender
+---------------
+
+2025-01-11 17:56:54,407 - INFO - Executado: 2025-01-11 17:56:54
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:56:54,409 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.384 - Última Média Rápida 
+ 187.119 - Última Média LentaÚltima Volatilidade: 0.904 \ Média da Volatilidade: 0.719Diferença Atual: 1.265Gradiente rápido: 0.434 (Subindo)Gradiente lento: 0.138Decisão: Vender
+---------------
+
+2025-01-11 17:57:54,966 - INFO - Executado: 2025-01-11 17:57:54
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:57:54,969 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.350 - Última Média Rápida 
+ 187.113 - Última Média LentaÚltima Volatilidade: 0.880 \ Média da Volatilidade: 0.719Diferença Atual: 1.237Gradiente rápido: 0.400 (Subindo)Gradiente lento: 0.132Decisão: Vender
+---------------
+
+2025-01-11 17:58:55,536 - INFO - Executado: 2025-01-11 17:58:55
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:58:55,540 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.323 - Última Média Rápida 
+ 187.108 - Última Média LentaÚltima Volatilidade: 0.862 \ Média da Volatilidade: 0.718Diferença Atual: 1.214Gradiente rápido: 0.373 (Subindo)Gradiente lento: 0.127Decisão: Vender
+---------------
+
+2025-01-11 17:59:56,122 - INFO - Executado: 2025-01-11 17:59:56
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 17:59:56,126 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.344 - Última Média Rápida 
+ 187.112 - Última Média LentaÚltima Volatilidade: 0.877 \ Média da Volatilidade: 0.719Diferença Atual: 1.232Gradiente rápido: 0.394 (Subindo)Gradiente lento: 0.131Decisão: Vender
+---------------
+
+2025-01-11 18:00:56,686 - INFO - Executado: 2025-01-11 18:00:56
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:00:56,689 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.737 - Última Média Rápida 
+ 187.233 - Última Média LentaÚltima Volatilidade: 0.973 \ Média da Volatilidade: 0.728Diferença Atual: 1.504Gradiente rápido: 0.391 (Subindo)Gradiente lento: 0.121Decisão: Vender
+---------------
+
+2025-01-11 18:01:57,256 - INFO - Executado: 2025-01-11 18:01:57
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:01:57,258 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.759 - Última Média Rápida 
+ 187.237 - Última Média LentaÚltima Volatilidade: 0.985 \ Média da Volatilidade: 0.729Diferença Atual: 1.522Gradiente rápido: 0.413 (Subindo)Gradiente lento: 0.124Decisão: Vender
+---------------
+
+2025-01-11 18:02:57,811 - INFO - Executado: 2025-01-11 18:02:57
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:02:57,816 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.746 - Última Média Rápida 
+ 187.235 - Última Média LentaÚltima Volatilidade: 0.978 \ Média da Volatilidade: 0.728Diferença Atual: 1.511Gradiente rápido: 0.400 (Subindo)Gradiente lento: 0.122Decisão: Vender
+---------------
+
+2025-01-11 18:03:58,377 - INFO - Executado: 2025-01-11 18:03:58
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:03:58,380 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.747 - Última Média Rápida 
+ 187.235 - Última Média LentaÚltima Volatilidade: 0.979 \ Média da Volatilidade: 0.728Diferença Atual: 1.512Gradiente rápido: 0.401 (Subindo)Gradiente lento: 0.122Decisão: Vender
+---------------
+
+2025-01-11 18:04:58,933 - INFO - Executado: 2025-01-11 18:04:58
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:04:58,936 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.790 - Última Média Rápida 
+ 187.243 - Última Média LentaÚltima Volatilidade: 1.004 \ Média da Volatilidade: 0.729Diferença Atual: 1.547Gradiente rápido: 0.444 (Subindo)Gradiente lento: 0.130Decisão: Vender
+---------------
+
+2025-01-11 18:05:59,493 - INFO - Executado: 2025-01-11 18:05:59
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:05:59,498 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.823 - Última Média Rápida 
+ 187.248 - Última Média LentaÚltima Volatilidade: 1.025 \ Média da Volatilidade: 0.730Diferença Atual: 1.575Gradiente rápido: 0.477 (Subindo)Gradiente lento: 0.136Decisão: Vender
+---------------
+
+2025-01-11 18:07:00,058 - INFO - Executado: 2025-01-11 18:07:00
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:07:00,062 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.817 - Última Média Rápida 
+ 187.247 - Última Média LentaÚltima Volatilidade: 1.021 \ Média da Volatilidade: 0.729Diferença Atual: 1.570Gradiente rápido: 0.471 (Subindo)Gradiente lento: 0.135Decisão: Vender
+---------------
+
+2025-01-11 18:08:00,623 - INFO - Executado: 2025-01-11 18:08:00
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:08:00,628 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.776 - Última Média Rápida 
+ 187.240 - Última Média LentaÚltima Volatilidade: 0.995 \ Média da Volatilidade: 0.729Diferença Atual: 1.536Gradiente rápido: 0.430 (Subindo)Gradiente lento: 0.127Decisão: Vender
+---------------
+
+2025-01-11 18:09:01,180 - INFO - Executado: 2025-01-11 18:09:01
+Posição atual: Comprado
+Balanço atual: 0.031968 (SOL)
+
+2025-01-11 18:09:01,182 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.771 - Última Média Rápida 
+ 187.239 - Última Média LentaÚltima Volatilidade: 0.993 \ Média da Volatilidade: 0.729Diferença Atual: 1.532Gradiente rápido: 0.426 (Subindo)Gradiente lento: 0.127Decisão: Vender
+---------------
+
+2025-01-11 18:10:02,559 - INFO - Executado: 2025-01-11 18:10:02
+Posição atual: Comprado
+Balanço atual: 0.031968 (SOL)
+
+2025-01-11 18:10:02,562 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.791 - Última Média Rápida 
+ 187.243 - Última Média LentaÚltima Volatilidade: 1.005 \ Média da Volatilidade: 0.729Diferença Atual: 1.549Gradiente rápido: 0.446 (Subindo)Gradiente lento: 0.130Decisão: Vender
+---------------
+
+2025-01-11 18:11:04,239 - INFO - Executado: 2025-01-11 18:11:04
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:11:04,243 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.809 - Última Média Rápida 
+ 187.246 - Última Média LentaÚltima Volatilidade: 1.016 \ Média da Volatilidade: 0.729Diferença Atual: 1.563Gradiente rápido: 0.463 (Subindo)Gradiente lento: 0.133Decisão: Vender
+---------------
+
+2025-01-11 18:12:04,794 - INFO - Executado: 2025-01-11 18:12:04
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:12:04,797 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.801 - Última Média Rápida 
+ 187.244 - Última Média LentaÚltima Volatilidade: 1.011 \ Média da Volatilidade: 0.729Diferença Atual: 1.557Gradiente rápido: 0.456 (Subindo)Gradiente lento: 0.132Decisão: Vender
+---------------
+
+2025-01-11 18:13:05,354 - INFO - Executado: 2025-01-11 18:13:05
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:13:05,356 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.796 - Última Média Rápida 
+ 187.243 - Última Média LentaÚltima Volatilidade: 1.008 \ Média da Volatilidade: 0.729Diferença Atual: 1.552Gradiente rápido: 0.450 (Subindo)Gradiente lento: 0.131Decisão: Vender
+---------------
+
+2025-01-11 18:13:30,971 - INFO - Robo Trader iniciado...
+2025-01-11 18:13:31,675 - INFO - Executado: 2025-01-11 18:13:31
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:13:31,684 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.804 - Última Média Rápida 
+ 187.245 - Última Média LentaÚltima Volatilidade: 1.013 \ Média da Volatilidade: 0.729Diferença Atual: 1.559Gradiente rápido: 0.459 (Subindo)Gradiente lento: 0.132Decisão: Vender
+---------------
+
+2025-01-11 18:14:32,238 - INFO - Executado: 2025-01-11 18:14:32
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:14:32,240 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 188.820 - Última Média Rápida 
+ 187.248 - Última Média LentaÚltima Volatilidade: 1.023 \ Média da Volatilidade: 0.729Diferença Atual: 1.572Gradiente rápido: 0.474 (Subindo)Gradiente lento: 0.135Decisão: Vender
+---------------
+
+2025-01-11 18:15:32,786 - INFO - Executado: 2025-01-11 18:15:32
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:15:32,788 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 189.326 - Última Média Rápida 
+ 187.364 - Última Média LentaÚltima Volatilidade: 1.155 \ Média da Volatilidade: 0.744Diferença Atual: 1.961Gradiente rápido: 0.520 (Subindo)Gradiente lento: 0.119Decisão: Vender
+---------------
+
+2025-01-11 18:16:33,344 - INFO - Executado: 2025-01-11 18:16:33
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:16:33,346 - INFO - ---------------
+Estratégia executada: Moving Average com Volatilidade + Gradiente
+SOLUSDT: 189.334 - Última Média Rápida 
+ 187.366 - Última Média LentaÚltima Volatilidade: 1.160 \ Média da Volatilidade: 0.744Diferença Atual: 1.969Gradiente rápido: 0.529 (Subindo)Gradiente lento: 0.120Decisão: Vender
+---------------
+
+2025-01-11 18:18:02,054 - INFO - Robo Trader iniciado...
+2025-01-11 18:18:02,978 - INFO - Executado: 2025-01-11 18:18:02
+Posição atual: Vendido
+Balanço atual: 0.0 (SOL)
+
+2025-01-11 18:18:02,984 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 189.346 - Última Média Rápida 
+ 187.368 - Última Média LentaDecisão de posição: Comprar
+---------------
+
+2025-01-11 18:30:19,414 - INFO - Robo Trader iniciado...
+2025-01-11 18:30:20,152 - INFO - Executado: 2025-01-11 18:30:20
+Posição atual: Comprado
+Balanço atual: 0.031968 (SOL)
+
+2025-01-11 18:30:20,156 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 189.807 - Última Média Rápida 
+ 187.475 - Última Média LentaDecisão de posição: Comprar
+---------------
+
+2025-01-11 18:31:20,711 - INFO - Executado: 2025-01-11 18:31:20
+Posição atual: Comprado
+Balanço atual: 0.031968 (SOL)
+
+2025-01-11 18:31:20,714 - INFO - ---------------
+Estratégia executada: Média Móvel
+SOLUSDT: 189.744 - Última Média Rápida 
+ 187.464 - Última Média LentaDecisão de posição: Comprar
+---------------
+

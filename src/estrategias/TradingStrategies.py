@@ -48,7 +48,7 @@ class estrategies:
      def message_bot_logger_info(self, message):
          bot_logger.info(message)
 
-     def enhancedMovingAverageStrategy(self, fast_window=7, slow_window=40, volume_window=20):
+     def enhancedMovingAverage(self, fast_window=7, slow_window=40, volume_window=20):
       # Calcula as Médias Móveis
       self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
       self.stock_data['ma_slow'] = self.stock_data['close_price'].rolling(window=slow_window).mean()
@@ -128,7 +128,7 @@ class estrategies:
       
       return trade_decision
 
-     def getMovingAverageTradeStrategy(self, fast_window = 7, slow_window = 40):
+     def getMovingAverage(self, fast_window = 7, slow_window = 40):
 
         # Calcula as Médias Móveis Rápida e Lenta
         self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean() # Média Rápida
@@ -162,7 +162,7 @@ class estrategies:
 
         return ma_trade_decision
 
-     def getBolingerBandsTradeStrategy(self, window = 20, factor = 2):
+     def getBolingerBands(self, window = 20, factor = 2):
         # Executa a estratégia de bollinger bands
 
         self.stock_data['bb_mean'] = self.stock_data['close_price'].rolling(window=window).mean()
@@ -181,7 +181,7 @@ class estrategies:
 
         return bb_trade_decision
 
-     def getMovingAverageVergenceTradeStrategy(self, fast_window=7, slow_window=40, volatility_factor=0.7):
+     def getMovingAverageVergence(self, fast_window=7, slow_window=40, volatility_factor=0.7):
        try:
         
         self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
@@ -242,7 +242,7 @@ class estrategies:
 
        return ma_trade_decision
      
-     def getMovingAverageVergenceTradeStrategyVersion2(self, fast_window=7, slow_window=40, volatility_factor=2.0, risk_percentage=1.0, take_profit_factor=2.0):
+     def getMovingAverageVergence2(self, fast_window=7, slow_window=40, volatility_factor= 0.7, risk_percentage=1.0, take_profit_factor=2.0):
         try:
             # Calcula as médias móveis e a volatilidade
             self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
