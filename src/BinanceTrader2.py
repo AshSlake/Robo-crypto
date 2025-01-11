@@ -119,65 +119,61 @@ class BinanceTraderBot:
     def execute_trade(self, side):
         try:
             current_price = Decimal(self.client_binance.get_symbol_ticker(symbol=self.operation_code)['price'])
+            
             symbol_info = self.client_binance.get_symbol_info(self.operation_code)
-
             step_size = None
             min_quantity = None
+            min_notional = None
             for filter in symbol_info['filters']:
                 if filter['filterType'] == 'LOT_SIZE':
                     step_size = Decimal(filter['stepSize'])
                     min_quantity = Decimal(filter['minQty'])
-                    break
+                elif filter['filterType'] == 'MIN_NOTIONAL':
+                    min_notional = Decimal(filter['minNotional'])
 
-            if step_size is None or min_quantity is None:
-                raise ValueError("Não foi possível encontrar o filtro LOT_SIZE.")
+            if step_size is None or min_quantity is None or min_notional is None: # Verifique se minNotional foi encontrado.
+                raise ValueError("Não foi possível encontrar o filtro LOT_SIZE ou MIN_NOTIONAL.")
 
-            if side == SIDE_BUY and not self.actual_trade_position:
+            if side == SIDE_BUY:
                 quantity = self.quantity_calculator.calculate_max_buy_quantity(self.get_balance(), current_price)
                 quantity = Decimal(quantity)
                 quantity = (quantity // step_size) * step_size
                 if quantity < min_quantity:
                     raise ValueError(f"Quantidade de compra menor que o mínimo permitido: {min_quantity}")
 
-                order = self.client_binance.create_order(
-                    symbol=self.operation_code,
-                    side=SIDE_BUY,
-                    type=ORDER_TYPE_MARKET,
-                    quantity=str(quantity)
-                )
-                if order and order['status'] == 'FILLED': # Verifica o status da ordem
-                  self.actual_trade_position = True
-                  log_message = createLogOrder(order)
-                  trade_logger.info(f"Compra realizada com sucesso. Detalhes da ordem: {log_message}")
-                  self.updateAllData() # Atualiza após a compra bem sucedida
+                order = self.client_binance.create_order(symbol=self.operation_code, side=SIDE_BUY, type=ORDER_TYPE_MARKET, quantity=str(quantity))
+                if order and order['status'] == 'FILLED':
+                    self.actual_trade_position = True
+                    log_message = createLogOrder(order)
+                    trade_logger.info(f"Compra realizada com sucesso. Detalhes da ordem: {log_message}")
+                    self.updateAllData()
 
-            elif side == SIDE_SELL and self.actual_trade_position:
+            elif side == SIDE_SELL:
                 available_balance = Decimal(self.getLastStockAccountBalance())
-                quantity = min(available_balance, self.traded_quantity)
-                quantity = Decimal(quantity)
+                quantity = min(available_balance, Decimal(self.traded_quantity))
                 quantity = (quantity // step_size) * step_size
+
                 if quantity < min_quantity:
                     raise ValueError(f"Quantidade de venda menor que o mínimo permitido: {min_quantity}")
 
-                order = self.client_binance.create_order(
-                    symbol=self.operation_code,
-                    side=SIDE_SELL,
-                    type=ORDER_TYPE_MARKET,
-                    quantity=str(quantity)
-                )
-                if order and order['status'] == 'FILLED': # Verifica o status da ordem
-                  self.actual_trade_position = False
-                  log_message = createLogOrder(order)
-                  trade_logger.info(f"Venda realizada com sucesso. Detalhes da ordem: {log_message}")
-                  self.updateAllData() # Atualiza após a venda bem sucedida
+                notional_value = quantity * current_price  # Calcula o valor nominal
+                if notional_value < min_notional:
+                    raise ValueError(f"Valor nominal da venda ({notional_value:.8f}) é menor que o mínimo permitido ({min_notional:.8f}).") # Adiciona a mensagem de erro
 
+                order = self.client_binance.create_order(symbol=self.operation_code, side=SIDE_SELL, type=ORDER_TYPE_MARKET, quantity=str(quantity))
+                if order and order['status'] == 'FILLED':
+                    self.actual_trade_position = False
+                    log_message = createLogOrder(order)
+                    trade_logger.info(f"Venda realizada com sucesso. Detalhes da ordem: {log_message}")
+                    self.updateAllData()
             return order
+
         except BinanceAPIException as e:
-            erro_logger.exception(f"Erro da Binance API: {e}")
+            erro_logger.exception(f"Erro da Binance API ({side}): {e}, quantity: {quantity}")
         except ValueError as e:
-            erro_logger.exception(f"Erro de validação de quantidade: {e}")
+            erro_logger.exception(f"Erro de validação de quantidade ({side}): {e}, quantity: {quantity}")
         except Exception as e:
-            erro_logger.exception(f"Outro erro em execute_trade: {e}")
+            erro_logger.exception(f"Outro erro em execute_trade ({side}): {e}, quantity: {quantity}")
         return None             
 
     def get_balance(self):
@@ -194,33 +190,33 @@ class BinanceTraderBot:
     def execute(self):
         try:
             self.updateAllData()
-            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergenceTradeStrategy(self, fast_window=7, slow_window=40, volatility_factor=0.8)
 
+            print(f'\n -------------------------') # Adiciona o horário atual
             print(f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}') # Adiciona o horário atual
             print(f'Posição atual: {"Comprado" if MaTrader.actual_trade_position else "Vendido" }')
             print(f'Balanço atual: {MaTrader.last_stock_account_balance} ({self.stock_code})')
 
             message = (
-              f'{'----------------------------'}\n'
-              f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n'
-              f'Posição atual: {"Comprado" if self.actual_trade_position else "Vendido"}\n'
-              f'Balanço atual: {self.last_stock_account_balance} ({self.stock_code})\n'
-              f'{'----------------------------'}\n'
+                f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n'
+                f'Posição atual: {"Comprado" if self.actual_trade_position else "Vendido"}\n'
+                f'Balanço atual: {self.last_stock_account_balance} ({self.stock_code})\n'
             )
-            self.message_bot_logger_info(message)
+            bot_logger.info(message)
 
-             
-             # Lógica de compra/venda revisada (mais concisa)
-            if ma_trade_decision:
-                if not self.actual_trade_position:
-                    self.execute_trade(SIDE_BUY)
-            else:
-                if self.actual_trade_position:
-                    self.execute_trade(SIDE_SELL)
+            #estrategias:
+            
+
+            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergenceTradeStrategy(self, fast_window=7, slow_window=40, volatility_factor=0.8)
+
+           
+
+            if ma_trade_decision and not self.actual_trade_position:
+                self.execute_trade(SIDE_BUY)
+            elif not ma_trade_decision and self.actual_trade_position:
+                self.execute_trade(SIDE_SELL)
 
         except Exception as e:
-            erro_logger.exception(f"----------------------------\nErro na execução do bot: {e}")
-            erro_logger.exception(f"-----------------------------\n") 
+            erro_logger.exception(f"Erro na execução do bot: {e}") 
 
 # Main execution loop
 MaTrader = BinanceTraderBot(STOCK_CODE, OPERATION_CODE, TRADED_QUANTITY, 100, CANDLE_PERIOD)

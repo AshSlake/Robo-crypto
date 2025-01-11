@@ -181,7 +181,7 @@ class estrategies:
 
         return bb_trade_decision
 
-     def getMovingAverageVergenceTradeStrategy(self, fast_window=7, slow_window=40, volatility_factor=0.8):
+     def getMovingAverageVergenceTradeStrategy(self, fast_window=7, slow_window=40, volatility_factor=0.7):
        try:
         
         self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
@@ -198,7 +198,7 @@ class estrategies:
         slow_gradient = last_ma_slow - prev_ma_slow
 
         current_difference = last_ma_fast - last_ma_slow
-
+        volatility_by_purshase = volatility * volatility_factor
 
         ma_trade_decision = False
 
@@ -216,6 +216,7 @@ class estrategies:
         print(f'Última Volatilidade: {last_volatility:.3f}')
         print(f'Média da Volatilidade: {volatility:.3f}')
         print(f'Diferença Atual das medias moveis: {current_difference:.3f}')
+        print(f'volatibilidade * volatilidade_factor: {volatility_by_purshase:.3f}')
         print(f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })')
         print(f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > 0 else "Descendo" })')
         print(f'Decisão: {"Comprar" if ma_trade_decision == True else "Vender"}')
