@@ -1,37 +1,32 @@
-<div style="display: flex; justify-content: center; align-items: center;">
-  <img src="https://i.pinimg.com/736x/98/c7/e5/98c7e5317525b6e5d6711617f5cf0acb.jpg" alt="logo npc-studio" width="150" class="rounded-profile">
-</div>
-
-# BOT TRADER
+<h1>BOT TRADER</h1> 
 
 Este bot trader automatizado para Binance, escrito em Python, utiliza estratégias para tomar decisões
 de compra e venda. Ele foi projetado para operar com o par de moedas de sua escolha.
 
 ## **Tecnologias Utilizadas**
 
-Python: Linguagem de programação principal.
+<p>Python: Linguagem de programação principal</p>.
 
-Binance API: Para conectar e interagir com a exchange Binance.
+<p>Binance API: Para conectar e interagir com a exchange Binance.</p>
 
-Pandas: Para manipulação e análise de dados de mercado.
+<p>Pandas: Para manipulação e análise de dados de mercado.</p>
 
-Python-Binance: Wrapper Python para a API da Binance.
+<p>Python-Binance: Wrapper Python para a API da Binance.</p>
 
-Flask: Para criar a interface web para visualização de logs.
+<p>Flask: Para criar a interface web para visualização de logs.</p>
 
-Python-dotenv: Para gerenciar variáveis de ambiente.
+<p>Python-dotenv: Para gerenciar variáveis de ambiente.</p>
 
-Decimal: Para garantir precisão nos cálculos financeiros.
+<p>Decimal: Para garantir precisão nos cálculos financeiros.</p>
 
-Como usar:
+## **Como usar:**
 
-Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes variáveis:
+.Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes variáveis:
 
-BINANCE_API_KEY
+.BINANCE_API_KEY
+.BINANCE_SECRET_KEY
 
-BINANCE_SECRET_KEY
-
-Instalar as Dependências:
+<h2>Instalar as Dependências:</h2>
 
 pip install python-binance pandas Flask python-dotenv
 Use code with caution.
