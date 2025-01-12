@@ -20,41 +20,33 @@ de compra e venda. Ele foi projetado para operar com o par de moedas de sua esco
 <p>Decimal: Para garantir precisão nos cálculos financeiros.</p>
 
 ## **Como usar:**
-
-.Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes variáveis:
-
-#BINANCE_API_KEY
-#BINANCE_SECRET_KEY
+Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes variáveis:
+-BINANCE_API_KEY
+-BINANCE_SECRET_KEY
 
 <h2>Instalar as Dependências:</h2>
+-pip install python-binance pandas Flask python-dotenv
 
-pip install python-binance pandas Flask python-dotenv
-Use code with caution.
-Bash
-Configurar o Bot: Modifique as seguintes variáveis no código para ajustar o bot às suas necessidades:
+##**Configurar o Bot: Modifique as seguintes variáveis no código para ajustar o bot às suas necessidades:**
 
-STOCK_CODE: Código do ativo (ex: "SOL").
-
+<p>STOCK_CODE: Código do ativo (ex: "SOL").
 OPERATION_CODE: Par de negociação (ex: "SOLUSDT").
-
 CANDLE_PERIOD: Intervalo das velas (ex: Client.KLINE_INTERVAL_15MINUTE).
+</p>
 
-Executar o Bot:
+##Executar o Bot:
+-python seu_arquivo.py
 
-python seu_arquivo.py
-Use code with caution.
-Bash
 Observações:
 
-Este bot é fornecido apenas para fins educacionais e informativos. O uso em produção é de sua inteira responsabilidade.
-
+<p>Este bot é fornecido apenas para fins educacionais e informativos. O uso em produção é de sua inteira responsabilidade.
 É altamente recomendável testar o bot em uma conta de demonstração antes de usar com dinheiro real.
-
 O mercado de criptomoedas é altamente volátil. Não invista mais do que você pode perder.
+</p>
 
-Contribuições:
-
+<h2>Contribuições:
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
+</h2>
 
 Licença:
 
