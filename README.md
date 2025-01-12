@@ -5,7 +5,7 @@ de compra e venda. Ele foi projetado para operar com o par de moedas de sua esco
 
 ## **Tecnologias Utilizadas**
 
-<p>Python: Linguagem de programação principal</p>.
+<p>Python: Linguagem de programação principal.</p>
 
 <p>Binance API: Para conectar e interagir com a exchange Binance.</p>
 
@@ -23,8 +23,8 @@ de compra e venda. Ele foi projetado para operar com o par de moedas de sua esco
 
 .Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes variáveis:
 
-.BINANCE_API_KEY
-.BINANCE_SECRET_KEY
+#BINANCE_API_KEY
+#BINANCE_SECRET_KEY
 
 <h2>Instalar as Dependências:</h2>
 
