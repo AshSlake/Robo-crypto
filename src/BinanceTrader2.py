@@ -117,78 +117,97 @@ class BinanceTraderBot:
         return prices
 
     def execute_trade(self, side):
-        quantity = None  # Inicializa quantity
-        try:
-            current_price = Decimal(self.client_binance.get_symbol_ticker(symbol=self.operation_code)['price'])
-            
-            symbol_info = self.client_binance.get_symbol_info(self.operation_code)
-            step_size = None
-            min_quantity = None
-            min_notional = None
-            for filter in symbol_info['filters']:
-                if filter['filterType'] == 'LOT_SIZE':
-                    step_size = Decimal(filter['stepSize'])
-                    min_quantity = Decimal(filter['minQty'])
-                elif filter['filterType'] == 'MIN_NOTIONAL':
-                    min_notional = Decimal(filter['minNotional'])
+      quantity = None  # Inicializa quantity como None
+      try:
+         # Obtenha informações do símbolo para obter stepSize e minQty (quantidade mínima)
+        current_price = Decimal(self.client_binance.get_symbol_ticker(symbol=self.operation_code)['price'])
+        symbol_info = self.client_binance.get_symbol_info(self.operation_code)
 
-            if step_size is None or min_quantity is None or min_notional is None: # Verifique se minNotional foi encontrado.
-                raise ValueError("Não foi possível encontrar o filtro LOT_SIZE ou MIN_NOTIONAL.")
+        step_size = min_quantity = min_notional = None
+        
+        # Processa os filtros necessários
+        step_size = min_quantity = min_notional = 0
+        for filter in symbol_info['filters']:
+         if filter['filterType'] == 'LOT_SIZE':
+           step_size = Decimal(filter['stepSize'])
+           min_quantity = Decimal(filter['minQty'])
+         elif filter['filterType'] == 'NOTIONAL': 
+          min_notional = Decimal(filter['minNotional'])
 
-            if side == SIDE_BUY:
-                balance = self.get_balance()
-                quantity = self.quantity_calculator.calculate_max_buy_quantity(balance, current_price)
-                quantity = (quantity // step_size) * step_size
+        # Validação
+        if step_size == 0 or min_quantity == 0 or min_notional == 0:
+           raise ValueError("Não foi possível obter 'stepSize', 'minQty' ou 'minNotional'")
 
-                if quantity < min_quantity:
-                    raise ValueError(f"Quantidade de compra menor que o mínimo permitido: {min_quantity}")
+        
+        # Verificando se os filtros estão presentes
+        if 'filters' not in symbol_info:
+          raise ValueError(f"Os filtros não estão presentes para o símbolo {self.operation_code}. Verifique o par de moedas.")
+        # Logar os filtros disponíveis para depuração
+        #for filter in symbol_info['filters']:
+        # print(filter)  # Isso ajudará a ver quais filtros estão disponíveis
 
-                trade_logger.info(f"Executando ordem de COMPRA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}")
+        if side == SIDE_BUY:
+            balance = self.get_balance()
+            quantity = self.quantity_calculator.calculate_max_buy_quantity(symbol_info,balance, current_price)
+            quantity = (quantity // step_size) * step_size
 
-                order = self.client_binance.create_order(symbol=self.operation_code, side=SIDE_BUY, type=ORDER_TYPE_MARKET, quantity=str(quantity))
+            if quantity < min_quantity:
+                raise ValueError(f"Quantidade de compra menor que o mínimo permitido: {min_quantity}")
 
-            elif side == SIDE_SELL:
-                available_balance = Decimal(self.getLastStockAccountBalance())
-                quantity = self.quantity_calculator.calculate_max_sell_quantity(available_balance, current_price)
-                quantity = (quantity // step_size) * step_size
+            trade_logger.info(f"Executando ordem de COMPRA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}")
+            order = self.client_binance.create_order(
+                symbol=self.operation_code, 
+                side=SIDE_BUY, 
+                type=ORDER_TYPE_MARKET, 
+                quantity=str(quantity)
+            )
 
-                if quantity < min_quantity:
-                    raise ValueError(f"Quantidade de venda menor que o mínimo permitido: {min_quantity}")
+        elif side == SIDE_SELL:
+            available_balance = Decimal(self.getLastStockAccountBalance())
+            quantity = self.quantity_calculator.calculate_max_sell_quantity(symbol_info, available_balance, current_price)
+            quantity = (quantity // step_size) * step_size
 
-                notional_value = quantity * current_price
-                if notional_value < min_notional:
-                    raise ValueError(f"Valor nominal da venda ({notional_value:.8f}) é menor que o mínimo permitido ({min_notional:.8f}).")
+            if quantity < min_quantity:
+                raise ValueError(f"Quantidade de venda menor que o mínimo permitido: {min_quantity}")
 
-                trade_logger.info(f"Executando ordem de VENDA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}")
+            notional_value = quantity * current_price
+            if notional_value < min_notional:
+                raise ValueError(f"Valor nominal da venda ({notional_value:.8f}) é menor que o mínimo permitido ({min_notional:.8f}).")
 
-                order = self.client_binance.create_order(symbol=self.operation_code, side=SIDE_SELL, type=ORDER_TYPE_MARKET, quantity=str(quantity))
+            trade_logger.info(f"Executando ordem de VENDA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}")
+            order = self.client_binance.create_order(
+                symbol=self.operation_code, 
+                side=SIDE_SELL, 
+                type=ORDER_TYPE_MARKET, 
+                quantity=str(quantity)
+            )
 
+        if order and order['status'] in ('FILLED', 'PARTIALLY_FILLED'):
+            log_message = createLogOrder(order) if createLogOrder else 'No log message'
+            trade_logger.info(log_message)
 
-                if order and order['status'] in ('FILLED', 'PARTIALLY_FILLED'):
-                  log_message = createLogOrder(order) # Certifique-se de que createLogOrder retorna a mensagem
-                if log_message:
-                    trade_logger.info(log_message)
+        if order['status'] == 'FILLED':
+                message = f"{'Compra' if side == SIDE_BUY else 'Venda'} realizada com sucesso."
+                bot_logger.info(message)
+                self.actual_trade_position = True if side == SIDE_BUY else False
+                self.updateAllData()
 
-                    if order['status'] == 'FILLED':
-                        message = f"{'Compra' if side == SIDE_BUY else 'Venda'} realizada com sucesso."
-                        bot_logger.info(message)
-                        self.actual_trade_position = True if side == SIDE_BUY else False
-                        self.updateAllData()
+        elif order['status'] == 'PARTIALLY_FILLED':
+                bot_logger.warning(f"Ordem {side} parcialmente preenchida. Verifique o status da ordem.")
+                self.actual_trade_position = True if side == SIDE_BUY else False
+                self.traded_quantity = float(order['executedQty'])
+                self.updateAllData()
+                
+        return order
 
-                    elif order['status'] == 'PARTIALLY_FILLED':
-                        bot_logger.warning(f"Ordem {side} parcialmente preenchida. Verifique o status da ordem.")
-                        self.actual_trade_position = True if side == SIDE_BUY else False
-                        self.traded_quantity = float(order['executedQty']) # or Decimal(order['executedQty']) if you prefer
-                        self.updateAllData()
-                return order
-
-        except BinanceAPIException as e:
-            erro_logger.exception(f"Erro da Binance API ({side}): {e}, quantity: {quantity}")
-        except ValueError as e:
-            erro_logger.exception(f"Erro de validação de quantidade ({side}): {e}, quantity: {quantity}")
-        except Exception as e:
-            erro_logger.exception(f"Outro erro em execute_trade ({side}): {e}, quantity: {quantity}")
-        return None             
+      except BinanceAPIException as e:
+        erro_logger.exception(f"Erro da Binance API ({side}): {e}, quantity: {quantity}")
+      except ValueError as e:
+        erro_logger.exception(f"Erro de validação de quantidade ({side}): {e}, quantity: {quantity if quantity is not None else 'N/A'}")
+      except Exception as e:
+        erro_logger.exception(f"Outro erro em execute_trade ({side}): {e}, quantity: {quantity if quantity is not None else 'N/A'}")
+        return None
+             
 
     def get_balance(self):
         account_info = self.client_binance.get_account()
@@ -218,7 +237,7 @@ class BinanceTraderBot:
             bot_logger.info(message)
 
            
-            ma_trade_decision = TradingStrategies.estrategies.getMovingAverage(self, fast_window=7, slow_window=40)
+            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergence(self, fast_window=7, slow_window=40,volatility_factor= 0.7)
 
             if ma_trade_decision and not self.actual_trade_position:
                 self.execute_trade(SIDE_BUY)

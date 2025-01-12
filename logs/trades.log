@@ -3,3 +3,9 @@
 2025-01-11 12:16:07,626 - INFO - Compra realizada com sucesso. Detalhes da ordem: None
 2025-01-11 12:22:43,649 - INFO - Venda realizada com sucesso. Detalhes da ordem: None
 2025-01-11 12:45:58,592 - INFO - Venda realizada com sucesso. Detalhes da ordem: None
+2025-01-12 20:03:13,746 - INFO - Executando ordem de VENDA: SOLUSDT, Quantidade: 0.02700000, Preço: 187.50000000
+2025-01-12 20:03:14,061 - INFO - None
+2025-01-12 20:04:16,197 - INFO - Executando ordem de VENDA: SOLUSDT, Quantidade: 0.02700000, Preço: 187.16000000
+2025-01-12 20:05:18,816 - INFO - Executando ordem de VENDA: SOLUSDT, Quantidade: 0.02700000, Preço: 187.13000000
+2025-01-12 20:06:20,576 - INFO - Executando ordem de VENDA: SOLUSDT, Quantidade: 0.02700000, Preço: 187.13000000
+2025-01-12 20:07:22,469 - INFO - Executando ordem de VENDA: SOLUSDT, Quantidade: 0.02700000, Preço: 187.19000000
