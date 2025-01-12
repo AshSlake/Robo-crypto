@@ -5,19 +5,19 @@ de compra e venda. Ele foi projetado para operar com o par de moedas de sua esco
 
 # **Tecnologias Utilizadas**
 
-<p>Python: Linguagem de programação principal.</p>
+- <p>Python: Linguagem de programação principal.</p>
 
-<p>Binance API: Para conectar e interagir com a exchange Binance.</p>
+- <p>Binance API: Para conectar e interagir com a exchange Binance.</p>
 
-<p>Pandas: Para manipulação e análise de dados de mercado.</p>
+- <p>Pandas: Para manipulação e análise de dados de mercado.</p>
 
-<p>Python-Binance: Wrapper Python para a API da Binance.</p>
+- <p>Python-Binance: Wrapper Python para a API da Binance.</p>
 
-<p>Flask: Para criar a interface web para visualização de logs.</p>
+- <p>Flask: Para criar a interface web para visualização de logs.</p>
 
-<p>Python-dotenv: Para gerenciar variáveis de ambiente.</p>
+- <p>Python-dotenv: Para gerenciar variáveis de ambiente.</p>
 
-<p>Decimal: Para garantir precisão nos cálculos financeiros.</p>
+- <p>Decimal: Para garantir precisão nos cálculos financeiros.</p>
 
 # **Como usar:**
 Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes variáveis:
