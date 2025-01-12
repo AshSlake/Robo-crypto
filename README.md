@@ -25,7 +25,7 @@ Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes
 - BINANCE_SECRET_KEY
 
 <h2>Instalar as Dependências:</h2>
--pip install python-binance pandas Flask python-dotenv
+- pip install python-binance pandas Flask python-dotenv
 
 #**Configurar o Bot: Modifique as seguintes variáveis no código para ajustar o bot às suas necessidades:**
 
