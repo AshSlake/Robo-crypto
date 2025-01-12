@@ -21,8 +21,8 @@ de compra e venda. Ele foi projetado para operar com o par de moedas de sua esco
 
 ## **Como usar:**
 Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes variáveis:
--BINANCE_API_KEY
--BINANCE_SECRET_KEY
+- BINANCE_API_KEY
+- BINANCE_SECRET_KEY
 
 <h2>Instalar as Dependências:</h2>
 -pip install python-binance pandas Flask python-dotenv
@@ -35,7 +35,7 @@ CANDLE_PERIOD: Intervalo das velas (ex: Client.KLINE_INTERVAL_15MINUTE).
 </p>
 
 ##Executar o Bot:
--python seu_arquivo.py
+- python seu_arquivo.py
 
 Observações:
 
