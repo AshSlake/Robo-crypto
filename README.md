@@ -50,8 +50,7 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar
 </h2>
 
 Licença:
-
-[Especifique a licença do seu projeto, por exemplo, MIT License]
+[MIT LICENSE]
 
 # Autor
 <div>
