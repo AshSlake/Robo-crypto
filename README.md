@@ -1,3 +1,7 @@
+<div style="display: flex; justify-content: center; align-items: center;">
+  <img src="https://media.seudinheiro.com/uploads/2024/10/Pictures-Anna-8-715x402.jpg" alt="bot_trader" width="150" class="rounded-profile">
+</div>
+
 <h1>BOT TRADER</h1> 
 
 Este bot trader automatizado para Binance, escrito em Python, utiliza estratégias para tomar decisões
@@ -48,9 +52,6 @@ O mercado de criptomoedas é altamente volátil. Não invista mais do que você 
 <h2>Contribuições:
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
 </h2>
-
-Licença:
-[MIT LICENSE]
 
 # Autor
 <div>
