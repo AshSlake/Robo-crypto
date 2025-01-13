@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: center; align-items: center;">
-  <img src="https://media.seudinheiro.com/uploads/2024/10/Pictures-Anna-8-715x402.jpg" alt="bot_trader" width="150" class="rounded-profile">
+  <img src="https://media.seudinheiro.com/uploads/2024/10/Pictures-Anna-8-715x402.jpg" alt="bot_trader" width="287" class="rounded-profile">
 </div>
 
 <h1>BOT TRADER</h1> 
