@@ -25,16 +25,16 @@ Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes
 - BINANCE_SECRET_KEY
 
 <h2>Instalar as Dependências:</h2>
- - pip install python-binance pandas Flask python-dotenv
+- pip install python-binance pandas Flask python-dotenv
 
- **Configurar o Bot: Modifique as seguintes variáveis no código para ajustar o bot às suas necessidades:**
+<h2>Configurar o Bot: Modifique as seguintes variáveis no código para ajustar o bot às suas necessidades:</h2>
 
-<p>STOCK_CODE: Código do ativo (ex: "SOL").
-OPERATION_CODE: Par de negociação (ex: "SOLUSDT").
-CANDLE_PERIOD: Intervalo das velas (ex: Client.KLINE_INTERVAL_15MINUTE).
-</p>
+- STOCK_CODE: Código do ativo (ex: "SOL").
+- OPERATION_CODE: Par de negociação (ex: "SOLUSDT").
+- CANDLE_PERIOD: Intervalo das velas (ex: Client.KLINE_INTERVAL_15MINUTE).
 
-#Executar o Bot:
+
+# Executar o Bot:
 - python seu_arquivo.py
 
 Observações:
