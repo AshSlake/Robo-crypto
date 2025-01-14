@@ -25,7 +25,7 @@ secret_key = os.getenv('BINANCE_SECRET_KEY')
 STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 0.03
+TRADED_QUANTITY = 0.027
 
 # Flask app for serving logs
 app = Flask(__name__)
@@ -261,7 +261,7 @@ class BinanceTraderBot:
             # Usa getActualTradePositionForBinance para obter a posição atual do trade
             self.actual_trade_position = self.getActualTradePositionForBinance()
 
-            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergence(self, fast_window=7, slow_window=40,volatility_factor= 0.3)
+            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergence(self, fast_window=7, slow_window=40,volatility_factor = 0.3)
 
             if ma_trade_decision and not self.actual_trade_position:
                 self.execute_trade(SIDE_BUY)

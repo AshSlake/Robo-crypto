@@ -200,15 +200,12 @@ class estrategies:
         current_difference = last_ma_fast - last_ma_slow
         volatility_by_purshase = volatility * volatility_factor
 
-        ma_trade_decision = False
-
         if current_difference > volatility * volatility_factor and last_volatility < volatility:
                 if last_ma_fast > last_ma_slow and fast_gradient > slow_gradient:
                     ma_trade_decision = True
 
-        elif last_volatility > volatility:
-                if self.stock_data['ma_fast'].iloc[-3] > self.stock_data['ma_fast'].iloc[-2] and self.stock_data['ma_slow'].iloc[-3] > self.stock_data['ma_slow'].iloc[-2]:
-                    ma_trade_decision = False
+        elif last_ma_fast < last_ma_slow:
+            ma_trade_decision = False
 
         print('-----')
         print(f'Estratégia executada: Moving Average com Volatilidade + Gradiente')
