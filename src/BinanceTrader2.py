@@ -63,7 +63,7 @@ class BinanceTraderBot:
         try:
             self.account_data = self.getUpdatedAccountData()
             self.last_stock_account_balance = self.getLastStockAccountBalance()
-            self.actual_trade_position = self.getActualTradePosition()
+            self.actual_trade_position = self.getActualTradePositionForBinance()
             self.stock_data = self.getStockData()
         except Exception as e:
             erro_logger.exception(f"------------------------------------\nErro ao atualizar dados: {e}")
@@ -78,17 +78,7 @@ class BinanceTraderBot:
                 return float(stock['free'])
         return 0.0
 
-    # Checa se a posição atual é comprada ou vendida
-    def getActualTradePosition(self):
-        # Futuramente integrar com banco de dados para
-        # Guardar este dado com mais precisão.
-
-        if self.getLastStockAccountBalance() > 0.001:
-            return True # Comprado
-        else:
-            return False # Está vendido
-        
-
+   
     def getActualTradePositionForBinance(self):
         try:
             trades = self.client_binance.get_my_trades(symbol=self.operation_code, limit=1)
@@ -165,8 +155,14 @@ class BinanceTraderBot:
 
         if side == SIDE_BUY:
             balance = self.get_balance()
+            
             quantity = self.quantity_calculator.calculate_max_buy_quantity(symbol_info,balance, current_price)
+           
+            # Arredonda para baixo para o step_size mais próximo
             quantity = (quantity // step_size) * step_size
+
+            # Garante que a quantidade seja maior ou igual ao mínimo
+            quantity = max(quantity, min_quantity)  
 
             if quantity < min_quantity:
                 raise ValueError(f"Quantidade de compra menor que o mínimo permitido: {min_quantity}")
@@ -181,8 +177,14 @@ class BinanceTraderBot:
 
         elif side == SIDE_SELL:
             available_balance = Decimal(self.getLastStockAccountBalance())
+
             quantity = self.quantity_calculator.calculate_max_sell_quantity(symbol_info, available_balance, current_price)
+
+            # Arredonda para baixo para o step_size mais próximo
             quantity = (quantity // step_size) * step_size
+
+            # Garante que a quantidade seja maior ou igual ao mínimo
+            quantity = max(quantity, min_quantity) 
 
             if quantity < min_quantity:
                 raise ValueError(f"Quantidade de venda menor que o mínimo permitido: {min_quantity}")
@@ -191,7 +193,7 @@ class BinanceTraderBot:
             if notional_value < min_notional:
                 raise ValueError(f"Valor nominal da venda ({notional_value:.8f}) é menor que o mínimo permitido ({min_notional:.8f}).")
 
-            trade_logger.info(f"Executando ordem de VENDA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}")
+            bot_logger.info(f"Executando ordem de VENDA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}")
             order = self.client_binance.create_order(
                 symbol=self.operation_code, 
                 side=SIDE_SELL, 
@@ -204,8 +206,8 @@ class BinanceTraderBot:
             trade_logger.info(log_message)
 
         if order['status'] == 'FILLED':
-                message = f"{'Compra' if side == SIDE_BUY else 'Venda'} realizada com sucesso."
-                bot_logger.info(message)
+                log_message = createLogOrder(order) if createLogOrder else 'No log message'
+                bot_logger.info(log_message)
                 self.actual_trade_position = True if side == SIDE_BUY else False
                 self.updateAllData()
 
@@ -241,25 +243,32 @@ class BinanceTraderBot:
         try:
             self.updateAllData()
 
-            print(f'\n -------------------------') # Adiciona o horário atual
+            print(f'\n -----------------------------') 
             print(f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}') # Adiciona o horário atual
             print(f'Posição atual: {"Comprado" if MaTrader.actual_trade_position else "Vendido" }')
             print(f'Balanço atual: {MaTrader.last_stock_account_balance} ({self.stock_code})')
+            print(f'-----------------------------\n') 
 
             message = (
+                f'\n-----------------------------'
                 f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n'
                 f'Posição atual: {"Comprado" if self.actual_trade_position else "Vendido"}\n'
                 f'Balanço atual: {self.last_stock_account_balance} ({self.stock_code})\n'
+                f'-----------------------------\n'
             )
             bot_logger.info(message)
 
-           
-            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergence(self, fast_window=7, slow_window=40,volatility_factor= 0.7)
+            # Usa getActualTradePositionForBinance para obter a posição atual do trade
+            self.actual_trade_position = self.getActualTradePositionForBinance()
+
+            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergence(self, fast_window=7, slow_window=40,volatility_factor= 0.3)
 
             if ma_trade_decision and not self.actual_trade_position:
                 self.execute_trade(SIDE_BUY)
+                self.actual_trade_position = self.getActualTradePositionForBinance() # ou True, se tiver certeza da compra 
             elif not ma_trade_decision and self.actual_trade_position:
                 self.execute_trade(SIDE_SELL)
+                self.actual_trade_position = self.getActualTradePositionForBinance() # ou False, se tiver certeza da venda
 
         except Exception as e:
             erro_logger.exception(f"Erro na execução do bot: {e}") 

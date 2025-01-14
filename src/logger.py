@@ -82,6 +82,7 @@ def createLogOrder(order):
 
     # Exibindo no console
     print(print_message)
+    trade_logger.info(log_message)
 
   except Exception as e:
     erro_logger.exception(f"Erro ao registrar ordem: {e}")
