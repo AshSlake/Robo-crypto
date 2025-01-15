@@ -10,9 +10,9 @@ from binance.client import Client
 from binance.enums import *
 from binance.exceptions import BinanceAPIException
 import estrategias.TradingStrategies as TradingStrategies
-from logger import createLogOrder, erro_logger, trade_logger, bot_logger
-from decimal import Decimal, ROUND_DOWN
-from calculate_max_buy_quantity import QuantityCalculator
+from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
+from decimal import Decimal
+from functions.calculate_max_buy_sell_quantity import QuantityCalculator
 
 
 # Load environment variables
@@ -243,7 +243,7 @@ class BinanceTraderBot:
         try:
             self.updateAllData()
 
-            print(f'\n -----------------------------') 
+            print(f'\n-----------------------------')
             print(f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}') # Adiciona o horário atual
             print(f'Posição atual: {"Comprado" if MaTrader.actual_trade_position else "Vendido" }')
             print(f'Balanço atual: {MaTrader.last_stock_account_balance} ({self.stock_code})')

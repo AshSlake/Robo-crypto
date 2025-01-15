@@ -1,7 +1,7 @@
 from email import message
 import pandas as pd
 import numpy as np 
-from logger import erro_logger, trade_logger, bot_logger
+from functions.logger import erro_logger, trade_logger, bot_logger
 
 
 # strategies.py
@@ -28,16 +28,20 @@ class estrategies:
         else:
             raise ValueError("Preço de entrada não definido. Certifique-se de registrar o preço de entrada ao executar uma compra.")
 
-     def calculate_rsi(self, period=14):
-        delta = self.stock_data['close_price'].diff()
-        gain = delta.mask(delta < 0, 0)
-        loss = -delta.mask(delta > 0, 0)
+     def calculate_rsi(self, period=20):
+      delta = self.stock_data['close_price'].diff()
+      gain = delta.mask(delta < 0, 0)
+      loss = -delta.mask(delta > 0, 0)
 
-        avg_gain = gain.rolling(window=period, min_periods=period).mean()
-        avg_loss = loss.rolling(window=period, min_periods=period).mean()
+      avg_gain = gain.rolling(window=period, min_periods=period).mean()
+      avg_loss = loss.rolling(window=period, min_periods=period).mean()
 
-        rs = avg_gain / avg_loss
-        self.stock_data['rsi'] = 100 - (100 / (1 + rs))
+      rs = avg_gain / avg_loss
+
+      # Trata a divisão por zero (e valores infinitos)
+      rs = rs.replace([np.inf, -np.inf], np.nan).fillna(0) # Substitui infinito por NaN e NaN por 0.
+
+      self.stock_data['rsi'] = 100 - (100 / (1 + rs))
 
      def check_stop_loss(self, current_price, entry_price, stop_loss_percentage):
          return current_price <= entry_price * (1 - stop_loss_percentage)
@@ -183,6 +187,9 @@ class estrategies:
 
      def getMovingAverageVergence(self, fast_window=7, slow_window=40, volatility_factor=0.7):
        try:
+
+        rsi_oversold = 30  # Define o nível de sobrevenda do RSI
+        hysteresis = 0.001 # Define a histerese
         
         self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
         self.stock_data['ma_slow'] = self.stock_data['close_price'].rolling(window=slow_window).mean()
@@ -191,6 +198,9 @@ class estrategies:
         last_ma_slow = self.stock_data['ma_slow'].iloc[-1]
         prev_ma_slow = self.stock_data['ma_slow'].iloc[-2]
         prev_ma_fast = self.stock_data['ma_fast'].iloc[-2]
+
+        self.calculate_rsi(period = 20)  # Calcula o RSI com o período desejado
+        last_rsi = self.stock_data['rsi'].iloc[-1]  # Obtém o último valor do RSI
 
         last_volatility = self.stock_data['volatility'].iloc[-1]
         volatility = self.stock_data['volatility'][len(self.stock_data) - slow_window:].mean()  # Média da volatilidade dos últimos n valores
@@ -201,11 +211,13 @@ class estrategies:
         volatility_by_purshase = volatility * volatility_factor
 
         if current_difference > volatility * volatility_factor and last_volatility < volatility:
-                if last_ma_fast > last_ma_slow and fast_gradient > slow_gradient:
-                    ma_trade_decision = True
+            if last_ma_fast > last_ma_slow + hysteresis and fast_gradient > slow_gradient:
+                ma_trade_decision = True  # Sinal de compra
+            else: 
+                ma_trade_decision = False # Sinal de venda se as condições de compra não forem atendidas
 
-        elif last_ma_fast < last_ma_slow:
-            ma_trade_decision = False
+        elif last_ma_fast < last_ma_slow - hysteresis or last_rsi < rsi_oversold:  # Venda se a média rápida cruzar abaixo da lenta
+            ma_trade_decision = False # Sinal de venda
 
         print('-----')
         print(f'Estratégia executada: Moving Average com Volatilidade + Gradiente')

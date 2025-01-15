@@ -1,6 +1,6 @@
 import os
 from decimal import Decimal, ROUND_DOWN , ROUND_UP
-from logger import bot_logger, erro_logger
+from functions.logger import bot_logger, erro_logger
 from binance.exceptions import BinanceAPIException
 
 class QuantityCalculator:
