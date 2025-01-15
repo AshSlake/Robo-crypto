@@ -8,7 +8,7 @@ import threading
 from dotenv import load_dotenv
 from binance.client import Client
 from binance.enums import *
-from binance.exceptions import BinanceAPIException
+from binance.exceptions import BinanceAPIException, BinanceRequestException
 import estrategias.TradingStrategies as TradingStrategies
 from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
 from decimal import Decimal
@@ -242,7 +242,7 @@ class BinanceTraderBot:
     def execute(self):
         try:
             self.updateAllData()
-
+            # Obtém dados do símbolo
             print(f'\n-----------------------------')
             print(f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}') # Adiciona o horário atual
             print(f'Posição atual: {"Comprado" if MaTrader.actual_trade_position else "Vendido" }')
@@ -261,7 +261,7 @@ class BinanceTraderBot:
             # Usa getActualTradePositionForBinance para obter a posição atual do trade
             self.actual_trade_position = self.getActualTradePositionForBinance()
 
-            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergence(self, fast_window=7, slow_window=40,volatility_factor = 0.3)
+            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergence(self, fast_window=7, slow_window = 40,volatility_factor = 0.3)
 
             if ma_trade_decision and not self.actual_trade_position:
                 self.execute_trade(SIDE_BUY)
@@ -270,6 +270,11 @@ class BinanceTraderBot:
                 self.execute_trade(SIDE_SELL)
                 self.actual_trade_position = self.getActualTradePositionForBinance() # ou False, se tiver certeza da venda
 
+        except BinanceRequestException as e:  # Captura erros de requisição da Binance
+            erro_logger.error(f"Erro de requisição da Binance: {e}")
+            bot_logger.warning("Tentando reconectar à Binance em 60 segundos...")
+            time.sleep(60)  # Aguarda 60 segundos antes de tentar novamente
+ 
         except Exception as e:
             erro_logger.exception(f"Erro na execução do bot: {e}") 
 

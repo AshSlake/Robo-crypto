@@ -1,12 +1,12 @@
 from email import message
 import pandas as pd
 import numpy as np 
-from functions.logger import erro_logger, trade_logger, bot_logger
+from functions.logger import erro_logger, bot_logger
 
 
 # strategies.py
 class estrategies:
-     def __init__(self, stock_data, volume_threshold=1.5, rsi_period=14, rsi_upper=70, rsi_lower=30, stop_loss=0.05, stop_gain=0.10, operation_code = None, actual_trade_position = None):
+     def __init__(self, stock_data, volume_threshold=1.5, rsi_period=20, rsi_upper=70, rsi_lower=30, stop_loss=0.05, stop_gain=0.10, operation_code = None, actual_trade_position = None):
         self.stock_data = stock_data
         self.volume_threshold = volume_threshold
         self.rsi_period = rsi_period
@@ -28,7 +28,7 @@ class estrategies:
         else:
             raise ValueError("Preço de entrada não definido. Certifique-se de registrar o preço de entrada ao executar uma compra.")
 
-     def calculate_rsi(self, period=20):
+     def calculate_rsi(self, period= 20):
       delta = self.stock_data['close_price'].diff()
       gain = delta.mask(delta < 0, 0)
       loss = -delta.mask(delta > 0, 0)
@@ -63,7 +63,7 @@ class estrategies:
       avg_volume = self.stock_data['volume_mean'].iloc[-1]
 
       # Calcula o RSI
-      self.calculatex_rsi()
+      self.calculate_rsi(period= self.rsi_period)
       last_rsi = self.stock_data['rsi'].iloc[-1]
 
       # RSI Dinâmico
@@ -185,10 +185,8 @@ class estrategies:
 
         return bb_trade_decision
 
-     def getMovingAverageVergence(self, fast_window=7, slow_window=40, volatility_factor=0.7):
+     def getMovingAverageVergence(self,fast_window=7, slow_window=40, volatility_factor=0.7):
        try:
-
-        rsi_oversold = 30  # Define o nível de sobrevenda do RSI
         hysteresis = 0.001 # Define a histerese
         
         self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
@@ -199,9 +197,6 @@ class estrategies:
         prev_ma_slow = self.stock_data['ma_slow'].iloc[-2]
         prev_ma_fast = self.stock_data['ma_fast'].iloc[-2]
 
-        self.calculate_rsi(period = 20)  # Calcula o RSI com o período desejado
-        last_rsi = self.stock_data['rsi'].iloc[-1]  # Obtém o último valor do RSI
-
         last_volatility = self.stock_data['volatility'].iloc[-1]
         volatility = self.stock_data['volatility'][len(self.stock_data) - slow_window:].mean()  # Média da volatilidade dos últimos n valores
         fast_gradient = last_ma_fast - prev_ma_fast
@@ -210,25 +205,39 @@ class estrategies:
         current_difference = last_ma_fast - last_ma_slow
         volatility_by_purshase = volatility * volatility_factor
 
+        #CONDIÇÕES DE COMPRA
         if current_difference > volatility * volatility_factor and last_volatility < volatility:
+
             if last_ma_fast > last_ma_slow + hysteresis and fast_gradient > slow_gradient:
                 ma_trade_decision = True  # Sinal de compra
+
+            elif last_ma_fast > last_ma_slow + hysteresis and last_volatility > (volatility / 2) and fast_gradient > slow_gradient:
+                ma_trade_decision = True  # Sinal de compra
+
+            #VENDE SE NÃO ATENDIDAS AS CONDIÇÕES DE COMPRA
             else: 
                 ma_trade_decision = False # Sinal de venda se as condições de compra não forem atendidas
 
-        elif last_ma_fast < last_ma_slow - hysteresis or last_rsi < rsi_oversold:  # Venda se a média rápida cruzar abaixo da lenta
+        #CONDIÇÕES DE VENDA
+        elif last_ma_fast < last_ma_slow - hysteresis :  # Venda se a média rápida cruzar abaixo da lenta
             ma_trade_decision = False # Sinal de venda
+
+        elif last_ma_fast > last_ma_slow: 
+          if last_volatility > volatility :
+            if fast_gradient and slow_gradient < 0:
+              ma_trade_decision = False  # Sinal de venda    
+   
 
         print('-----')
         print(f'Estratégia executada: Moving Average com Volatilidade + Gradiente')
-        print(f'{self.operation_code}: {last_ma_fast:.3f} - Última Média Rápida \n {last_ma_slow:.3f} - Última Média Lenta')
+        print(f'{self.operation_code}:\n {last_ma_fast:.3f} - Última Média Rápida \n {last_ma_slow:.3f} - Última Média Lenta')
         print(f'Última Volatilidade: {last_volatility:.3f}')
         print(f'Média da Volatilidade: {volatility:.3f}')
         print(f'Diferença Atual das medias moveis: {current_difference:.3f}')
         print(f'volatibilidade * volatilidade_factor: {volatility_by_purshase:.3f}')
         print(f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })')
         print(f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > 0 else "Descendo" })')
-        print(f'Decisão: {"Comprar" if ma_trade_decision == True else "Vender"}')
+        print(f'Decisão: {"Comprar" if ma_trade_decision == True else "Vender" }')
         print('-----')
 
         message = (
