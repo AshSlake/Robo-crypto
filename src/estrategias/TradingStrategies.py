@@ -2,11 +2,12 @@ from email import message
 import pandas as pd
 import numpy as np 
 from functions.logger import erro_logger, bot_logger
+from functions.RsiCalculationClass import TechnicalIndicators
 
 
 # strategies.py
 class estrategies:
-     def __init__(self, stock_data, volume_threshold=1.5, rsi_period=20, rsi_upper=70, rsi_lower=30, stop_loss=0.05, stop_gain=0.10, operation_code = None, actual_trade_position = None):
+     def __init__(self, stock_data, volume_threshold=1.5, rsi_period=5, rsi_upper=70, rsi_lower=30, stop_loss=0.05, stop_gain=0.10, operation_code=None, actual_trade_position=None):
         self.stock_data = stock_data
         self.volume_threshold = volume_threshold
         self.rsi_period = rsi_period
@@ -15,122 +16,12 @@ class estrategies:
         self.stop_loss = stop_loss
         self.stop_gain = stop_gain
         self.entry_price = None
-        self.operation_code = operation_code # Adicione o código de operação
+        self.operation_code = operation_code
         self.actual_trade_position = actual_trade_position
+        self.indicators = TechnicalIndicators(stock_data)
 
-     def set_entry_price(self, price):
-        self.entry_price = price  # Define o preço de entrada
-        print(f"Preço de entrada registrado: {price:.3f}")
-
-     def get_entry_price(self):
-        if self.entry_price is not None:
-            return self.entry_price
-        else:
-            raise ValueError("Preço de entrada não definido. Certifique-se de registrar o preço de entrada ao executar uma compra.")
-
-     def calculate_rsi(self, period= 20):
-      delta = self.stock_data['close_price'].diff()
-      gain = delta.mask(delta < 0, 0)
-      loss = -delta.mask(delta > 0, 0)
-
-      avg_gain = gain.rolling(window=period, min_periods=period).mean()
-      avg_loss = loss.rolling(window=period, min_periods=period).mean()
-
-      rs = avg_gain / avg_loss
-
-      # Trata a divisão por zero (e valores infinitos)
-      rs = rs.replace([np.inf, -np.inf], np.nan).fillna(0) # Substitui infinito por NaN e NaN por 0.
-
-      self.stock_data['rsi'] = 100 - (100 / (1 + rs))
-
-     def check_stop_loss(self, current_price, entry_price, stop_loss_percentage):
-         return current_price <= entry_price * (1 - stop_loss_percentage)
-
-     def check_take_profit(self, current_price, entry_price, take_profit_percentage):
-         return current_price >= entry_price * (1 + take_profit_percentage)
-        
      def message_bot_logger_info(self, message):
          bot_logger.info(message)
-
-     def enhancedMovingAverage(self, fast_window=7, slow_window=40, volume_window=20):
-      # Calcula as Médias Móveis
-      self.stock_data['ma_fast'] = self.stock_data['close_price'].rolling(window=fast_window).mean()
-      self.stock_data['ma_slow'] = self.stock_data['close_price'].rolling(window=slow_window).mean()
-
-      # Calcula o Volume Médio
-      self.stock_data['volume_mean'] = self.stock_data['volume'].rolling(window=volume_window).mean()
-      last_volume = self.stock_data['volume'].iloc[-1]
-      avg_volume = self.stock_data['volume_mean'].iloc[-1]
-
-      # Calcula o RSI
-      self.calculate_rsi(period= self.rsi_period)
-      last_rsi = self.stock_data['rsi'].iloc[-1]
-
-      # RSI Dinâmico
-      rsi_std = self.stock_data['rsi'].rolling(window=self.rsi_period).std()
-      dynamic_rsi_upper = self.stock_data['rsi'].rolling(window=self.rsi_period).mean() + rsi_std
-      dynamic_rsi_lower = self.stock_data['rsi'].rolling(window=self.rsi_period).mean() - rsi_std
-
-      # Pega as últimas Moving Average
-      last_ma_fast = self.stock_data['ma_fast'].iloc[-1]
-      last_ma_slow = self.stock_data['ma_slow'].iloc[-1]
-
-      # Preço atual e preço de entrada
-      current_price = self.stock_data['close_price'].iloc[-1]
-      entry_price = self.get_entry_price()
-      print(f'Preço Atual: {current_price:.3f}')
-      entry_price = None
-
-      # Stop-loss e Stop-gain (se houver preço de entrada)
-      if entry_price is not None:
-       stop_loss_price = entry_price * (1 - self.stop_loss)
-       stop_gain_price = entry_price * (1 + self.stop_gain)
-      else:
-        stop_loss_price = None
-        stop_gain_price = None
-
-
-      # Lógica de decisão com filtros e gerenciamento de risco
-      ma_trade_decision = last_ma_fast > last_ma_slow  # Sinal principal (cruzamento de médias)
-      volume_confirmation = last_volume > avg_volume * self.volume_threshold
-      rsi_confirmation = last_rsi < dynamic_rsi_lower.iloc[-1] if ma_trade_decision else last_rsi > dynamic_rsi_upper.iloc[-1]
-
-
-      trade_decision = (
-      ma_trade_decision and
-      volume_confirmation and
-      rsi_confirmation and
-      (current_price > stop_loss_price if entry_price is not None else True) and  # Verifica stop-loss se houver entrada
-      (current_price < stop_gain_price if entry_price is not None else True)       # Verifica stop-gain se houver entrada
-      )
-
-      if trade_decision and not self.actual_trade_position:
-            self.set_entry_price(current_price)
-
-
-      if self.actual_trade_position:
-            if self.check_stop_loss(current_price, self.entry_price, self.stop_loss):
-                trade_decision = False  # Força a venda para acionar o stop-loss
-                self.set_entry_price(None)
-            elif self.check_take_profit(current_price, self.entry_price, self.stop_gain):
-                trade_decision = False # Força a venda para acionar o take-profit
-                self.set_entry_price(None)
-
-      # Imprime os resultados
-      print('-----')
-      print(f'Estratégia executada: Enhanced Média Móvel com Volume, RSI, Stop-Loss e Stop-Gain')
-      print(f'MA Rápida: {last_ma_fast:.3f} - MA Lenta: {last_ma_slow:.3f}')
-      print(f'Volume Atual: {last_volume:.3f} - Volume Médio: {avg_volume:.3f}')
-      print(f'RSI Atual: {last_rsi:.3f}')
-      print(f'Preço Atual: {current_price:.3f}')
-      print(f'Preço de Entrada: {entry_price:.3f}' if entry_price is not None else "Preço de Entrada não definido")
-      print(f'Stop-Loss: {stop_loss_price:.3f} - Stop-Gain: {stop_gain_price:.3f}' if stop_loss_price is not None else "Stop-Loss e Stop-Gain não definidos")
-      print(f'Confirmação de Volume: {"Sim" if volume_confirmation else "Não"}')
-      print(f'Confirmação de RSI: {"Sim" if rsi_confirmation else "Não"}')
-      print(f'Decisão de Posição: {"Comprar" if trade_decision else "Vender"}')
-      print('-----')
-      
-      return trade_decision
 
      def getMovingAverage(self, fast_window = 7, slow_window = 40):
 
@@ -185,7 +76,7 @@ class estrategies:
 
         return bb_trade_decision
 
-     def getMovingAverageVergence(self,fast_window=7, slow_window=40, volatility_factor=0.7):
+     def getMovingAverageVergenceRSI(self,fast_window=7, slow_window=40, volatility_factor=0.7):
        try:
         hysteresis = 0.001 # Define a histerese
         
@@ -196,6 +87,8 @@ class estrategies:
         last_ma_slow = self.stock_data['ma_slow'].iloc[-1]
         prev_ma_slow = self.stock_data['ma_slow'].iloc[-2]
         prev_ma_fast = self.stock_data['ma_fast'].iloc[-2]
+        self.indicators.calculate_rsi()
+        last_rsi = self.stock_data['rsi'].iloc[-1]
 
         last_volatility = self.stock_data['volatility'].iloc[-1]
         volatility = self.stock_data['volatility'][len(self.stock_data) - slow_window:].mean()  # Média da volatilidade dos últimos n valores
@@ -213,10 +106,8 @@ class estrategies:
 
             elif last_ma_fast > last_ma_slow + hysteresis and last_volatility > (volatility / 2) and fast_gradient > slow_gradient:
                 ma_trade_decision = True  # Sinal de compra
-
-            #VENDE SE NÃO ATENDIDAS AS CONDIÇÕES DE COMPRA
-            else: 
-                ma_trade_decision = False # Sinal de venda se as condições de compra não forem atendidas
+            elif current_difference > volatility * volatility_factor and last_volatility < volatility and last_rsi < self.rsi_upper:
+                ma_trade_decision = True  # Sinal de compra    
 
         #CONDIÇÕES DE VENDA
         elif last_ma_fast < last_ma_slow - hysteresis :  # Venda se a média rápida cruzar abaixo da lenta
@@ -226,15 +117,20 @@ class estrategies:
           if last_volatility > volatility :
             if fast_gradient and slow_gradient < 0:
               ma_trade_decision = False  # Sinal de venda    
+
+        elif last_rsi < self.rsi_lower:
+                if fast_gradient and slow_gradient < 0:
+                  ma_trade_decision = False # Sinal de venda    
    
 
         print('-----')
-        print(f'Estratégia executada: Moving Average com Volatilidade + Gradiente')
+        print(f'Estratégia executada: Moving Average com Volatilidade + Gradiente + RSI')
         print(f'{self.operation_code}:\n {last_ma_fast:.3f} - Última Média Rápida \n {last_ma_slow:.3f} - Última Média Lenta')
         print(f'Última Volatilidade: {last_volatility:.3f}')
         print(f'Média da Volatilidade: {volatility:.3f}')
         print(f'Diferença Atual das medias moveis: {current_difference:.3f}')
         print(f'volatibilidade * volatilidade_factor: {volatility_by_purshase:.3f}')
+        print(f'Último RSI: {last_rsi:.3f}')
         print(f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })')
         print(f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > 0 else "Descendo" })')
         print(f'Decisão: {"Comprar" if ma_trade_decision == True else "Vender" }')
@@ -246,6 +142,7 @@ class estrategies:
            f'{self.operation_code}: {last_ma_fast:.3f} - Última Média Rápida \n {last_ma_slow:.3f} - Última Média Lenta'
            f'Última Volatilidade: {last_volatility:.3f} \\ Média da Volatilidade: {volatility:.3f}'
            f'Diferença Atual: {current_difference:.3f}'
+           f'Último RSI: {last_rsi:.3f}\n'
            f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })'
            f'Gradiente lento: {slow_gradient:.3f}'
            f'Decisão: {"Comprar" if ma_trade_decision == True else "Vender"}\n'

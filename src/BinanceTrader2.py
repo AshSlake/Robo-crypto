@@ -258,10 +258,18 @@ class BinanceTraderBot:
             )
             bot_logger.info(message)
 
+            # Cria uma instância da classe `estrategies`
+            estrategias = TradingStrategies.estrategies(
+            stock_data=self.stock_data,
+            operation_code=self.stock_code,  # Passa o código da operação
+            actual_trade_position=self.actual_trade_position
+        )
+
             # Usa getActualTradePositionForBinance para obter a posição atual do trade
             self.actual_trade_position = self.getActualTradePositionForBinance()
 
-            ma_trade_decision = TradingStrategies.estrategies.getMovingAverageVergence(self, fast_window=7, slow_window = 40,volatility_factor = 0.3)
+            ma_trade_decision = estrategias.getMovingAverageVergenceRSI(fast_window=7, slow_window=40, volatility_factor=0.3)
+
 
             if ma_trade_decision and not self.actual_trade_position:
                 self.execute_trade(SIDE_BUY)
