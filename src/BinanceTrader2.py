@@ -11,7 +11,7 @@ from binance.enums import *
 from binance.exceptions import BinanceAPIException, BinanceRequestException
 import estrategias.TradingStrategies as TradingStrategies
 from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
-from decimal import Decimal
+from decimal import ROUND_DOWN, Decimal
 from functions.calculate_max_buy_sell_quantity import QuantityCalculator
 
 
@@ -229,30 +229,35 @@ class BinanceTraderBot:
                 )
 
             elif side == SIDE_SELL:
+                # Obtem o saldo disponível do ativo
                 available_balance = Decimal(self.getLastStockAccountBalance())
 
-                quantity = self.quantity_calculator.calculate_max_sell_quantity(
-                    symbol_info, available_balance, current_price
-                )
+                # Arredonda available_balance para baixo de acordo com step_size
+                quantity = (available_balance / step_size).quantize(
+                    1, rounding=ROUND_DOWN
+                ) * step_size
 
-                # Arredonda para baixo para o step_size mais próximo
-                quantity = (quantity // step_size) * step_size
+                # Verifica se atende ao requisito mínimo
+                if quantity * current_price < min_notional:
+                    erro_logger.error(
+                        f"Valor da venda abaixo do mínimo permitido ({min_notional:.8f}). Saldo disponível: {available_balance}, current_price: {current_price} quantity: {quantity}"
+                    )
+                    erro_logger.error(f"iniciando correção do valor da venda")
 
-                # Garante que a quantidade seja maior ou igual ao mínimo
-                quantity = max(quantity, min_quantity)
-
-                if quantity < min_quantity:
-                    raise ValueError(
-                        f"Quantidade de venda menor que o mínimo permitido: {min_quantity}"
+                    quantity = self.quantity_calculator.calculate_max_sell_quantity(
+                        symbol_info, available_balance, current_price
                     )
 
-                notional_value = quantity * current_price
-                if notional_value < min_notional:
-                    raise ValueError(
-                        f"Valor nominal da venda ({notional_value:.8f}) é menor que o mínimo permitido ({min_notional:.8f})."
+                    # Arredonda para baixo para o step_size mais próximo
+                    quantity = (quantity // step_size) * step_size
+
+                    # Garante que a quantidade seja maior ou igual ao mínimo
+                    quantity = max(quantity, min_quantity)
+                    trade_logger.info(
+                        f"Corrigindo ordem de VENDA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}"
                     )
 
-                bot_logger.info(
+                trade_logger.info(
                     f"Executando ordem de VENDA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}"
                 )
                 order = self.client_binance.create_order(

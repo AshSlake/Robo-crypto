@@ -112,9 +112,11 @@ class estrategies:
     ):
         try:
             hysteresis = 0.001  # Define a histerese
-            ma_trade_decision = (
-                False  # Inicialize como False (Sinal de venda por padrão)
+            growth_threshold = 2.0  # Detectar crescimento quando o gradiente é duas vezes maior que o valor anterior
+            correction_threshold = (
+                0.3  # Detectar correção quando o gradiente diminui pelo menos 0.3
             )
+
             self.stock_data["ma_fast"] = (
                 self.stock_data["close_price"].rolling(window=fast_window).mean()
             )
@@ -152,6 +154,10 @@ class estrategies:
 
             current_difference = last_ma_fast - last_ma_slow
             volatility_by_purshase = volatility * volatility_factor
+
+            # Calcula a diferença do gradiente rápido e lento
+            fast_gradient_diff = last_ma_fast - prev_ma_fast
+            slow_gradient_diff = last_ma_slow - prev_ma_slow
 
             # CONDIÇÕES DE COMPRA
             if (
@@ -194,6 +200,16 @@ class estrategies:
                     "Compra: Diferença atual maior que volatilidade ajustada, última volatilidade maior, gradiente rápido maior que o lento, e RSI acima do limite inferior."
                 )
 
+            elif (
+                volatility > last_volatility
+                and last_rsi > 60
+                and fast_gradient > slow_gradient
+            ):
+                ma_trade_decision = True  # Sinal de compra
+                print(
+                    "Compra: Volatilidade anterior maior que a atual, RSI acima de 60%, e gradiente rápido maior que o lento."
+                )
+
             # CONDIÇÕES DE VENDA
             elif last_ma_fast < last_ma_slow - hysteresis:
                 ma_trade_decision = False  # Sinal de venda
@@ -215,6 +231,26 @@ class estrategies:
                     print(
                         "Venda: RSI abaixo do limite inferior e gradiente rápido menor que o lento."
                     )
+
+            # Detectar crescimento rápido no gradiente rápido
+            elif fast_gradient_diff > growth_threshold * prev_ma_fast:
+                print(
+                    f"Crescimento Rápido Detectado: O gradiente rápido aumentou significativamente para {fast_gradient_diff}."
+                )
+                # Após o crescimento rápido, verificar se está começando a corrigir
+                if fast_gradient < prev_ma_fast - correction_threshold:
+                    ma_trade_decision = False  # Sinal de venda ou alerta
+                    print(
+                        f"Correção Detectada: O gradiente rápido começou a corrigir, caindo para {fast_gradient}."
+                    )
+                else:
+                    print(
+                        "Espera: O gradiente rápido ainda está subindo ou não começou a corrigir significativamente."
+                    )
+            else:
+                print(
+                    "Sem Crescimento Rápido: O gradiente rápido não cresceu significativamente."
+                )
 
             print("-----")
             print(
