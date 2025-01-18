@@ -51,6 +51,7 @@ server_thread.start()
 # Binance Trading Bot Class
 class BinanceTraderBot:
     last_trade_decision: bool = False
+    last_profit = None  # Adiciona um atributo para armazenar o lucro
 
     def __init__(
         self,
@@ -162,6 +163,31 @@ class BinanceTraderBot:
             .dt.tz_convert("America/Sao_Paulo")
         )
         return prices
+
+    def calculate_profit(self, entry_price, quantity, current_price):
+        """Calcula o lucro ou prejuízo de uma posição.
+
+        Args:
+            entry_price (Decimal): Preço de entrada da posição.
+            quantity (Decimal): Quantidade do ativo.
+            current_price (Decimal): Preço atual do ativo.
+
+        Returns:
+            Decimal: Lucro (positivo) ou prejuízo (negativo) em USDT.  Retorna None se entry_price for None
+        """
+        if entry_price is None:
+            return None
+        profit_per_unit = current_price - entry_price
+        total_profit = profit_per_unit * quantity
+        return total_profit
+
+    def log_profit(self, entry_price, quantity, current_price):
+        profit = self.calculate_profit(entry_price, quantity, current_price)
+        if profit is not None:
+            symbol = "+" if profit >= 0 else "-"
+            bot_logger.info(
+                f"Lucro/Prejuízo da operação: {symbol}{abs(profit):.8f} USDT"
+            )
 
     def execute_trade(self, side):
         quantity = None  # Inicializa quantity como None
@@ -279,6 +305,22 @@ class BinanceTraderBot:
                 )
                 bot_logger.info(log_message)
                 self.actual_trade_position = True if side == SIDE_BUY else False
+
+                if self.actual_trade_position == True:
+                    self.entry_price = Decimal(order["fills"][0]["price"])
+                    self.purchased_quantity = Decimal(order["executedQty"])
+                else:
+                    current_price = Decimal(
+                        self.client_binance.get_symbol_ticker(
+                            symbol=self.operation_code
+                        )["price"]
+                    )
+                profit = self.calculate_profit(
+                    self.entry_price, self.purchased_quantity, current_price
+                )
+                self.last_profit = profit  # Armazena o lucro
+                self.entry_price = None  # Reseta o entry_price
+                self.purchased_quantity = None
                 self.updateAllData()
 
             elif order["status"] == "PARTIALLY_FILLED":
@@ -329,6 +371,8 @@ class BinanceTraderBot:
             print(
                 f"Balanço atual: {MaTrader.last_stock_account_balance} ({self.stock_code})"
             )
+            if self.last_profit is not None:  # Exibe apenas se houver lucro registrado.
+                print(f"Lucro da última venda: {self.last_profit:.8f} USDT")
             print(f"-----------------------------\n")
 
             message = (
@@ -338,7 +382,15 @@ class BinanceTraderBot:
                 f"Balanço atual: {self.last_stock_account_balance} ({self.stock_code})\n"
                 f"-----------------------------\n"
             )
+            if self.last_profit is not None:
+                message += f"Lucro da última venda: {self.last_profit:.8f} USDT\n"
+            message += f"-----------------------------\n"
             bot_logger.info(message)
+
+            if self.last_profit is not None:
+                symbol = "+" if self.last_profit >= 0 else "-"
+                message += f"Lucro/Prejuízo da última operação: {symbol}{abs(self.last_profit):.8f} USDT\n"
+                self.last_profit = None  # Reseta o lucro após exibi-lo
 
             # Usa getActualTradePositionForBinance para obter a posição atual do trade
             self.actual_trade_position = self.getActualTradePositionForBinance()
