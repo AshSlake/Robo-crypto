@@ -218,11 +218,14 @@ class estrategies:
                 )
 
             elif last_ma_fast > last_ma_slow:
-                if last_volatility > volatility:
-                    if fast_gradient < slow_gradient:
+                if last_volatility > volatility or last_volatility < volatility:
+                    if (
+                        fast_gradient < slow_gradient
+                        and last_rsi < self.rsi_lower + hysteresis
+                    ):
                         ma_trade_decision = False  # Sinal de venda
                         print(
-                            "Venda: MA rápida maior que a lenta, mas a volatilidade anterior é maior que a atual, e o gradiente rápido menor que o lento."
+                            "Venda: MA rápida maior que a lenta, mas as volatibilidades estão uma maior que a outra, sendo que o gradiente rápido é menor que o lento."
                         )
 
             elif last_rsi < self.rsi_lower:
@@ -276,13 +279,15 @@ class estrategies:
             message = (
                 f"{'---------------'}\n"
                 f"Estratégia executada: Moving Average com Volatilidade + Gradiente\n"
-                f"{self.operation_code}: {last_ma_fast:.3f} - Última Média Rápida \n {last_ma_slow:.3f} - Última Média Lenta"
-                f"Última Volatilidade: {last_volatility:.3f} \\ Média da Volatilidade: {volatility:.3f}"
-                f"Diferença Atual: {current_difference:.3f}"
-                f"Último RSI: {last_rsi:.3f}\n"
-                f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })'
-                f"Gradiente lento: {slow_gradient:.3f}"
-                f'Decisão: {"Comprar" if ma_trade_decision == True else "Vender"}\n'
+                f"{self.operation_code}:\n"
+                f"{last_ma_fast:.3f} - Ultima Media Rapida \n{last_ma_slow:.3f} - Ultima Media Lenta\n"
+                f"Ultima Volatilidade: {last_volatility:.3f}\n"
+                f"Media da Volatilidade: {volatility:.3f}\n"
+                f"Diferenca Atual: {current_difference:.3f}\n"
+                f"Ultimo RSI: {last_rsi:.3f}\n"
+                f'Gradiente rapido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })\n'
+                f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > 0 else "Descendo" })\n'
+                f'Decisao: {"Comprar" if ma_trade_decision == True else "Vender"}\n'
                 f"{'---------------'}\n"
             )
             bot_logger.info(message)

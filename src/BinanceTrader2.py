@@ -51,6 +51,7 @@ server_thread.start()
 # Binance Trading Bot Class
 class BinanceTraderBot:
     last_trade_decision: bool = False
+    last_profit = None
 
     def __init__(
         self,
@@ -163,6 +164,31 @@ class BinanceTraderBot:
         )
         return prices
 
+    def calculate_profit(self, entry_price, quantity, current_price):
+        """Calcula o lucro ou prejuízo de uma posição.
+
+        Args:
+            entry_price (Decimal): Preço de entrada da posição.
+            quantity (Decimal): Quantidade do ativo.
+            current_price (Decimal): Preço atual do ativo.
+
+        Returns:
+            Decimal: Lucro (positivo) ou prejuízo (negativo) em USDT.  Retorna None se entry_price for None
+        """
+        if entry_price is None:
+            return None
+        profit_per_unit = current_price - entry_price
+        total_profit = profit_per_unit * quantity
+        return total_profit
+
+    def log_profit(self, entry_price, quantity, current_price):
+        profit = self.calculate_profit(entry_price, quantity, current_price)
+        if profit is not None:
+            symbol = "+" if profit >= 0 else "-"
+            bot_logger.info(
+                f"Lucro/Prejuízo da operação: {symbol}{abs(profit):.8f} USDT"
+            )
+
     def execute_trade(self, side):
         quantity = None  # Inicializa quantity como None
         try:
@@ -217,10 +243,6 @@ class BinanceTraderBot:
                     raise ValueError(
                         f"Quantidade de compra menor que o mínimo permitido: {min_quantity}"
                     )
-
-                trade_logger.info(
-                    f"Executando ordem de COMPRA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}"
-                )
                 order = self.client_binance.create_order(
                     symbol=self.operation_code,
                     side=SIDE_BUY,
@@ -256,10 +278,6 @@ class BinanceTraderBot:
                     trade_logger.info(
                         f"Corrigindo ordem de VENDA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}"
                     )
-
-                trade_logger.info(
-                    f"Executando ordem de VENDA: {self.operation_code}, Quantidade: {quantity}, Preço: {current_price}"
-                )
                 order = self.client_binance.create_order(
                     symbol=self.operation_code,
                     side=SIDE_SELL,
@@ -271,6 +289,7 @@ class BinanceTraderBot:
                 log_message = (
                     createLogOrder(order) if createLogOrder else "No log message"
                 )
+                bot_logger.info(log_message)
                 trade_logger.info(log_message)
 
             if order["status"] == "FILLED":
@@ -278,6 +297,7 @@ class BinanceTraderBot:
                     createLogOrder(order) if createLogOrder else "No log message"
                 )
                 bot_logger.info(log_message)
+                trade_logger.info(log_message)
                 self.actual_trade_position = True if side == SIDE_BUY else False
                 self.updateAllData()
 
@@ -287,6 +307,21 @@ class BinanceTraderBot:
                 )
                 self.actual_trade_position = True if side == SIDE_BUY else False
                 self.traded_quantity = float(order["executedQty"])
+                if self.actual_trade_position == True:
+                    self.entry_price = Decimal(order["fills"][0]["price"])
+                    self.purchased_quantity = Decimal(order["executedQty"])
+                else:
+                    current_price = Decimal(
+                        self.client_binance.get_symbol_ticker(
+                            symbol=self.operation_code
+                        )["price"]
+                    )
+                profit = self.calculate_profit(
+                    self.entry_price, self.purchased_quantity, current_price
+                )
+                self.last_profit = profit  # Armazena o lucro
+                self.entry_price = None  # Reseta o entry_price
+                self.purchased_quantity = None
                 self.updateAllData()
 
             return order
@@ -329,15 +364,20 @@ class BinanceTraderBot:
             print(
                 f"Balanço atual: {MaTrader.last_stock_account_balance} ({self.stock_code})"
             )
+            if self.last_profit is not None:  # Exibe apenas se houver lucro registrado.
+                print(f"Lucro da última venda: {self.last_profit:.8f} USDT")
             print(f"-----------------------------\n")
 
             message = (
-                f"\n-----------------------------"
+                f"-----------------------------\n"
                 f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n'
                 f'Posição atual: {"Comprado" if self.actual_trade_position else "Vendido"}\n'
                 f"Balanço atual: {self.last_stock_account_balance} ({self.stock_code})\n"
                 f"-----------------------------\n"
             )
+            if self.last_profit is not None:
+                message += f"Lucro da última venda: {self.last_profit:.8f} USDT\n"
+            message += f"-----------------------------\n"
             bot_logger.info(message)
 
             # Usa getActualTradePositionForBinance para obter a posição atual do trade
@@ -369,9 +409,6 @@ class BinanceTraderBot:
             erro_logger.error(f"Erro de requisição da Binance: {e}")
             bot_logger.warning("Tentando reconectar à Binance em 60 segundos...")
             time.sleep(60)  # Aguarda 60 segundos antes de tentar novamente
-
-        except Exception as e:
-            erro_logger.exception(f"Erro na execução do bot: {e}")
 
 
 # Main execution loop
