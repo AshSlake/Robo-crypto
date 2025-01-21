@@ -1,18 +1,17 @@
-from locale import currency
 import logging
 from datetime import datetime
 import os
-from logging.handlers import RotatingFileHandler
+from logging.handlers import TimedRotatingFileHandler
 
-# Cria o diretório 'logs' se ele não existir
-log_dir = "logs"  # Diretório relativo ao script
+# Configuração do diretório de logs
+log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
 
 # Logger para erros
 erro_logger = logging.getLogger("erros")
 erro_logger.setLevel(logging.ERROR)
-erro_handler = RotatingFileHandler(
-    os.path.join(log_dir, "erros.log"), maxBytes=5 * 1024 * 1024, backupCount=5
+erro_handler = TimedRotatingFileHandler(
+    os.path.join(log_dir, "erros.log"), when="midnight", interval=1, backupCount=7
 )
 erro_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 erro_handler.setFormatter(erro_formatter)
@@ -21,8 +20,8 @@ erro_logger.addHandler(erro_handler)
 # Logger para trades/ordens
 trade_logger = logging.getLogger("trades")
 trade_logger.setLevel(logging.INFO)
-trade_handler = RotatingFileHandler(
-    os.path.join(log_dir, "trades.log"), maxBytes=10 * 1024 * 1024, backupCount=3
+trade_handler = TimedRotatingFileHandler(
+    os.path.join(log_dir, "trades.log"), when="midnight", interval=1, backupCount=7
 )
 trade_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 trade_handler.setFormatter(trade_formatter)
@@ -31,8 +30,8 @@ trade_logger.addHandler(trade_handler)
 # Logger para mensagens gerais do bot
 bot_logger = logging.getLogger("bot")
 bot_logger.setLevel(logging.INFO)
-bot_handler = RotatingFileHandler(
-    os.path.join(log_dir, "bot.log"), maxBytes=5 * 1024 * 1024, backupCount=5
+bot_handler = TimedRotatingFileHandler(
+    os.path.join(log_dir, "bot.log"), when="midnight", interval=1, backupCount=7
 )
 bot_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 bot_handler.setFormatter(bot_formatter)
@@ -44,12 +43,12 @@ def createLogOrder(order):
         # Extraindo as informações necessárias
         side = order["side"]
         type = order["type"]
-        quantity = order["executedQty"]
+        quantity = float(order["executedQty"])
         asset = order["symbol"]
-        price_per_unit = order["fills"][0]["price"]
+        price_per_unit = float(order["fills"][0]["price"])
         currency = order["cummulativeQuoteQty"]
         timestamp = order["transactTime"]
-        total_value = order["cummulativeQuoteQty"]
+        total_value = float(order["cummulativeQuoteQty"])
 
         datetime_transact = datetime.utcfromtimestamp(timestamp / 1000).strftime(
             "%H:%M:%S - %Y-%m-%d"
@@ -61,10 +60,10 @@ def createLogOrder(order):
             "ORDEM EXECUTADA:\n"
             f"Side: {side}\n"
             f"Ativo: {asset}\n"
-            f"Quantidade: {quantity}\n"
-            f"Valor no momento: {price_per_unit}\n"
+            f"Quantidade: {quantity:.4f}\n"
+            f"Valor no momento: {price_per_unit:.2f}\n"
             f"Moeda: {currency}\n"
-            f"Valor em {currency}: {total_value}\n"
+            f"Valor em {currency}: {total_value:.2f}\n"
             f"Type: {type}\n"
             f"Data/Hora: {datetime_transact}\n"
             "Complete order:\n"
@@ -72,27 +71,14 @@ def createLogOrder(order):
             "\n  ____________________________________________\n"
         )
 
-        # Criando as mensagens para print
-        print_message = (
-            "\n  ____________________________________________\n"
-            "ORDEM EXECUTADA:\n"
-            f"Side: {side}\n"
-            f"Ativo: {asset}\n"
-            f"Quantidade: {quantity}\n"
-            f"Valor no momento: {price_per_unit}\n"
-            f"Moeda: {currency}\n"
-            f"Valor em {currency}: {total_value}\n"
-            f"Type: {type}\n"
-            f"Data/Hora: {datetime_transact}\n"
-            f"Complete order:\n"
-            f"{order}"
-            "\n  ____________________________________________\n"
-        )
-
-        # Exibindo no console
-        print(print_message)
-        bot_logger.info(print_message)
+        # Exibindo no console e gravando logs
+        print(log_message)
+        bot_logger.info(log_message)
         trade_logger.info(log_message)
 
     except Exception as e:
         erro_logger.exception(f"Erro ao registrar ordem: {e}")
+
+
+# Fechar handlers ao final da execução para liberar recursos
+logging.shutdown()
