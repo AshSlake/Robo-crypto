@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 from binance.client import Client
 from binance.enums import *
 from binance.exceptions import BinanceAPIException, BinanceRequestException
+from db.neonDbConfig import create_tables
 from estrategias import getMovingAverageVergenceRSI
-import estrategias.TradingStrategies as TradingStrategies
 from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
 from decimal import ROUND_DOWN, Decimal
 from functions.calculate_max_buy_sell_quantity import QuantityCalculator
@@ -246,6 +246,7 @@ class BinanceTraderBot:
                     )
                 order = self.client_binance.create_order(
                     symbol=self.operation_code,
+                    stock_code=self.stock_code,
                     side=SIDE_BUY,
                     type=ORDER_TYPE_MARKET,
                     quantity=str(quantity),
@@ -282,6 +283,7 @@ class BinanceTraderBot:
                 order = self.client_binance.create_order(
                     symbol=self.operation_code,
                     side=SIDE_SELL,
+                    stock_code=self.stock_code,
                     type=ORDER_TYPE_MARKET,
                     quantity=str(quantity),
                 )
@@ -423,6 +425,8 @@ class BinanceTraderBot:
             time.sleep(60)  # Aguarda 60 segundos antes de tentar novamente
 
 
+# Cria as tabelas do banco de dados
+create_tables()
 # Main execution loop
 MaTrader = BinanceTraderBot(
     STOCK_CODE, OPERATION_CODE, TRADED_QUANTITY, 100, CANDLE_PERIOD

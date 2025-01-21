@@ -2,6 +2,8 @@ import logging
 from datetime import datetime
 import os
 from logging.handlers import TimedRotatingFileHandler
+from binance.enums import SIDE_BUY
+from db.neonDbConfig import log_trade, update_trade_state
 
 # Configuração do diretório de logs
 log_dir = "logs"
@@ -42,6 +44,7 @@ def createLogOrder(order):
     try:
         # Extraindo as informações necessárias
         side = order["side"]
+        stock_code = ["stock_code"]
         type = order["type"]
         quantity = float(order["executedQty"])
         asset = order["symbol"]
@@ -75,6 +78,25 @@ def createLogOrder(order):
         print(log_message)
         bot_logger.info(log_message)
         trade_logger.info(log_message)
+
+        # --- Integração com o banco de dados ---
+        log_trade(
+            asset=order["symbol"],
+            quantity=float(order["executedQty"]),
+            price=float(order["fills"][0]["price"]),
+            order_type=order["side"],  # SIDE_BUY ou SIDE_SELL
+            status=order["status"],  # ex: "FILLED"
+        )
+
+        if (
+            order["status"] == "FILLED" or order["status"] == "PARTIALLY_FILLED"
+        ):  # Lógica para ambos os status
+            update_trade_state(
+                stock_code, order["side"] == SIDE_BUY
+            )  # True se comprou, False se vendeu
+
+    except Exception as e:
+        erro_logger.exception(f"Erro ao registrar ordem: {e}")
 
     except Exception as e:
         erro_logger.exception(f"Erro ao registrar ordem: {e}")
