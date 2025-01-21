@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from binance.client import Client
 from binance.enums import *
 from binance.exceptions import BinanceAPIException, BinanceRequestException
+from estrategias import getMovingAverageVergenceRSI
 import estrategias.TradingStrategies as TradingStrategies
 from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
 from decimal import ROUND_DOWN, Decimal
@@ -25,7 +26,7 @@ secret_key = os.getenv("BINANCE_SECRET_KEY")
 STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 0.56
+TRADED_QUANTITY = 0.48
 
 # Flask app for serving logs
 app = Flask(__name__)
@@ -285,20 +286,25 @@ class BinanceTraderBot:
                     quantity=str(quantity),
                 )
 
-            if order and order["status"] in ("FILLED", "PARTIALLY_FILLED"):
-                log_message = (
-                    createLogOrder(order) if createLogOrder else "No log message"
-                )
-                bot_logger.info(log_message)
-                trade_logger.info(log_message)
-
             if order["status"] == "FILLED":
-                log_message = (
-                    createLogOrder(order) if createLogOrder else "No log message"
-                )
-                bot_logger.info(log_message)
-                trade_logger.info(log_message)
+                createLogOrder(order) if createLogOrder else "No log message"
                 self.actual_trade_position = True if side == SIDE_BUY else False
+                self.traded_quantity = float(order["executedQty"])
+                if self.actual_trade_position == True:
+                    self.entry_price = Decimal(order["fills"][0]["price"])
+                    self.purchased_quantity = Decimal(order["executedQty"])
+                else:
+                    current_price = Decimal(
+                        self.client_binance.get_symbol_ticker(
+                            symbol=self.operation_code
+                        )["price"]
+                    )
+                profit = self.calculate_profit(
+                    self.entry_price, self.purchased_quantity, current_price
+                )
+                self.last_profit = profit  # Armazena o lucro
+                self.entry_price = None  # Reseta o entry_price
+                self.purchased_quantity = None
                 self.updateAllData()
 
             elif order["status"] == "PARTIALLY_FILLED":
@@ -384,26 +390,32 @@ class BinanceTraderBot:
             self.actual_trade_position = self.getActualTradePositionForBinance()
 
             # Cria uma instância da classe `estrategies`
-            estrategias = TradingStrategies.estrategies(
+            estrategias = getMovingAverageVergenceRSI.getMovingAverageVergenceRSI(
                 stock_data=self.stock_data,
                 operation_code=self.stock_code,  # Passa o código da operação
                 actual_trade_position=self.actual_trade_position,
             )
 
             ma_trade_decision = estrategias.getMovingAverageVergenceRSI(
-                fast_window=7, slow_window=40, volatility_factor=0.3
+                fast_window=7,
+                slow_window=40,
+                volatility_factor=0.3,
+                initial_purchase_price=self.traded_quantity,
+                current_price=Decimal(self.getLastStockAccountBalance()),
             )
 
-            if ma_trade_decision and not self.actual_trade_position:
-                self.execute_trade(SIDE_BUY)
-                self.actual_trade_position = (
-                    self.getActualTradePositionForBinance()
-                )  # ou True, se tiver certeza da compra
-            elif not ma_trade_decision and self.actual_trade_position:
-                self.execute_trade(SIDE_SELL)
-                self.actual_trade_position = (
-                    self.getActualTradePositionForBinance()
-                )  # ou False, se tiver certeza da venda
+            # Executa a ordem de compra/venda se a decisão da estratégia for verdadeira
+            if ma_trade_decision is not None:
+                if ma_trade_decision and not self.actual_trade_position:
+                    self.execute_trade(SIDE_BUY)
+                    self.actual_trade_position = (
+                        self.getActualTradePositionForBinance()
+                    )  # ou True, se tiver certeza da compra
+                elif not ma_trade_decision and self.actual_trade_position:
+                    self.execute_trade(SIDE_SELL)
+                    self.actual_trade_position = (
+                        self.getActualTradePositionForBinance()
+                    )  # ou False, se tiver certeza da venda
 
         except BinanceRequestException as e:  # Captura erros de requisição da Binance
             erro_logger.error(f"Erro de requisição da Binance: {e}")
