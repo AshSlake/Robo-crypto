@@ -1,19 +1,36 @@
+from decimal import Decimal
 import logging
 from datetime import datetime
 import os
 from logging.handlers import TimedRotatingFileHandler
 from binance.enums import SIDE_BUY
-from db.neonDbConfig import log_trade, update_trade_state
+from db.neonDbConfig import (
+    calculate_profit_loss,
+    get_account_balance,
+    log_trade,
+    update_account_balance,
+    update_trade_state,
+)
 
-# Configuração do diretório de logs
+# Configuração do diretório de logs principal
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
+
+# Subdiretórios para cada tipo de log
+error_log_dir = os.path.join(log_dir, "erros")
+trade_log_dir = os.path.join(log_dir, "trades")
+bot_log_dir = os.path.join(log_dir, "bot")
+
+# Criar subdiretórios se não existirem
+os.makedirs(error_log_dir, exist_ok=True)
+os.makedirs(trade_log_dir, exist_ok=True)
+os.makedirs(bot_log_dir, exist_ok=True)
 
 # Logger para erros
 erro_logger = logging.getLogger("erros")
 erro_logger.setLevel(logging.ERROR)
 erro_handler = TimedRotatingFileHandler(
-    os.path.join(log_dir, "erros.log"), when="midnight", interval=1, backupCount=7
+    os.path.join(error_log_dir, "erros.log"), when="midnight", interval=1, backupCount=7
 )
 erro_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 erro_handler.setFormatter(erro_formatter)
@@ -23,7 +40,10 @@ erro_logger.addHandler(erro_handler)
 trade_logger = logging.getLogger("trades")
 trade_logger.setLevel(logging.INFO)
 trade_handler = TimedRotatingFileHandler(
-    os.path.join(log_dir, "trades.log"), when="midnight", interval=1, backupCount=7
+    os.path.join(trade_log_dir, "trades.log"),
+    when="midnight",
+    interval=1,
+    backupCount=7,
 )
 trade_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 trade_handler.setFormatter(trade_formatter)
@@ -33,7 +53,7 @@ trade_logger.addHandler(trade_handler)
 bot_logger = logging.getLogger("bot")
 bot_logger.setLevel(logging.INFO)
 bot_handler = TimedRotatingFileHandler(
-    os.path.join(log_dir, "bot.log"), when="midnight", interval=1, backupCount=7
+    os.path.join(bot_log_dir, "bot.log"), when="midnight", interval=1, backupCount=7
 )
 bot_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 bot_handler.setFormatter(bot_formatter)
@@ -44,7 +64,7 @@ def createLogOrder(order):
     try:
         # Extraindo as informações necessárias
         side = order["side"]
-        stock_code = ["stock_code"]
+        stock_code = "SOL"
         type = order["type"]
         quantity = float(order["executedQty"])
         asset = order["symbol"]
@@ -56,6 +76,17 @@ def createLogOrder(order):
         datetime_transact = datetime.utcfromtimestamp(timestamp / 1000).strftime(
             "%H:%M:%S - %Y-%m-%d"
         )
+
+        # Recuperar o último saldo conhecido
+        last_balance = get_account_balance()
+
+        # Calcular o novo saldo
+        new_balance = calculate_profit_loss(
+            last_balance, quantity, price_per_unit, side
+        )
+
+        # Atualizar o saldo no banco de dados
+        update_account_balance(new_balance)
 
         # Criando as mensagens para log
         log_message = (

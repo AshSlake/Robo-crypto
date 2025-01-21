@@ -3,7 +3,6 @@ import time
 from typing import Self
 import pandas as pd
 from datetime import datetime
-from flask import Flask, send_file
 import threading
 from dotenv import load_dotenv
 from binance.client import Client
@@ -26,27 +25,7 @@ secret_key = os.getenv("BINANCE_SECRET_KEY")
 STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 0.48
-
-# Flask app for serving logs
-app = Flask(__name__)
-
-
-@app.route("/logs")
-def get_logs():
-    log_file_path = "C:/Users/paulo/python/Robo crypto/logs/trades.log"
-    if os.path.exists(log_file_path):
-        return send_file(log_file_path, as_attachment=True)
-    else:
-        return f"Arquivo de log não encontrado no caminho: {log_file_path}", 404
-
-
-def run_server():
-    app.run(host="0.0.0.0", port=5000)
-
-
-server_thread = threading.Thread(target=run_server)
-server_thread.start()
+TRADED_QUANTITY = 0.50
 
 
 # Binance Trading Bot Class
@@ -246,7 +225,6 @@ class BinanceTraderBot:
                     )
                 order = self.client_binance.create_order(
                     symbol=self.operation_code,
-                    stock_code=self.stock_code,
                     side=SIDE_BUY,
                     type=ORDER_TYPE_MARKET,
                     quantity=str(quantity),
@@ -283,7 +261,6 @@ class BinanceTraderBot:
                 order = self.client_binance.create_order(
                     symbol=self.operation_code,
                     side=SIDE_SELL,
-                    stock_code=self.stock_code,
                     type=ORDER_TYPE_MARKET,
                     quantity=str(quantity),
                 )
