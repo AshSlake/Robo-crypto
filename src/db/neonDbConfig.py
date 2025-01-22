@@ -61,6 +61,17 @@ def create_tables():
                     );
                 """
                 )
+
+                cur.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS Gradients  (
+                       id SERIAL PRIMARY KEY,
+                       timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                       fast_gradient REAL,
+                       slow_gradient REAL
+                    );
+                """
+                )
                 conn.commit()
                 print("Tabelas criadas/verificadas com sucesso!")
             except Exception as e:
