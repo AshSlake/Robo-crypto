@@ -78,7 +78,10 @@ def createLogOrder(order):
         )
 
         # Recuperar o último saldo conhecido
-        last_balance = get_account_balance()
+        last_balance = get_account_balance(currency)
+
+        if last_balance is None:
+            last_balance = 0.0  # Ou outro valor padrão apropriado.
 
         # Calcular o novo saldo
         new_balance = calculate_profit_loss(
@@ -86,7 +89,7 @@ def createLogOrder(order):
         )
 
         # Atualizar o saldo no banco de dados
-        update_account_balance(new_balance)
+        update_account_balance(currency, new_balance)
 
         # Criando as mensagens para log
         log_message = (
@@ -117,6 +120,7 @@ def createLogOrder(order):
             price=float(order["fills"][0]["price"]),
             order_type=order["side"],  # SIDE_BUY ou SIDE_SELL
             status=order["status"],  # ex: "FILLED"
+            balance=new_balance,  # Novo saldo calculado
         )
 
         if (

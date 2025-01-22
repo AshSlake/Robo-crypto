@@ -26,6 +26,42 @@ class getMovingAverageVergenceRSI:
         self.operation_code = operation_code
         self.actual_trade_position = actual_trade_position
         self.indicators = TechnicalIndicators(stock_data, rsi_period)
+        # Variáveis adicionais
+        self.last_fast_gradient = None
+        self.last_slow_gradient = None
+        self.prev_rsi = None
+
+    def update_and_compare_gradients(self, fast_gradient, slow_gradient):
+        """
+        Armazena os gradientes e compara com os anteriores.
+        """
+        if self.last_fast_gradient is not None and self.last_slow_gradient is not None:
+            # Comparando os gradientes anteriores com os atuais
+            if fast_gradient > self.last_fast_gradient:
+                print(
+                    f"Gradiente rápido aumentou: {fast_gradient} > {self.last_fast_gradient}"
+                )
+            elif fast_gradient < self.last_fast_gradient:
+                print(
+                    f"Gradiente rápido diminuiu: {fast_gradient} < {self.last_fast_gradient}"
+                )
+
+            if slow_gradient > self.last_slow_gradient:
+                print(
+                    f"Gradiente lento aumentou: {slow_gradient} > {self.last_slow_gradient}"
+                )
+            elif slow_gradient < self.last_slow_gradient:
+                print(
+                    f"Gradiente lento diminuiu: {slow_gradient} < {self.last_slow_gradient}"
+                )
+        else:
+            print("Primeira comparação de gradientes.")
+
+    def access_gradients(self):
+        """
+        Retorna os gradientes armazenados para comparação futura.
+        """
+        return self.last_fast_gradient, self.last_slow_gradient
 
     def getMovingAverageVergenceRSI(
         self,
@@ -38,10 +74,9 @@ class getMovingAverageVergenceRSI:
         growth_threshold=2.0,
     ):
         try:
-            hysteresis = 0.001  # Define a histerese
-            growth_threshold = 2.0  # Detectar crescimento quando o gradiente é duas vezes maior que o valor anterior
+            growth_threshold = 0.002  # Detectar crescimento quando o gradiente é duas vezes maior que o valor anterior
             correction_threshold = (
-                0.3  # Detectar correção quando o gradiente diminui pelo menos 0.3
+                0.008  # Detectar correção quando o gradiente diminui pelo menos 0.3
             )
             ma_trade_decision = None
             stop_loss_percentage = 0.05  # 5% abaixo do preço de compra
@@ -67,6 +102,7 @@ class getMovingAverageVergenceRSI:
             # Verifique se a coluna 'rsi' existe e pegue o último valor
             if "rsi" in self.stock_data:
                 last_rsi = self.stock_data["rsi"].iloc[-1]
+                self.prev_rsi = self.stock_data["rsi"].iloc[-2]
             else:
                 raise ValueError(
                     "Erro: a coluna 'rsi' não foi encontrada em 'self.stock_data' após o cálculo."
@@ -79,8 +115,15 @@ class getMovingAverageVergenceRSI:
                 len(self.stock_data) - slow_window :
             ].mean()  # Média da volatilidade dos últimos n valores
 
+            hysteresis = max(0.01, volatility * 0.1)
+
             fast_gradient = last_ma_fast - prev_ma_fast
             slow_gradient = last_ma_slow - prev_ma_slow
+            # Armazenando os valores dos gradientes para comparação futura
+            self.last_fast_gradient = fast_gradient
+            self.last_slow_gradient = slow_gradient
+
+            self.update_and_compare_gradients(fast_gradient, slow_gradient)
 
             current_difference = last_ma_fast - last_ma_slow
             volatility_by_purshase = volatility * volatility_factor
@@ -124,8 +167,9 @@ class getMovingAverageVergenceRSI:
                 )
 
             elif (
-                last_volatility > volatility
-                and last_rsi > self.rsi_upper
+                last_ma_fast > last_ma_slow + hysteresis
+                and last_volatility < volatility
+                and last_rsi > self.rsi_lower
                 and fast_gradient > (slow_gradient * 2)
             ):
                 ma_trade_decision = True  # Sinal de compra
@@ -159,37 +203,52 @@ class getMovingAverageVergenceRSI:
                     "sugerem um enfraquecimento no mercado, indicando uma possível condição de venda."
                 )
             # 4
-            # Detectar crescimento rápido no gradiente rápido
-            elif fast_gradient > growth_threshold * prev_ma_fast:
+            elif (
+                fast_gradient < self.last_fast_gradient - hysteresis
+                and last_rsi < self.prev_rsi - hysteresis
+                and last_rsi > self.rsi_lower
+            ):
+                ma_trade_decision = False  # Sinal de venda
                 print(
-                    f"Crescimento Rápido Detectado: O gradiente rápido aumentou significativamente para {fast_gradient}, "
-                    "indicando um forte movimento de alta no mercado."
+                    "Venda: O gradiente rápido diminuiu significativamente e o RSI abaixo do ultimo valor do RSI, "
+                    "indicando uma possível reversão de tendência para baixa."
                 )
-                # Após o crescimento rápido, verificar se está começando a corrigir
-                if fast_gradient < prev_ma_fast - correction_threshold:
-                    ma_trade_decision = False  # Sinal de venda ou alerta
-                    print(
-                        f"Correção Detectada: O gradiente rápido começou a corrigir, caindo para {fast_gradient}, "
-                        "indicando uma possível reversão ou ajuste no mercado."
-                    )
-                else:
-                    print(
-                        "Espera: O gradiente rápido ainda está subindo ou não começou a corrigir significativamente. Monitorar o mercado."
-                    )
 
             # 5
             # Verificar se o preço atual caiu abaixo do stop-loss
             elif current_price < stop_loss_price:
                 ma_trade_decision = False  # Sinal de venda devido ao stop-loss
                 print(
-                    f"Stop-Loss Ativado: O preço atual de {current_price:.2f} caiu abaixo do nível de stop-loss de {stop_loss_price:.2f}. "
-                    "Realizando venda para limitar as perdas."
+                    f"\n ------------------ \nStop-Loss Ativado: O preço atual de {current_price:.3f} caiu abaixo do nível de stop-loss de {stop_loss_price:.2f}. "
+                    "Realizando venda para limitar as perdas.\n ------------------ \n"
                 )
             else:
                 print(
-                    f"Stop-Loss Não Ativado: O preço atual de {current_price:.2f} está acima do nível de stop-loss de {stop_loss_price:.2f}. "
-                    "Mantendo a posição."
+                    f"\n ------------------ \nStop-Loss Não Ativado: O preço atual de {current_price:.3f} está acima do nível de stop-loss de {stop_loss_price:.2f}. "
+                    "Mantendo a posição.\n ------------------ \n"
                 )
+
+            # 6
+            # Detectar crescimento rápido no gradiente rápido
+            if fast_gradient > growth_threshold * prev_ma_fast:
+                print(
+                    f"\n ------------------ \n Crescimento Rápido Detectado: O gradiente rápido aumentou significativamente para {fast_gradient:.3f}, "
+                    "indicando um forte movimento de alta no mercado.\n ------------------ \n"
+                )
+                # Após o crescimento rápido, verificar se está começando a corrigir
+                if (
+                    fast_gradient
+                    < growth_threshold * prev_ma_fast - correction_threshold
+                ):
+                    ma_trade_decision = False  # Sinal de venda ou alerta
+                    print(
+                        f"\n ------------------ \nCorreção Detectada: O gradiente rápido começou a corrigir, caindo de: {self.last_fast_gradient:.3f} para: {fast_gradient:.3f}, "
+                        "indicando uma possível reversão ou ajuste no mercado. \n ------------------ \n"
+                    )
+                else:
+                    print(
+                        "\n ------------------ \nEspera: O gradiente rápido ainda está subindo ou não começou a corrigir significativamente. Monitorar o mercado.\n ------------------ \n"
+                    )
 
             print("-----")
             print(
@@ -203,6 +262,10 @@ class getMovingAverageVergenceRSI:
             print(f"Diferença Atual das medias moveis: {current_difference:.3f}")
             print(f"volatibilidade * volatilidade_factor: {volatility_by_purshase:.3f}")
             print(f"Último RSI: {last_rsi:.3f}")
+            print(
+                f"^indicador de tendencia de alta:\n  -gradiente rapido necessario ({growth_threshold * prev_ma_fast:.3f})\n"
+                f"  - gradiente maximo para sair da tendencia: ({ growth_threshold * prev_ma_fast - correction_threshold:.3f})"
+            )
             print(
                 f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > 0 else "Descendo" })'
             )

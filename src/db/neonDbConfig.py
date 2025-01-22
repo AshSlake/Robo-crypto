@@ -45,12 +45,9 @@ def create_tables():
                         price NUMERIC NOT NULL,
                         order_type VARCHAR(10) NOT NULL,
                         status VARCHAR(10) NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        balance NUMERIC NOT NULL DEFAULT 0
                     );
-
-                    ALTER TABLE trade_logs
-                    ADD COLUMN balance NUMERIC NOT NULL DEFAULT 0;
-
                 """
                 )
 
