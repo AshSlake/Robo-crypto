@@ -25,7 +25,7 @@ secret_key = os.getenv("BINANCE_SECRET_KEY")
 STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 0.076
+TRADED_QUANTITY = 0.073
 
 
 # Binance Trading Bot Class
@@ -45,6 +45,7 @@ class BinanceTraderBot:
         self.operation_code = operation_code
         self.traded_quantity = traded_quantity
         self.entry_price = 0.0
+        self.purchased_quantity = 0.0
         self.traded_percentage = traded_percentage
         self.candle_period = candle_period
         self.client_binance = Client(api_key, secret_key)

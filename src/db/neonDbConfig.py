@@ -234,3 +234,81 @@ def get_account_balance(currency):
                 return None
     else:
         return None
+
+
+def save_gradients_to_db_with_limit(fast_gradient, slow_gradient, limit=10):
+    conn = connect_to_db()
+    cursor = conn.cursor()
+
+    # Converter np.float64 para float
+    fast_gradient = float(fast_gradient)
+    slow_gradient = float(slow_gradient)
+
+    # Inserir o novo gradiente
+    cursor.execute(
+        """
+        INSERT INTO gradients (fast_gradient, slow_gradient, timestamp)
+        VALUES (%s, %s, NOW());
+    """,
+        (fast_gradient, slow_gradient),
+    )
+    conn.commit()
+
+    # Verificar o número de registros
+    cursor.execute("SELECT COUNT(*) FROM gradients;")
+    count = cursor.fetchone()[0]
+
+    # Se o número de registros ultrapassar o limite, deletar os mais antigos
+    if count > limit:
+        cursor.execute(
+            """
+            DELETE FROM gradients
+            WHERE id IN (
+                SELECT id FROM gradients
+                ORDER BY timestamp ASC
+                LIMIT %s
+            );
+        """,
+            (count - limit,),
+        )
+        conn.commit()
+
+
+def get_last_gradients_from_db():
+    """
+    Recupera os últimos valores de fast_gradient e slow_gradient do banco de dados.
+
+    Args:
+        conn: Objeto de conexão com o banco de dados.
+
+    Returns:
+        dict: Um dicionário contendo os valores de 'fast_gradient' e 'slow_gradient',
+              ou None se não houver registros.
+    """
+    conn = connect_to_db()
+    try:
+        with conn.cursor() as cursor:
+            # Query para obter os últimos gradientes pelo timestamp mais recente
+            query = """
+                SELECT fast_gradient, slow_gradient 
+                FROM Gradients
+                ORDER BY timestamp DESC
+                LIMIT 1 OFFSET 1
+            """
+            cursor.execute(query)
+            result = cursor.fetchone()
+
+            if result:
+                # Retorna os valores como um dicionário
+                return {
+                    "prev_fast_gradient": result[0],
+                    "prev_slow_gradient": result[1],
+                }
+            else:
+                print("Nenhum gradiente encontrado no banco de dados.")
+                return None
+        conn.close()  # Fecha a conexão com o banco de dados
+    except Exception as e:
+        print(f"Erro ao recuperar gradientes do banco de dados: {e}")
+        conn.close()  # Fecha a conexão com o banco de dados
+        return None
