@@ -1,5 +1,6 @@
+from decimal import Decimal
 import psycopg2
-from psycopg2 import sql, extras
+from psycopg2 import sql
 from datetime import datetime
 import os
 
@@ -72,6 +73,24 @@ def create_tables():
                     );
                 """
                 )
+
+                cur.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS candlestick_data (
+                       id SERIAL PRIMARY KEY,
+                       symbol VARCHAR(50),
+                       open_time TIMESTAMP,
+                       open DECIMAL(18, 8),
+                       high DECIMAL(18, 8),
+                       low DECIMAL(18, 8),
+                       close DECIMAL(18, 8),
+                       volume DECIMAL(18, 8),
+                       close_time TIMESTAMP,
+                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """
+                )
+
                 conn.commit()
                 print("Tabelas criadas/verificadas com sucesso!")
             except Exception as e:

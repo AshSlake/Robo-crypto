@@ -373,7 +373,7 @@ class BinanceTraderBot:
             # Cria uma instância da classe `estrategies`
             estrategias = getMovingAverageVergenceRSI.getMovingAverageVergenceRSI(
                 stock_data=self.stock_data,
-                operation_code=self.stock_code,  # Passa o código da operação
+                operation_code=OPERATION_CODE,  # Passa o código da operação
                 actual_trade_position=self.actual_trade_position,
             )
 
