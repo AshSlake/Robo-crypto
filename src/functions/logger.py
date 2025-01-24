@@ -60,11 +60,11 @@ bot_handler.setFormatter(bot_formatter)
 bot_logger.addHandler(bot_handler)
 
 
-def createLogOrder(order):
+def createLogOrder(order, operation_code):
     try:
         # Extraindo as informações necessárias
         side = order["side"]
-        stock_code = "SOL"
+        stock_code = operation_code
         type = order["type"]
         quantity = float(order["executedQty"])
         asset = order["symbol"]

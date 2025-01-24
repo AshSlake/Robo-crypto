@@ -6,10 +6,20 @@ from db.neonDbConfig import (
     get_last_gradients_from_db,
     save_gradients_to_db_with_limit,
 )
+
+from functions.calculate_fast_gradients import calculate_fast_gradients
+from functions.calculate_jump_threshold import calculate_jump_threshold
+from functions.calculate_moving_average import calculate_moving_average
+from functions.calculate_recent_growth_value import calculate_recent_growth_value
+from functions.detect_new_price_jump import detect_new_price_jump
+from functions.get_current_price import get_current_price
+from functions.get_recent_prices import get_recent_prices
 from functions.logger import erro_logger, bot_logger
 from functions.RsiCalculationClass import TechnicalIndicators
 from functions.CandlestickDataExtractor import CandlestickDataExtractor
 from binance.client import Client
+
+from functions.update_fast_gradients import update_fast_gradients
 
 api_key = os.getenv("BINANCE_API_KEY")
 secret_key = os.getenv("BINANCE_SECRET_KEY")
@@ -45,6 +55,11 @@ class getMovingAverageVergenceRSI:
         self.prev_rsi = None
         self.client_binance = Client(api_key, secret_key)
         self.alerta_de_crescimento_rapido = False
+        self.fast_gradients = []
+        self.current_price = None
+        self.interval = Client.KLINE_INTERVAL_15MINUTE
+        self.recent_average = None
+        self.state_after_correction = None
 
     def getMovingAverageVergenceRSI(
         self,
@@ -52,7 +67,6 @@ class getMovingAverageVergenceRSI:
         slow_window=40,
         volatility_factor=0.7,
         initial_purchase_price=100.0,
-        current_price=95.0,
         hysteresis=0.001,
         growth_threshold=2.0,
     ):
@@ -63,6 +77,7 @@ class getMovingAverageVergenceRSI:
             )
             ma_trade_decision = None
             stop_loss_percentage = 0.05  # 5% abaixo do preço de compra
+            self.current_price = get_current_price(self.operation_code)
 
             self.stock_data["ma_fast"] = (
                 self.stock_data["close_price"].rolling(window=fast_window).mean()
@@ -129,13 +144,29 @@ class getMovingAverageVergenceRSI:
             # Calcular o preço de stop-loss
             stop_loss_price = initial_purchase_price * (1 - stop_loss_percentage)
 
-            # Recuperarar dados dos candlesticks
+            # Obter dados recentes de preços
+            prices = get_recent_prices(
+                self, symbol=self.operation_code, interval=self.interval, limit=500
+            )
 
-            data_extractor = CandlestickDataExtractor(
-                self.client_binance,
-                symbol="SOLUSDT",
-                interval=Client.KLINE_INTERVAL_15MINUTE,
-                limit=500,
+            # Exemplo de como calcular os fast_gradients na estratégia
+            ma_fast_values = calculate_moving_average(self, prices, window=7)
+            fast_gradients = calculate_fast_gradients(self, ma_fast_values)
+
+            # Atualizar o buffer de gradientes rápidos
+            latest_fast_gradient = fast_gradients[-1]
+            update_fast_gradients(self, new_fast_gradient=latest_fast_gradient)
+
+            # Calcula o jump_threshold com base nos preços e médias móveis rápidas
+            jump_threshold = calculate_jump_threshold(
+                self,
+                current_price=self.current_price,
+                ma_fast_values=ma_fast_values,
+                factor=1.5,
+            )
+
+            self.recent_average = calculate_recent_growth_value(
+                self, fast_gradients, growth_threshold, prev_ma_fast
             )
 
             # CONDIÇÕES DE COMPRA
@@ -260,45 +291,79 @@ class getMovingAverageVergenceRSI:
 
             # 5
             # Verificar se o preço atual caiu abaixo do stop-loss
-            elif current_price < stop_loss_price:
+            elif self.current_price < stop_loss_price:
                 ma_trade_decision = False  # Sinal de venda devido ao stop-loss
                 print(
-                    f"\n ------------------ \nStop-Loss Ativado: O preço atual de {current_price:.3f} caiu abaixo do nível de stop-loss de {stop_loss_price:.2f}.\n "
+                    f"\n ------------------ \nStop-Loss Ativado: O preço atual de {self.current_price:.3f} caiu abaixo do nível de stop-loss de {stop_loss_price:.2f}.\n "
                     "Realizando venda para limitar as perdas.\n ------------------ \n"
                 )
                 message = (
-                    f"Stop-Loss Ativado: O preço atual de {current_price:.3f} caiu abaixo do nível de stop-loss de {stop_loss_price:.2f}. \n"
+                    f"Stop-Loss Ativado: O preço atual de {self.current_price:.3f} caiu abaixo do nível de stop-loss de {stop_loss_price:.2f}. \n"
                     f"Realizando venda para limitar as perdas.\n"
                 )
                 bot_logger.info(message)
+
             # 6
-            # Detectar crescimento rápido no gradiente rápido
-            if fast_gradient > growth_threshold * prev_ma_fast:
+            elif (
+                last_volatility < volatility
+                and last_rsi < self.rsi_lower + hysteresis
+                and fast_gradient < 0
+            ):
                 print(
-                    f"\n ------------------ \n Crescimento Rápido Detectado: O gradiente rápido aumentou significativamente para {fast_gradient:.3f}, "
-                    "indicando um forte movimento de alta no mercado.\n ------------------ \n"
+                    f"\n ------------------ \nCrescimento Rápido de baixa Detected: O gradiente rápido diminuiu significativamente, indicando uma forte tendência de baixa.\n ------------------ \n"
                 )
-                # Após o crescimento rápido, verificar se está começando a corrigir
+                message = f"Crescimento Rápido de Baixa Detected: O gradiente rápido diminuiu significativamente, indicando uma forte tendência de baixa.\n"
+                bot_logger.info(message)
+                ma_trade_decision = False  # Sinal de venda
+            # 7
+            # Detectar crescimento rápido no gradiente rápido
+            if self.recent_average > growth_threshold * prev_ma_fast:
+                print(
+                    f"\n ------------------ \n Crescimento Consistente Detectado: O gradiente médio recente aumentou significativamente, indicando uma forte tendência de alta.\n ------------------ \n"
+                )
                 ma_trade_decision = True  # Sinal de compra
                 self.alerta_de_crescimento_rapido = True
+
+                # Após o crescimento rápido, verificar se está começando a corrigir
                 if fast_gradient < self.last_fast_gradient - correction_threshold:
                     ma_trade_decision = False  # Sinal de venda
-                    self.alerta_de_crescimento_rapido = False  # Sinal de alerta
+                    self.alerta_de_crescimento_rapido = (
+                        False  # Desativar alerta de alta
+                    )
+                    self.state_after_correction = (
+                        True  # Ativar estado de espera para nova alta
+                    )
+
                     print(
-                        f"\n ------------------ \nCorreção Detectada: O gradiente rápido começou a corrigir, caindo de: {self.last_fast_gradient:.3f} para: {fast_gradient:.3f},\n "
-                        "indicando uma possível reversão ou ajuste no mercado. \n ------------------ \n"
+                        f"\n ------------------ \nCorreção Detectada: O gradiente rápido começou a corrigir, caindo de {self.last_fast_gradient:.5f} para {fast_gradient:.3f},\n "
+                        "indicando uma possível reversão ou ajuste no mercado.\n ------------------ \n"
                     )
                     message = (
-                        f"Correção Detectada: O gradiente rápido começou a corrigir, caindo de: {self.last_fast_gradient:.3f} para: {fast_gradient:.3f},\n "
+                        f"Correção Detectada: O gradiente rápido começou a corrigir, caindo de {self.last_fast_gradient:.5f} para {fast_gradient:.3f},\n "
                         f"indicando uma possível reversão ou ajuste no mercado."
                     )
                     bot_logger.info(message)
-                else:
-                    print(
-                        "\n ------------------ \nEspera: O gradiente rápido ainda está subindo ou não começou a corrigir significativamente. Monitorar o mercado.\n ------------------ \n"
-                    )
-                    message = f"Espera: O gradiente rápido ainda está subindo ou não começou a corrigir significativamente. Monitorar o mercado.\n"
-                    bot_logger.info(message)
+
+                elif self.state_after_correction:
+                    # Verificar se há uma continuação na alta
+                    if detect_new_price_jump(
+                        self, fast_gradient, prices, jump_threshold
+                    ):
+                        ma_trade_decision = True  # Confirmação de alta pós-correção
+                        self.state_after_correction = False  # Resetar estado
+                        print(
+                            f"\n ------------------ \nContinuação da Alta Confirmada: O preço ou gradiente mostram um novo salto significativo, validando a retomada da alta.\n ------------------ \n"
+                        )
+                        bot_logger.info(
+                            f"Continuação da Alta Confirmada: O preço ou gradiente mostram um novo salto significativo, validando a retomada da alta.\n"
+                        )
+                    else:
+                        print(
+                            "\n ------------------ \nEspera: Ainda não foi detectado um novo salto no preço ou gradiente. Continuar monitorando.\n ------------------ \n"
+                        )
+                        bot_logger.info(
+                            f"Espera: Ainda não foi detectado um novo salto no preço ou gradiente. Continuar monitorando.\n"
+                        )
             else:
                 self.alerta_de_crescimento_rapido = False
 
@@ -315,8 +380,10 @@ class getMovingAverageVergenceRSI:
             print(f"volatibilidade * volatilidade_factor: {volatility_by_purshase:.3f}")
             print(f"Último RSI: {last_rsi:.3f}")
             print(
-                f"^indicador de tendencia de alta:\n  - gradiente rapido necessario ({growth_threshold * prev_ma_fast:.3f})\n"
-                f"  - gradiente maximo para sair da tendencia: ({ self.last_fast_gradient - correction_threshold:.3f})"
+                f"^indicador de tendencia de alta:\n"
+                f"  - Media recente dos Gradientes rapidos: {self.recent_average:.3f}\n"
+                f"  - Media necessaria para tendecia de alta: {growth_threshold * prev_ma_fast:.3f}\n"
+                f"  - gradiente rapido maximo para sair da tendencia: ({ self.last_fast_gradient - correction_threshold:.3f})"
             )
             print(
                 f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > self.last_fast_gradient else "Descendo" })'

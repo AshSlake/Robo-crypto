@@ -147,8 +147,9 @@ class CandlestickDataExtractor:
          conn: Conexão com o banco de dados.
         """
         # Conexão com o banco de dados
-        conn = connect_to_db()
+        conn = None
         try:
+            conn = connect_to_db()
             if self.df is None:
                 erro_logger.error(
                     "Erro: Dados de candlestick não disponíveis para salvar."
@@ -160,17 +161,16 @@ class CandlestickDataExtractor:
                 # Define o nome da tabela (ajuste conforme necessário)
                 table_name = "candlestick_data"
 
-            # Itera sobre os dados de candlestick e insere no banco de dados
-            for _, row in self.df.iterrows():
-                # Exemplo de query SQL para inserir os dados
-                insert_query = sql.SQL(
-                    """
+                # Itera sobre os dados de candlestick e insere no banco de dados
+                for _, row in self.df.iterrows():
+                    insert_query = sql.SQL(
+                        """
                     INSERT INTO {table_name} (symbol, open_time, open, high, low, close, volume, close_time)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                """
-                ).format(table_name=sql.Identifier(table_name))
+                    """
+                    ).format(table_name=sql.Identifier(table_name))
 
-                # Parâmetros para a query
+                    # Parâmetros para a query
                 data = (
                     self.symbol,
                     row["open_time"],
@@ -193,19 +193,21 @@ class CandlestickDataExtractor:
                 if count > limit:
                     cursor.execute(
                         """
-                   DELETE FROM candlestick_data
-                   WHERE id IN (
-                   SELECT id FROM candlestick_data
-                   ORDER BY open_time ASC
-                   LIMIT %s
-                );
-                """,
+                        DELETE FROM candlestick_data
+                        WHERE id IN (
+                        SELECT id FROM candlestick_data
+                        ORDER BY open_time ASC
+                        LIMIT %s
+                        );
+                        """,
                         (count - limit,),
                     )
             conn.commit()
             conn.close()  # Fecha a conexão com o banco de dados
 
-            print("Dados de candlestick salvos no banco de dados com sucesso!")
+            print(
+                f"\n --------- \n Dados de candlestick salvos no banco de dados com sucesso!\n ---------\n"
+            )
 
         except Exception as e:
             erro_logger.error(

@@ -268,7 +268,11 @@ class BinanceTraderBot:
                 )
 
             if order["status"] == "FILLED":
-                createLogOrder(order) if createLogOrder else "No log message"
+                (
+                    createLogOrder(order, OPERATION_CODE)
+                    if createLogOrder
+                    else "No log message"
+                )
                 self.actual_trade_position = True if side == SIDE_BUY else False
                 self.traded_quantity = float(order["executedQty"])
                 if self.actual_trade_position == True:
@@ -382,7 +386,6 @@ class BinanceTraderBot:
                 slow_window=40,
                 volatility_factor=0.3,
                 initial_purchase_price=self.traded_quantity,
-                current_price=Decimal(self.getLastStockAccountBalance()),
             )
 
             # Executa a ordem de compra/venda se a decisão da estratégia for verdadeira
