@@ -8,6 +8,9 @@ from db.neonDbConfig import (
 )
 
 from functions.calculate_fast_gradients import calculate_fast_gradients
+from functions.calculate_gradient_increase_percentage import (
+    calculate_gradient_increase_percentage,
+)
 from functions.calculate_jump_threshold import calculate_jump_threshold
 from functions.calculate_moving_average import calculate_moving_average
 from functions.calculate_recent_growth_value import calculate_recent_growth_value
@@ -60,6 +63,7 @@ class getMovingAverageVergenceRSI:
         self.interval = Client.KLINE_INTERVAL_15MINUTE
         self.recent_average = None
         self.state_after_correction = None
+        self.percentage_from_fast_gradients = None
 
     def getMovingAverageVergenceRSI(
         self,
@@ -165,8 +169,16 @@ class getMovingAverageVergenceRSI:
                 factor=1.5,
             )
 
+            # Calcula o valor médio dos gradientes rápidos recentes
             self.recent_average = calculate_recent_growth_value(
                 self, fast_gradients, growth_threshold, prev_ma_fast
+            )
+
+            # Calcula o percentual de crescimento dos gradientes rápidos
+            self.percentage_from_fast_gradients = (
+                calculate_gradient_increase_percentage(
+                    fast_gradient, self.last_fast_gradient
+                )
             )
 
             # CONDIÇÕES DE COMPRA
@@ -225,10 +237,46 @@ class getMovingAverageVergenceRSI:
                 )
                 bot_logger.info(message)
 
+            elif (
+                fast_gradient > slow_gradient
+                and self.percentage_from_fast_gradients > 20
+                and last_volatility < volatility
+                and self.rsi_lower < last_rsi < self.rsi_upper
+            ):
+                if (
+                    self.percentage_from_fast_gradients > 70
+                    or last_rsi > self.rsi_upper
+                ):
+                    ma_trade_decision = False  # Sinal de venda
+                    print(
+                        "Venda: O gradiente rápido maior que o lento, o RSI acima do limite superior \n"
+                        "sugere um possível inicio de reversão para baixa, e o percentual de crescimento dos gradientes rápidos é maior que 70.\n"
+                        "realizando a venda.\n"
+                    )
+                    message = (
+                        f"Venda: O gradiente rápido maior que o lento, o RSI acima do limite superior \n"
+                        f"sugere um possível inicio de reversão para baixa, e o percentual de crescimento dos gradientes rápidos é maior que 70.\n"
+                        f"realizando a venda.\n"
+                    )
+                    bot_logger.info(message)
+                else:
+                    ma_trade_decision = True  # Sinal de compra
+                    print(
+                        "Compra: O gradiente rápido maior que o lento, o RSI acima do limite inferior e abaixo do limite superior \n"
+                        "sugere uma possível tendência de alta, e o percentual de crescimento dos gradientes rápidos é maior que 20.\n"
+                    )
+                    message = (
+                        f"Compra: O gradiente rápido maior que o lento, o RSI acima do limite inferior e abaixo do limite superior \n"
+                        f"sugere uma possível tendência de alta, e o percentual de crescimento dos gradientes rápidos é maior que 20.\n"
+                    )
+                    bot_logger.info(message)
+
             # CONDIÇÕES DE VENDA
             # 1
             elif (
                 last_ma_fast < last_ma_slow - hysteresis
+                and fast_gradient < slow_gradient
+                or fast_gradient <= 0
                 and self.alerta_de_crescimento_rapido == False
             ):
                 ma_trade_decision = False  # Sinal de venda
@@ -391,6 +439,9 @@ class getMovingAverageVergenceRSI:
             print(
                 f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })'
             )
+            print(
+                f"  -Porcentagem de crescimento do gradiente rápido: (\033[1m{self.percentage_from_fast_gradients:.3f}%)\033[0m\n"
+            )
             if ma_trade_decision is None:
                 print("Decisao: Manter Posição")
             else:
@@ -410,6 +461,7 @@ class getMovingAverageVergenceRSI:
                 f"  - gradiente maximo para sair da tendencia: ({ self.last_fast_gradient - correction_threshold:.3f})\n"
                 f'Gradiente rapido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > self.last_fast_gradient else "Descendo" })\n'
                 f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })\n'
+                f"  -Porcentagem de crescimento do gradiente rapido: {self.percentage_from_fast_gradients:.3f}%\n"
                 f'Decisao: {"Comprar" if ma_trade_decision == True else "Vender"}\n'
                 f"{'---------------'}\n"
             )
