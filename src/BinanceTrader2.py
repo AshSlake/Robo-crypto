@@ -159,6 +159,10 @@ class BinanceTraderBot:
         """
         if entry_price is None:
             return None
+        if current_price is not Decimal:
+            current_price = Decimal(current_price)
+        if entry_price is not Decimal:
+            entry_price = Decimal(entry_price)
         profit_per_unit = current_price - entry_price
         total_profit = profit_per_unit * quantity
         return total_profit
