@@ -265,9 +265,10 @@ class getMovingAverageVergenceRSI:
                 bot_logger.info(message)
             # 3
             elif (
-                fast_gradient > slow_gradient
-                and self.percentage_fromUP_fast_gradient > 30
+                self.percentage_fromUP_fast_gradient > 50
                 and last_rsi > self.rsi_lower
+                and last_volatility > volatility
+                and fast_gradient > slow_gradient
             ):
 
                 ma_trade_decision = True  # Sinal de compra
@@ -286,7 +287,7 @@ class getMovingAverageVergenceRSI:
             # 1
             elif (
                 fast_gradient < slow_gradient
-                or self.percentage_fromDOWN_fast_gradient > 30
+                and self.percentage_fromDOWN_fast_gradient > 50
                 and last_rsi < self.rsi_upper
                 and self.current_price < self.last_max_price_down_resistanceZone
             ):
@@ -309,7 +310,7 @@ class getMovingAverageVergenceRSI:
             elif (
                 last_ma_fast < last_ma_slow - hysteresis
                 and fast_gradient < slow_gradient
-                or fast_gradient <= 0
+                and fast_gradient <= 0
                 and self.alerta_de_crescimento_rapido == False
             ):
                 ma_trade_decision = False  # Sinal de venda
@@ -318,7 +319,7 @@ class getMovingAverageVergenceRSI:
                 )
                 message = f"Venda: A MA rápida cruzou abaixo da MA lenta ajustada por histerese, sinalizando uma possível reversão de tendência para baixa.\n"
                 bot_logger.info(message)
-            # 2
+            # 3
             elif (
                 last_ma_fast > last_ma_slow
                 and last_volatility > volatility
@@ -337,7 +338,7 @@ class getMovingAverageVergenceRSI:
                     f"ou o RSI abaixo do limite inferior sugerem um risco de reversão. Melhor realizar vendas.\n"
                 )
                 bot_logger.info(message)
-            # 3
+            # 4
             elif (
                 fast_gradient < self.last_fast_gradient - hysteresis
                 and last_rsi < self.prev_rsi - hysteresis
@@ -356,7 +357,7 @@ class getMovingAverageVergenceRSI:
                 )
                 bot_logger.info(message)
 
-            # 4
+            # 5
             # Verificar se o preço atual caiu abaixo do stop-loss
             elif self.current_price < stop_loss_price:
                 ma_trade_decision = False  # Sinal de venda devido ao stop-loss

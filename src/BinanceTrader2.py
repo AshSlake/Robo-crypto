@@ -10,6 +10,7 @@ from binance.enums import *
 from binance.exceptions import BinanceAPIException, BinanceRequestException
 from db.neonDbConfig import create_tables
 from estrategias import getMovingAverageVergenceRSI
+from functions.calculators.profit_and_loss_Calculator import calculate_profit
 from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
 from decimal import ROUND_DOWN, Decimal
 from functions.calculators.calculate_max_buy_sell_quantity import QuantityCalculator
@@ -26,7 +27,7 @@ STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
 TRADED_QUANTITY = 0.066
-BACKTESMODE = True
+BACKTESMODE = False
 
 
 # Binance Trading Bot Class
@@ -343,10 +344,8 @@ class BinanceTraderBot:
                 return float(asset["free"])
         return 0.0
 
-    def message_bot_logger_info(self, message):
-        bot_logger.info(message)
-
     def execute(self):
+
         try:
             self.updateAllData()
             # Obtém dados do símbolo
