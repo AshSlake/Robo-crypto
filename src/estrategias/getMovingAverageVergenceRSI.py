@@ -72,8 +72,10 @@ class getMovingAverageVergenceRSI:
         self.state_after_correction = None
         self.percentage_fromUP_fast_gradient = None
         self.percentage_fromDOWN_fast_gradient = None
-        self.min_price_resistencetZone = None
-        self.max_price_supportZone = None
+        self.max_price_resistenceZone = None
+        self.last_max_price_down_resistanceZone = 259.43
+        self.min_price_supportZone = None
+        self.last_min_price_up_supportZone = 0
 
     def getMovingAverageVergenceRSI(
         self,
@@ -157,16 +159,40 @@ class getMovingAverageVergenceRSI:
 
             # Calcular o preço de stop-loss
             stop_loss_price = initial_purchase_price * (1 - stop_loss_percentage)
+            print(f"Preço de stop-loss: {stop_loss_price}")
 
             # Obter dados recentes de preços
             prices = get_recent_prices(
-                self, symbol=self.operation_code, interval=self.interval, limit=500
+                self, symbol=self.operation_code, interval=self.interval, limit=1000
             )
 
             # Definin zonas de suporte e resistência
             support_resistance = calculate_support_resistance_from_prices(prices)
-            self.max_price_supportZone = support_resistance["support"]
-            self.min_price_resistencetZone = support_resistance["resistance"]
+            self.min_price_supportZone = support_resistance[
+                "support"
+            ]  # Preço mínimo zona de suporte
+            self.max_price_resistenceZone = support_resistance[
+                "resistance"
+            ]  # Preço maximo zona de resistência
+
+            # Atualizar as variáveis de  zonas de last_max_price_down_resistanceZone e last_min_price_up_supportZone
+            if self.last_max_price_down_resistanceZone < self.current_price:
+                self.last_max_price_down_resistanceZone = self.current_price
+            if (
+                self.last_min_price_up_supportZone > self.current_price
+                or self.last_min_price_up_supportZone == 0
+            ):
+                self.last_min_price_up_supportZone = self.current_price
+
+            print(f"Preço atual: {self.current_price:.2f}")
+            print(f"Resistência: {self.max_price_resistenceZone:.2f}")
+            print(f"Suporte: {self.min_price_supportZone:.2f}")
+            print(
+                f"zona de resistência recente: {self.last_max_price_down_resistanceZone:.2f}"
+            )
+            print(
+                f"zona de suporte recente: {self.last_min_price_up_supportZone:.2f}\n"
+            )
 
             # Calculando os fast_gradients na estratégia
             ma_fast_values = calculate_moving_average(self, prices, window=7)
@@ -222,8 +248,10 @@ class getMovingAverageVergenceRSI:
                 last_ma_fast > last_ma_slow + hysteresis
                 and current_difference < volatility * volatility_factor
                 and last_volatility > volatility
-                and fast_gradient > slow_gradient
-                and last_rsi > self.rsi_lower < self.rsi_upper
+                and self.percentage_fromUP_fast_gradient
+                > self.percentage_fromDOWN_fast_gradient
+                and last_rsi > self.rsi_lower
+                and last_rsi < self.rsi_upper
             ):
                 ma_trade_decision = True  # Sinal de compra
                 print(
@@ -237,64 +265,51 @@ class getMovingAverageVergenceRSI:
                 bot_logger.info(message)
             # 3
             elif (
-                last_ma_fast > last_ma_slow + hysteresis
-                and last_volatility < volatility
+                fast_gradient > slow_gradient
+                and self.percentage_fromUP_fast_gradient > 30
                 and last_rsi > self.rsi_lower
-                and fast_gradient > (slow_gradient * 2)
             ):
+
                 ma_trade_decision = True  # Sinal de compra
+                self.alerta_de_crescimento_rapido = True
                 print(
-                    "Compra: A volatilidade anterior é maior que a atual, indicando possível consolidação do mercado.\n "
-                    "O RSI acima do limite superior sugere forte momentum de compra, \n"
-                    "e o gradiente rápido sendo significativamente maior que o lento confirma o forte impulso de alta.\n"
+                    "Compra: O gradiente rápido maior que o lento, o RSI acima do limite inferior e abaixo do limite superior \n"
+                    "sugere uma possível tendência de alta, e o percentual de crescimento dos gradientes rápidos é maior que 20.\n"
                 )
                 message = (
-                    f"Compra: A volatilidade anterior é maior que a atual, indicando possível consolidação do mercado.\n "
-                    f"O RSI acima do limite superior sugere forte momentum de compra, \n"
-                    f"e o gradiente rápido sendo significativamente maior que o lento confirma o forte impulso de alta.\n"
+                    f"Compra: O gradiente rápido maior que o lento, o RSI acima do limite inferior e abaixo do limite superior \n"
+                    f"sugere uma possível tendência de alta, e o percentual de crescimento dos gradientes rápidos é maior que 20.\n"
                 )
                 bot_logger.info(message)
-            # 4
-            elif (
-                fast_gradient > slow_gradient
-                and self.percentage_fromUP_fast_gradient > 20
-                and last_volatility < volatility
-                and last_rsi < self.rsi_upper
-            ):
-                if (
-                    self.percentage_fromUP_fast_gradient > 70
-                    or last_rsi > self.rsi_upper
-                ):
-                    ma_trade_decision = False  # Sinal de venda
-                    print(
-                        "Venda: O gradiente rápido maior que o lento, o RSI acima do limite superior \n"
-                        "sugere um possível inicio de reversão para baixa, e o percentual de crescimento dos gradientes rápidos é maior que 70.\n"
-                        "realizando a venda.\n"
-                    )
-                    message = (
-                        f"Venda: O gradiente rápido maior que o lento, o RSI acima do limite superior \n"
-                        f"sugere um possível inicio de reversão para baixa, e o percentual de crescimento dos gradientes rápidos é maior que 70.\n"
-                        f"realizando a venda.\n"
-                    )
-                    bot_logger.info(message)
-                else:
-                    ma_trade_decision = True  # Sinal de compra
-                    print(
-                        "Compra: O gradiente rápido maior que o lento, o RSI acima do limite inferior e abaixo do limite superior \n"
-                        "sugere uma possível tendência de alta, e o percentual de crescimento dos gradientes rápidos é maior que 20.\n"
-                    )
-                    message = (
-                        f"Compra: O gradiente rápido maior que o lento, o RSI acima do limite inferior e abaixo do limite superior \n"
-                        f"sugere uma possível tendência de alta, e o percentual de crescimento dos gradientes rápidos é maior que 20.\n"
-                    )
-                    bot_logger.info(message)
 
             # CONDIÇÕES DE VENDA
             # 1
             elif (
+                fast_gradient < slow_gradient
+                or self.percentage_fromDOWN_fast_gradient > 30
+                and last_rsi < self.rsi_upper
+                and self.current_price < self.last_max_price_down_resistanceZone
+            ):
+                ma_trade_decision = False  # Sinal de venda
+                self.alerta_de_crescimento_rapido = False
+                print(
+                    "Venda: a porcentagem de decremento do gradiente rapido despencou mais que 30%\n"
+                    "Ultimo RSI está abaixo do limite superior e o preço atual está abaixo da zona de resistência recente.\n"
+                    "sugere um possível inicio de reversão para baixa.\n"
+                    "realizando a venda.\n"
+                )
+                message = (
+                    f"Venda: a porcentagem de decremento do gradiente rapido despencou mais que 30%\n"
+                    f"Ultimo RSI está abaixo do limite superior e o preço atual está abaixo da zona de resistência recente.\n"
+                    f"sugere um possível inicio de reversão para baixa.\n Realizando a venda.\n"
+                )
+                bot_logger.info(message)
+
+            # 2
+            elif (
                 last_ma_fast < last_ma_slow - hysteresis
                 and fast_gradient < slow_gradient
-                and fast_gradient <= 0
+                or fast_gradient <= 0
                 and self.alerta_de_crescimento_rapido == False
             ):
                 ma_trade_decision = False  # Sinal de venda
@@ -309,6 +324,7 @@ class getMovingAverageVergenceRSI:
                 and last_volatility > volatility
                 and fast_gradient < slow_gradient
                 and last_rsi < self.rsi_lower
+                and self.percentage_fromDOWN_fast_gradient > 30
                 and self.alerta_de_crescimento_rapido == False
             ):
                 ma_trade_decision = False  # Sinal de venda
@@ -323,25 +339,10 @@ class getMovingAverageVergenceRSI:
                 bot_logger.info(message)
             # 3
             elif (
-                last_volatility > volatility
-                and last_rsi < self.rsi_lower
-                and self.alerta_de_crescimento_rapido == False
-            ):
-                ma_trade_decision = False
-                print(
-                    "Venda: A volatilidade anterior maior que a atual e o RSI abaixo do limite inferior\n "
-                    "sugerem um enfraquecimento no mercado, indicando uma possível condição de venda.\n"
-                )
-                message = (
-                    f"Venda: A volatilidade anterior maior que a atual e o RSI abaixo do limite inferior \n"
-                    f"sugerem um enfraquecimento no mercado, indicando uma possível condição de venda.\n"
-                )
-                bot_logger.info(message)
-            # 4
-            elif (
                 fast_gradient < self.last_fast_gradient - hysteresis
                 and last_rsi < self.prev_rsi - hysteresis
                 and last_rsi < self.rsi_lower + hysteresis
+                and self.percentage_fromDOWN_fast_gradient > 20
                 and self.alerta_de_crescimento_rapido == False
             ):
                 ma_trade_decision = False  # Sinal de venda
@@ -355,7 +356,7 @@ class getMovingAverageVergenceRSI:
                 )
                 bot_logger.info(message)
 
-            # 5
+            # 4
             # Verificar se o preço atual caiu abaixo do stop-loss
             elif self.current_price < stop_loss_price:
                 ma_trade_decision = False  # Sinal de venda devido ao stop-loss
@@ -384,7 +385,7 @@ class getMovingAverageVergenceRSI:
             # 7
             # Detectar queda apos atingir preço maximo do preço
             elif (
-                self.current_price < self.max_price_supportZone
+                self.current_price < self.min_price_supportZone
                 and fast_gradient < self.last_fast_gradient - hysteresis
                 and self.percentage_fromDOWN_fast_gradient > 10
             ):

@@ -1,7 +1,7 @@
 from functions.CandlestickDataExtractor import CandlestickDataExtractor
 
 
-def get_recent_prices(self, symbol, interval, limit=500):
+def get_recent_prices(self, symbol, interval, limit=1000):
     """
     Obtém os dados de preços recentes do mercado a partir do DataFrame gerado por CandlestickDataExtractor.
 
