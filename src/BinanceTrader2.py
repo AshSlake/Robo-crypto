@@ -12,7 +12,7 @@ from db.neonDbConfig import create_tables
 from estrategias import getMovingAverageVergenceRSI
 from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
 from decimal import ROUND_DOWN, Decimal
-from functions.calculate_max_buy_sell_quantity import QuantityCalculator
+from functions.calculators.calculate_max_buy_sell_quantity import QuantityCalculator
 
 
 # Load environment variables

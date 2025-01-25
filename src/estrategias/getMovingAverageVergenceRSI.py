@@ -8,14 +8,16 @@ from db.neonDbConfig import (
 )
 
 
-from functions.calculate_fast_gradients import calculate_fast_gradients
-from functions.calculate_gradient_percentage_change import (
+from functions.calculators.calculate_fast_gradients import calculate_fast_gradients
+from functions.calculators.calculate_gradient_percentage_change import (
     calculate_gradient_percentage_change,
 )
-from functions.calculate_jump_threshold import calculate_jump_threshold
-from functions.calculate_moving_average import calculate_moving_average
-from functions.calculate_recent_growth_value import calculate_recent_growth_value
-from functions.calculate_support_resistance_from_prices import (
+from functions.calculators.calculate_jump_threshold import calculate_jump_threshold
+from functions.calculators.calculate_moving_average import calculate_moving_average
+from functions.calculators.calculate_recent_growth_value import (
+    calculate_recent_growth_value,
+)
+from functions.calculators.calculate_support_resistance_from_prices import (
     calculate_support_resistance_from_prices,
 )
 from functions.detect_new_price_jump import detect_new_price_jump
