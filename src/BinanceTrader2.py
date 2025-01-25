@@ -25,7 +25,8 @@ secret_key = os.getenv("BINANCE_SECRET_KEY")
 STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 0.073
+TRADED_QUANTITY = 0.066
+BACKTESMODE = False
 
 
 # Binance Trading Bot Class
@@ -393,7 +394,7 @@ class BinanceTraderBot:
             )
 
             # Executa a ordem de compra/venda se a decisão da estratégia for verdadeira
-            if ma_trade_decision is not None:
+            if ma_trade_decision is not None and BACKTESMODE is not True:
                 if ma_trade_decision and not self.actual_trade_position:
                     self.execute_trade(SIDE_BUY)
                     self.actual_trade_position = (

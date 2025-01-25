@@ -7,13 +7,17 @@ from db.neonDbConfig import (
     save_gradients_to_db_with_limit,
 )
 
+
 from functions.calculate_fast_gradients import calculate_fast_gradients
-from functions.calculate_gradient_increase_percentage import (
-    calculate_gradient_increase_percentage,
+from functions.calculate_gradient_percentage_change import (
+    calculate_gradient_percentage_change,
 )
 from functions.calculate_jump_threshold import calculate_jump_threshold
 from functions.calculate_moving_average import calculate_moving_average
 from functions.calculate_recent_growth_value import calculate_recent_growth_value
+from functions.calculate_support_resistance_from_prices import (
+    calculate_support_resistance_from_prices,
+)
 from functions.detect_new_price_jump import detect_new_price_jump
 from functions.get_current_price import get_current_price
 from functions.get_recent_prices import get_recent_prices
@@ -51,8 +55,9 @@ class getMovingAverageVergenceRSI:
         self.entry_price = None
         self.operation_code = operation_code
         self.actual_trade_position = actual_trade_position
-        self.indicators = TechnicalIndicators(stock_data, rsi_period)
+
         # Variáveis adicionais
+        self.indicators = TechnicalIndicators(stock_data, rsi_period)
         self.last_fast_gradient = None
         self.last_slow_gradient = None
         self.prev_rsi = None
@@ -63,7 +68,10 @@ class getMovingAverageVergenceRSI:
         self.interval = Client.KLINE_INTERVAL_15MINUTE
         self.recent_average = None
         self.state_after_correction = None
-        self.percentage_from_fast_gradients = None
+        self.percentage_fromUP_fast_gradient = None
+        self.percentage_fromDOWN_fast_gradient = None
+        self.min_price_resistencetZone = None
+        self.max_price_supportZone = None
 
     def getMovingAverageVergenceRSI(
         self,
@@ -153,7 +161,12 @@ class getMovingAverageVergenceRSI:
                 self, symbol=self.operation_code, interval=self.interval, limit=500
             )
 
-            # Exemplo de como calcular os fast_gradients na estratégia
+            # Definin zonas de suporte e resistência
+            support_resistance = calculate_support_resistance_from_prices(prices)
+            self.max_price_supportZone = support_resistance["support"]
+            self.min_price_resistencetZone = support_resistance["resistance"]
+
+            # Calculando os fast_gradients na estratégia
             ma_fast_values = calculate_moving_average(self, prices, window=7)
             fast_gradients = calculate_fast_gradients(self, ma_fast_values)
 
@@ -175,13 +188,15 @@ class getMovingAverageVergenceRSI:
             )
 
             # Calcula o percentual de crescimento dos gradientes rápidos
-            self.percentage_from_fast_gradients = (
-                calculate_gradient_increase_percentage(
-                    fast_gradient, self.last_fast_gradient
-                )
+            (
+                self.percentage_fromUP_fast_gradient,
+                self.percentage_fromDOWN_fast_gradient,
+            ) = calculate_gradient_percentage_change(
+                fast_gradient, self.last_fast_gradient
             )
 
             # CONDIÇÕES DE COMPRA
+            # 1
             if (
                 current_difference > volatility * volatility_factor
                 and last_volatility < volatility
@@ -200,6 +215,7 @@ class getMovingAverageVergenceRSI:
                 )
                 bot_logger.info(message)
 
+            # 2
             elif (
                 last_ma_fast > last_ma_slow + hysteresis
                 and current_difference < volatility * volatility_factor
@@ -217,7 +233,7 @@ class getMovingAverageVergenceRSI:
                     f"sugerindo um mercado dinâmico. O gradiente rápido maior que o lento e o RSI acima do limite inferior reforçam uma perspectiva de compra.\n"
                 )
                 bot_logger.info(message)
-
+            # 3
             elif (
                 last_ma_fast > last_ma_slow + hysteresis
                 and last_volatility < volatility
@@ -236,15 +252,15 @@ class getMovingAverageVergenceRSI:
                     f"e o gradiente rápido sendo significativamente maior que o lento confirma o forte impulso de alta.\n"
                 )
                 bot_logger.info(message)
-
+            # 4
             elif (
                 fast_gradient > slow_gradient
-                and self.percentage_from_fast_gradients > 20
+                and self.percentage_fromUP_fast_gradient > 20
                 and last_volatility < volatility
-                and self.rsi_lower < last_rsi < self.rsi_upper
+                and last_rsi < self.rsi_upper
             ):
                 if (
-                    self.percentage_from_fast_gradients > 70
+                    self.percentage_fromUP_fast_gradient > 70
                     or last_rsi > self.rsi_upper
                 ):
                     ma_trade_decision = False  # Sinal de venda
@@ -276,7 +292,7 @@ class getMovingAverageVergenceRSI:
             elif (
                 last_ma_fast < last_ma_slow - hysteresis
                 and fast_gradient < slow_gradient
-                or fast_gradient <= 0
+                and fast_gradient <= 0
                 and self.alerta_de_crescimento_rapido == False
             ):
                 ma_trade_decision = False  # Sinal de venda
@@ -364,11 +380,26 @@ class getMovingAverageVergenceRSI:
                 bot_logger.info(message)
                 ma_trade_decision = False  # Sinal de venda
             # 7
+            # Detectar queda apos atingir preço maximo do preço
+            elif (
+                self.current_price < self.max_price_supportZone
+                and fast_gradient < self.last_fast_gradient - hysteresis
+                and self.percentage_fromDOWN_fast_gradient > 10
+            ):
+                ma_trade_decision = False  # Sinal de venda
+                print(
+                    f"detectado queda apos atingir preço máximo do preço: O preço atual de {self.current_price:.3f} está abaixo do nível de preço máximo e caindo\n"
+                )
+                message = f"detectado queda apos atingir preço máximo do preço: O preço atual de {self.current_price:.3f} está abaixo do nível de preço máximo e caindo\n"
+                bot_logger.info(message)
+            # 8
             # Detectar crescimento rápido no gradiente rápido
             if self.recent_average > growth_threshold * prev_ma_fast:
                 print(
                     f"\n ------------------ \n Crescimento Consistente Detectado: O gradiente médio recente aumentou significativamente, indicando uma forte tendência de alta.\n ------------------ \n"
                 )
+                message = f"Crescimento Consistente Detectado: O gradiente médio recente aumentou significativamente, indicando uma forte tendência de alta.\n"
+                bot_logger.info(message)
                 ma_trade_decision = True  # Sinal de compra
                 self.alerta_de_crescimento_rapido = True
 
@@ -415,6 +446,10 @@ class getMovingAverageVergenceRSI:
             else:
                 self.alerta_de_crescimento_rapido = False
 
+            if ma_trade_decision == None:
+                print("\n Nenhuma condição de compra ou venda atendida.")
+                bot_logger.info("\n Nenhuma condição de compra ou venda atendida.")
+
             print("-----")
             print(
                 f"Estratégia executada: Moving Average com Volatilidade + Gradiente + RSI"
@@ -440,7 +475,8 @@ class getMovingAverageVergenceRSI:
                 f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })'
             )
             print(
-                f"  -Porcentagem de crescimento do gradiente rápido: (\033[1m{self.percentage_from_fast_gradients:.3f}%)\033[0m\n"
+                f"  -Porcentagem de crescimento do gradiente rápido: (\033[1m{self.percentage_fromUP_fast_gradient:.3f}%)\033[0m\n"
+                f"  -Porcentagem de Decremento do gradiente rápdido: (\033[1m{self.percentage_fromDOWN_fast_gradient:.3f}%)\033[0m\n"
             )
             if ma_trade_decision is None:
                 print("Decisao: Manter Posição")
@@ -457,11 +493,14 @@ class getMovingAverageVergenceRSI:
                 f"Media da Volatilidade: {volatility:.3f}\n"
                 f"Diferenca Atual: {current_difference:.3f}\n"
                 f"Ultimo RSI: {last_rsi:.3f}\n"
-                f"^indicador de tendencia de alta:\n  - gradiente rapido necessario ({growth_threshold * prev_ma_fast:.3f})\n"
-                f"  - gradiente maximo para sair da tendencia: ({ self.last_fast_gradient - correction_threshold:.3f})\n"
-                f'Gradiente rapido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > self.last_fast_gradient else "Descendo" })\n'
+                f"^indicador de tendencia de alta:\n"
+                f"  - Media recente dos Gradientes rapidos: {self.recent_average:.3f}\n"
+                f"  - Media necessaria para tendecia de alta: {growth_threshold * prev_ma_fast:.3f}\n"
+                f"  - gradiente rapido maximo para sair da tendencia: ({ self.last_fast_gradient - correction_threshold:.3f})\n"
+                f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > self.last_fast_gradient else "Descendo" })\n'
                 f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })\n'
-                f"  -Porcentagem de crescimento do gradiente rapido: {self.percentage_from_fast_gradients:.3f}%\n"
+                f"  -Porcentagem de crescimento do gradiente rapido: {self.percentage_fromUP_fast_gradient:.3f}%\n"
+                f"  -Porcentagem de Decremento do gradiente rapdido: {self.percentage_fromDOWN_fast_gradient:.3f}%\n"
                 f'Decisao: {"Comprar" if ma_trade_decision == True else "Vender"}\n'
                 f"{'---------------'}\n"
             )
