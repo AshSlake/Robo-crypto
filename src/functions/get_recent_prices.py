@@ -31,7 +31,8 @@ def get_recent_prices(self, symbol, interval, limit=1000):
 
         # Retornar os preços de fechamento como uma lista
         recent_prices = data_extractor.df["close"].tolist()
-        return recent_prices
+        recent_volumes = data_extractor.df["volume"].tolist()
+        return recent_prices, recent_volumes
     else:
         print(f"Não foi possível recuperar os dados de {symbol}.")
         return []

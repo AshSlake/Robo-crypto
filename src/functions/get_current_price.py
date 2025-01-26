@@ -24,7 +24,7 @@ def get_current_price(symbol):
         data = response.json()
         current_price = decimal.Decimal(data["price"])
 
-        print(f"Preço atual de {symbol}: {current_price}")
+        print(f"Preço atual de {symbol}: {current_price:.2f}")
         return current_price
 
     except requests.exceptions.RequestException as e:

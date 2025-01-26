@@ -14,6 +14,7 @@ from functions.calculators.profit_and_loss_Calculator import calculate_profit
 from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
 from decimal import ROUND_DOWN, Decimal
 from functions.calculators.calculate_max_buy_sell_quantity import QuantityCalculator
+from functions.get_current_price import get_current_price
 
 
 # Load environment variables
@@ -26,8 +27,8 @@ secret_key = os.getenv("BINANCE_SECRET_KEY")
 STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 0.066
-BACKTESMODE = False
+TRADED_QUANTITY = 0.067
+BACKTESMODE = True
 
 
 # Binance Trading Bot Class
@@ -54,6 +55,7 @@ class BinanceTraderBot:
         self.quantity_calculator = QuantityCalculator(
             self.client_binance, self.operation_code
         )  # Instancia a classe
+        self.current_price_from_buy_order = 0
         print("Robo Trader iniciado...")
         bot_logger.info("Robo Trader iniciado...")
 
@@ -237,6 +239,9 @@ class BinanceTraderBot:
                     type=ORDER_TYPE_MARKET,
                     quantity=str(quantity),
                 )
+                self.current_price_from_buy_order = get_current_price(
+                    self.operation_code
+                )
 
             elif side == SIDE_SELL:
                 # Obtem o saldo disponível do ativo
@@ -383,6 +388,7 @@ class BinanceTraderBot:
                 stock_data=self.stock_data,
                 operation_code=OPERATION_CODE,  # Passa o código da operação
                 actual_trade_position=self.actual_trade_position,
+                current_price_from_buy_order=self.current_price_from_buy_order,
             )
 
             ma_trade_decision = estrategias.getMovingAverageVergenceRSI(

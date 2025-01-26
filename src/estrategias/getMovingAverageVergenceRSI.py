@@ -1,3 +1,4 @@
+from decimal import Decimal
 from http import client
 import os
 
@@ -46,6 +47,7 @@ class getMovingAverageVergenceRSI:
         stop_gain=0.10,
         operation_code=None,
         actual_trade_position=None,
+        current_price_from_buy_order=None,
     ):
         self.stock_data = stock_data
         self.volume_threshold = volume_threshold
@@ -66,7 +68,8 @@ class getMovingAverageVergenceRSI:
         self.client_binance = Client(api_key, secret_key)
         self.alerta_de_crescimento_rapido = False
         self.fast_gradients = []
-        self.current_price = None
+        self.current_price = Decimal
+        self.current_price_from_buy_order = current_price_from_buy_order
         self.interval = Client.KLINE_INTERVAL_15MINUTE
         self.recent_average = None
         self.state_after_correction = None
@@ -76,6 +79,9 @@ class getMovingAverageVergenceRSI:
         self.last_max_price_down_resistanceZone = 259.43
         self.min_price_supportZone = None
         self.last_min_price_up_supportZone = 0
+        self.volatility_tracker = []
+        self.current_volume = None
+        self.min_gradient_difference = 0.02
 
     def getMovingAverageVergenceRSI(
         self,
@@ -134,6 +140,8 @@ class getMovingAverageVergenceRSI:
             fast_gradient = last_ma_fast - prev_ma_fast
             slow_gradient = last_ma_slow - prev_ma_slow
 
+            gradient_difference = fast_gradient - slow_gradient
+
             # Salvar os gradientes no banco de dados com limite
             save_gradients_to_db_with_limit(fast_gradient, slow_gradient, limit=10)
 
@@ -158,13 +166,18 @@ class getMovingAverageVergenceRSI:
             volatility_by_purshase = volatility * volatility_factor
 
             # Calcular o preço de stop-loss
-            stop_loss_price = initial_purchase_price * (1 - stop_loss_percentage)
-            print(f"Preço de stop-loss: {stop_loss_price}")
+            stop_loss_price = Decimal(self.current_price_from_buy_order) * Decimal(
+                1 - stop_loss_percentage
+            )
+            print(f"Preço de stop-loss: {stop_loss_price:.2f}")
 
             # Obter dados recentes de preços
-            prices = get_recent_prices(
+            prices, recent_volumes = get_recent_prices(
                 self, symbol=self.operation_code, interval=self.interval, limit=1000
             )
+
+            self.current_volume = recent_volumes[-1]
+            print(f"Volume recente: {self.current_volume:.3f}")
 
             # Definin zonas de suporte e resistência
             support_resistance = calculate_support_resistance_from_prices(prices)
@@ -223,65 +236,109 @@ class getMovingAverageVergenceRSI:
                 fast_gradient, self.last_fast_gradient
             )
 
+            ma_gap = (
+                last_ma_fast - last_ma_slow
+            )  # Representa a diferença entre a média móvel rápida e a média móvel lenta.
+            ma_gap_rate_of_change = (
+                last_ma_fast - last_ma_slow
+            ) / last_ma_slow  # Representa a taxa de mudança percentual do gap entre as médias móveis.
+            rsi_rate_of_change = (
+                last_rsi - self.prev_rsi
+            ) / self.prev_rsi  # Representa a taxa de mudança percentual do RSI (Índice de Força Relativa).
+
             # CONDIÇÕES DE COMPRA
             # 1
             if (
                 current_difference > volatility * volatility_factor
                 and last_volatility < volatility
                 and self.rsi_lower < last_rsi < self.rsi_upper
+                and fast_gradient
+                > slow_gradient  # Confirmando que o gradiente rápido está subindo
+                and (
+                    self.percentage_fromUP_fast_gradient
+                    > 1.5 * self.percentage_fromDOWN_fast_gradient
+                )  # Confirmando aceleração do gradiente
             ):
                 ma_trade_decision = True
                 print(
                     "Compra: A diferença atual é maior que a volatilidade ajustada, indicando uma possível tendência de alta. "
                     "A volatilidade atual é menor que a média, sugerindo estabilidade no mercado, "
-                    "e o RSI está dentro do intervalo desejado, sinalizando uma condição de compra favorável."
+                    "e o RSI está dentro do intervalo desejado, sinalizando uma condição de compra favorável. "
+                    "O gradiente rápido também está acelerando."
                 )
                 message = (
-                    f"Compra: A diferença atual é maior que a volatilidade ajustada, indicando uma possível tendência de alta.\n "
-                    f"A volatilidade atual é menor que a média, sugerindo estabilidade no mercado, \n"
-                    f"e o RSI está dentro do intervalo desejado, sinalizando uma condição de compra favorável.\n"
+                    "Compra: A diferença atual é maior que a volatilidade ajustada, indicando uma possível tendência de alta.\n "
+                    "A volatilidade atual é menor que a média, sugerindo estabilidade no mercado, \n"
+                    "e o RSI está dentro do intervalo desejado, sinalizando uma condição de compra favorável.\n"
+                    "O gradiente rápido também está acelerando."
                 )
                 bot_logger.info(message)
 
             # 2
             elif (
-                last_ma_fast > last_ma_slow + hysteresis
+                ma_gap > hysteresis
+                and ma_gap_rate_of_change > 0.02
                 and current_difference < volatility * volatility_factor
                 and last_volatility > volatility
                 and self.percentage_fromUP_fast_gradient
                 > self.percentage_fromDOWN_fast_gradient
                 and last_rsi > self.rsi_lower
                 and last_rsi < self.rsi_upper
+                and rsi_rate_of_change > 0.01  # RSI em aumento
             ):
                 ma_trade_decision = True  # Sinal de compra
                 print(
-                    "Compra: A MA rápida está acima da MA lenta ajustada por histerese, e a volatilidade anterior é significativa, \n"
-                    "sugerindo um mercado dinâmico. O gradiente rápido maior que o lento e o RSI acima do limite inferior e abaixo do limite maximo reforçam uma perspectiva de compra.\n"
+                    f"Compra: MA rápida está {last_ma_fast:.3f} acima da MA lenta {last_ma_slow:.3f}, indicando tendência de alta. "
+                    f"A volatilidade atual {last_volatility:.3f} é maior que a média ({volatility:.3f}), "
+                    f"e o RSI está dentro da faixa {self.rsi_lower}-{self.rsi_upper}, sugerindo um sinal de compra favorável.\n"
                 )
                 message = (
-                    f"Compra: A MA rápida está acima da MA lenta ajustada por histerese, e a volatilidade anterior é significativa,\n "
-                    f"sugerindo um mercado dinâmico. O gradiente rápido maior que o lento e o RSI acima do limite inferior reforçam uma perspectiva de compra.\n"
+                    f"Compra: MA rápida está {last_ma_fast:.3f} acima da MA lenta {last_ma_slow:.3f} ajustada por histerese ({hysteresis}), "
+                    f"indicando tendência de alta. A volatilidade atual {last_volatility:.3f} é maior que a média ({volatility:.3f}), "
+                    f"e o RSI está dentro da faixa {self.rsi_lower}-{self.rsi_upper}, sugerindo um sinal de compra favorável.\n"
                 )
                 bot_logger.info(message)
+
             # 3
             elif (
-                self.percentage_fromUP_fast_gradient > 50
-                and last_rsi > self.rsi_lower
-                and last_volatility > volatility
-                and fast_gradient > slow_gradient
+                self.percentage_fromUP_fast_gradient
+                > 50
+                + (last_volatility * 10)  # Limite dinâmico com base na volatilidade
+                and self.rsi_lower < last_rsi < self.rsi_upper  # RSI dentro de limites
+                and gradient_difference
+                > self.min_gradient_difference  # Diferença mínima entre gradientes
+                and last_volatility
+                > volatility * 1.2  # Volatilidade significativamente acima da média
             ):
-
-                ma_trade_decision = True  # Sinal de compra
-                self.alerta_de_crescimento_rapido = True
+                ma_trade_decision = True
                 print(
-                    "Compra: O gradiente rápido maior que o lento, o RSI acima do limite inferior e abaixo do limite superior \n"
-                    "sugere uma possível tendência de alta, e o percentual de crescimento dos gradientes rápidos é maior que 20.\n"
+                    f"Compra: Gradiente rápido ({fast_gradient:.2f}) maior que lento ({slow_gradient:.2f}), "
+                    f"RSI ({last_rsi:.2f}) entre limites ({self.rsi_lower}-{self.rsi_upper}), "
+                    f"e volatilidade atual ({last_volatility:.2f}) acima da média ({volatility:.2f})."
                 )
                 message = (
-                    f"Compra: O gradiente rápido maior que o lento, o RSI acima do limite inferior e abaixo do limite superior \n"
-                    f"sugere uma possível tendência de alta, e o percentual de crescimento dos gradientes rápidos é maior que 20.\n"
+                    f"Compra: Gradiente rápido ({fast_gradient:.2f}) maior que lento ({slow_gradient:.2f}), "
+                    f"RSI ({last_rsi:.2f}) entre limites ({self.rsi_lower}-{self.rsi_upper}), "
+                    f"e volatilidade atual ({last_volatility:.2f}) acima da média ({volatility:.2f})."
                 )
                 bot_logger.info(message)
+
+            # 4
+            elif (
+                last_volatility < volatility
+                and last_rsi < self.rsi_lower + hysteresis
+                and last_rsi > 10
+                and fast_gradient < slow_gradient
+                and current_difference > volatility * volatility_factor
+            ):
+                print(
+                    f"-------------\n"
+                    f"O RSI está baixo de 30 indicando que o ativo está fortemente sobrevendido.\n Esse é um sinal claro de que o preço pode estar próximo de um fundo e uma reversão para a alta é possível. \n Este é um indicativo forte de que a pressão vendedora pode estar se esgotando\n"
+                    f"-------------\n"
+                )
+                message = f"O RSI está baixo de 30 indicando que o ativo está fortemente sobrevendido.\n Esse é um sinal claro de que o preço pode estar próximo de um fundo e uma reversão para a alta é possível. \n Este é um indicativo forte de que a pressão vendedora pode estar se esgotando\n"
+                bot_logger.info(message)
+                ma_trade_decision = True  # Sinal de venda
 
             # CONDIÇÕES DE VENDA
             # 1
@@ -375,12 +432,21 @@ class getMovingAverageVergenceRSI:
             elif (
                 last_volatility < volatility
                 and last_rsi < self.rsi_lower + hysteresis
-                and fast_gradient < 0
+                and last_rsi < 10
+                and fast_gradient < slow_gradient
+                and current_difference < volatility * volatility_factor
             ):
                 print(
-                    f"\n ------------------ \nCrescimento Rápido de baixa Detected: O gradiente rápido diminuiu significativamente, indicando uma forte tendência de baixa.\n ------------------ \n"
+                    f"\n ------------------ \n"
+                    f"A alta volatilidade diminuiu significativamente e o RSI ultrapassou o limite superior, \n"
+                    f"indicando uma possível reversão de tendência para baixa.\n"
+                    f"Realizando venda para limitar as perdas.\n ------------------ \n"
                 )
-                message = f"Crescimento Rápido de Baixa Detected: O gradiente rápido diminuiu significativamente, indicando uma forte tendência de baixa.\n"
+                message = (
+                    f"A alta volatilidade diminuiu significativamente e o RSI ultrapassou o limite superior, \n"
+                    f"indicando uma possível reversão de tendência para baixa.\n"
+                    f"Realizando venda para limitar as perdas.\n"
+                )
                 bot_logger.info(message)
                 ma_trade_decision = False  # Sinal de venda
             # 7
