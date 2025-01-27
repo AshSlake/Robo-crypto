@@ -9,6 +9,7 @@ from db.neonDbConfig import (
 )
 
 
+from functions.InteligenciaArtificial.GeminiTradingBot import GeminiTradingBot
 from functions.calculators.calculate_fast_gradients import calculate_fast_gradients
 from functions.calculators.calculate_gradient_percentage_change import (
     calculate_gradient_percentage_change,
@@ -338,7 +339,7 @@ class getMovingAverageVergenceRSI:
                 )
                 message = f"O RSI está baixo de 30 indicando que o ativo está fortemente sobrevendido.\n Esse é um sinal claro de que o preço pode estar próximo de um fundo e uma reversão para a alta é possível. \n Este é um indicativo forte de que a pressão vendedora pode estar se esgotando\n"
                 bot_logger.info(message)
-                ma_trade_decision = True  # Sinal de venda
+                ma_trade_decision = True  # Sinal de compra
 
             # CONDIÇÕES DE VENDA
             # 1
@@ -575,6 +576,28 @@ class getMovingAverageVergenceRSI:
                 f"{'---------------'}\n"
             )
             bot_logger.info(message)
+
+            dados_from_gemini = (
+                f"{self.operation_code}:\n"
+                f"{last_ma_fast:.3f} - Ultima Media Rapida \n{last_ma_slow:.3f} - Ultima Media Lenta\n"
+                f"Ultima Volatilidade: {last_volatility:.3f}\n"
+                f"Media da Volatilidade: {volatility:.3f}\n"
+                f"Diferenca Atual: {current_difference:.3f}\n"
+                f"Ultimo RSI: {last_rsi:.3f}\n"
+                f"^indicador de tendencia de alta:\n"
+                f"  - Media recente dos Gradientes rapidos: {self.recent_average:.3f}\n"
+                f"  - Media necessaria para tendecia de alta: {growth_threshold * prev_ma_fast:.3f}\n"
+                f"  - gradiente rapido maximo para sair da tendencia: ({ self.last_fast_gradient - correction_threshold:.3f})\n"
+                f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > self.last_fast_gradient else "Descendo" })\n'
+                f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })\n'
+                f"  -Porcentagem de crescimento do gradiente rapido: {self.percentage_fromUP_fast_gradient:.3f}%\n"
+                f"  -Porcentagem de Decremento do gradiente rapdido: {self.percentage_fromDOWN_fast_gradient:.3f}%\n"
+            )
+
+            gemini = GeminiTradingBot(dados_from_gemini)
+            decision = gemini.geminiTrader()
+
+            print(decision)
 
         except IndexError:
             message(
