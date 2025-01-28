@@ -53,6 +53,8 @@ class GeminiTradingBot:
             for chunk in response:
                 decision += chunk.text
 
+            print(f"Resposta do modelo: {decision}")
+
             # Formata a resposta em uma tabela
             formatted_response = self.format_response_as_table(decision)
             decision_bool = self.convert_decision_to_bool(decision)
@@ -61,6 +63,11 @@ class GeminiTradingBot:
 
         except Exception as e:
             raise RuntimeError(f"Erro ao processar os dados com o Gemini: {e}")
+        except ValueError as e:
+            print(f"Erro ao processar a decisão: {e}")
+            # Aqui você pode decidir o que fazer caso a decisão não seja clara
+            # Exemplo: Definir o valor como False por padrão ou continuar com outra lógica.
+            return decision, None  # Valor padrão como False em caso de erro
 
     def convert_decision_to_bool(self, decision_text):
         """

@@ -605,10 +605,27 @@ class getMovingAverageVergenceRSI:
 
             gemini = GeminiTradingBot(dados_from_gemini)
             decision, decision_bool = gemini.geminiTrader()
+            ma_trade_decision = decision_bool
 
             print(decision)
-            print("-----")
-            print(decision_bool)
+
+            #  if ma_trade_decision is not None:
+            #       if ma_trade_decision != decision_bool:
+            #           print(
+            #               f"A estratégia getmovingAverageVercenceRSI não foi executada corretamente. A decisão do gemini não corresponde à decisão da estratégia."
+            #           )
+            #           bot_logger.info(
+            #               f"A estratégia getmovingAverageVercenceRSI não foi executada corretamente. A decisão do gemini não corresponde à decisão da estratégia."
+            #           )
+            #           ma_trade_decision = False
+            #       else:
+            #          print(
+            #              f"A estratégia getmovingAverageVercenceRSI foi executada corretamente. A decisão do gemini corresponde à decisão da estratégia."
+            #           )
+            #          bot_logger.info(
+            #               f"A estratégia getmovingAverageVercenceRSI foi executada corretamente. A decisão do gemini corresponde à decisão da estratégia."
+            #           )
+            #           ma_trade_decision = True
 
         except IndexError:
             message(
