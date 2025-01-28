@@ -1,5 +1,7 @@
 import google.generativeai as genai
 import os
+from tabulate import tabulate
+import textwrap
 
 
 class GeminiTradingBot:
@@ -51,7 +53,95 @@ class GeminiTradingBot:
             for chunk in response:
                 decision += chunk.text
 
-            return decision.strip()
+            # Formata a resposta em uma tabela
+            formatted_response = self.format_response_as_table(decision)
+            decision_bool = self.convert_decision_to_bool(decision)
+
+            return formatted_response, decision_bool
 
         except Exception as e:
             raise RuntimeError(f"Erro ao processar os dados com o Gemini: {e}")
+
+    def convert_decision_to_bool(self, decision_text):
+        """
+        Transforma a decisão de texto em um valor booleano.
+        Retorna True para 'comprar', False para 'vender' ou 'manter'.
+        """
+        decision_text = decision_text.lower()
+        if "comprar" in decision_text:
+            return True  # Considera 'comprar' como True
+        elif "vender" in decision_text or "manter" in decision_text:
+            return False  # Considera 'vender' ou 'manter' como False
+        else:
+            raise ValueError("Decisão inválida ou incompleta fornecida pelo Gemini.")
+
+    @staticmethod
+    def format_response_as_table(response, max_line_length=50):
+        # Inicializa os insights com valores padrão
+        insights = {
+            "Decisão": "",
+            "Média Rápida": "",
+            "Média Lenta": "",
+            "RSI": "",
+            "Gradiente Rápido": "",
+            "Volatilidade": "",
+            "Motivo": "",
+        }
+
+        # Variáveis auxiliares para captura da decisão
+        decision_keywords = ["manter", "comprar", "vender"]
+        decision_found = False
+
+        # Parsing da resposta (baseado no texto de exemplo fornecido)
+        for line in response.split(". "):  # Divide o texto em frases
+            line = line.strip()  # Remove espaços desnecessários
+            try:
+                # Identifica a decisão principal
+                if not decision_found:
+                    for keyword in decision_keywords:
+                        if keyword in line.lower():
+                            insights["Decisão"] = keyword.capitalize()
+                            decision_found = True
+                            break
+
+                # Agora, captura os outros campos como médias, RSI, gradiente, etc.
+                if "média rápida" in line.lower() and "média lenta" in line.lower():
+                    if ">" in line and "(" in line and ")" in line:
+                        insights["Média Rápida"] = (
+                            line.split("(")[1].split(">")[0].strip()
+                        )
+                        insights["Média Lenta"] = (
+                            line.split(">")[1].split(")")[0].strip()
+                        )
+                elif "RSI" in line and "(" in line and ")" in line:
+                    insights["RSI"] = line.split("(")[1].split(")")[0].strip()
+                elif "gradiente rápido" in line.lower():
+                    if "(" in line and ")" in line:
+                        insights["Gradiente Rápido"] = (
+                            line.split("(")[1].split(")")[0].strip()
+                        )
+                elif "volatilidade" in line.lower():
+                    if "(" in line and ")" in line:
+                        insights["Volatilidade"] = (
+                            line.split("(")[1].split(")")[0].strip()
+                        )
+                else:
+                    # Adiciona qualquer outra informação ao motivo
+                    if "decisão" not in line.lower():
+                        insights["Motivo"] += line.strip() + ". "
+            except (IndexError, ValueError) as e:
+                # Ignora linhas que não seguem o formato esperado
+                insights["Motivo"] += f"(Erro ao processar esta linha: {line}). "
+
+        # Formata a justificativa (campo "Motivo") para quebre de linha
+        if insights["Motivo"]:
+            insights["Motivo"] = textwrap.fill(
+                insights["Motivo"], width=max_line_length
+            )
+
+        # Remove entradas vazias ou não preenchidas
+        insights = {key: value for key, value in insights.items() if value}
+
+        # Converte os insights em uma tabela
+        data = [[key, value] for key, value in insights.items()]
+        return tabulate(data, headers=["Campo", "Valor"], tablefmt="grid")

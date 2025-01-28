@@ -10,6 +10,9 @@ from db.neonDbConfig import (
 
 
 from functions.InteligenciaArtificial.GeminiTradingBot import GeminiTradingBot
+from functions.binance.getActualTradePositionForBinance import (
+    getActualTradePositionForBinance,
+)
 from functions.calculators.calculate_fast_gradients import calculate_fast_gradients
 from functions.calculators.calculate_gradient_percentage_change import (
     calculate_gradient_percentage_change,
@@ -83,6 +86,7 @@ class getMovingAverageVergenceRSI:
         self.volatility_tracker = []
         self.current_volume = None
         self.min_gradient_difference = 0.02
+        self.actual_trade_position = None
 
     def getMovingAverageVergenceRSI(
         self,
@@ -246,6 +250,10 @@ class getMovingAverageVergenceRSI:
             rsi_rate_of_change = (
                 last_rsi - self.prev_rsi
             ) / self.prev_rsi  # Representa a taxa de mudança percentual do RSI (Índice de Força Relativa).
+            # Recuperar posição atual
+            self.actual_trade_position = getActualTradePositionForBinance(
+                self, self.operation_code
+            )
 
             # CONDIÇÕES DE COMPRA
             # 1
@@ -578,6 +586,7 @@ class getMovingAverageVergenceRSI:
             bot_logger.info(message)
 
             dados_from_gemini = (
+                f'posição atual do ativo: {"Comprado" if self.actual_trade_position == True else "Vendido"}\n'
                 f"{self.operation_code}:\n"
                 f"{last_ma_fast:.3f} - Ultima Media Rapida \n{last_ma_slow:.3f} - Ultima Media Lenta\n"
                 f"Ultima Volatilidade: {last_volatility:.3f}\n"
@@ -595,9 +604,11 @@ class getMovingAverageVergenceRSI:
             )
 
             gemini = GeminiTradingBot(dados_from_gemini)
-            decision = gemini.geminiTrader()
+            decision, decision_bool = gemini.geminiTrader()
 
             print(decision)
+            print("-----")
+            print(decision_bool)
 
         except IndexError:
             message(
