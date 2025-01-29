@@ -28,6 +28,7 @@ from functions.calculators.calculate_support_resistance_from_prices import (
 from functions.detect_new_price_jump import detect_new_price_jump
 from functions.get_current_price import get_current_price
 from functions.get_recent_prices import get_recent_prices
+from functions.indicadores.macd import calculate_macd, get_historical_data
 from functions.logger import erro_logger, bot_logger
 from functions.indicadores.RsiCalculationClass import TechnicalIndicators
 from functions.CandlestickDataExtractor import CandlestickDataExtractor
@@ -254,6 +255,11 @@ class getMovingAverageVergenceRSI:
             self.actual_trade_position = getActualTradePositionForBinance(
                 self, self.operation_code
             )
+
+            df = get_historical_data(
+                symbol=self.operation_code, interval=self.interval, limit=500
+            )
+            macd_values = calculate_macd(df)
 
             # CONDIÇÕES DE COMPRA
             # 1
@@ -557,6 +563,12 @@ class getMovingAverageVergenceRSI:
                 f"  -Porcentagem de crescimento do gradiente rápido: (\033[1m{self.percentage_fromUP_fast_gradient:.3f}%)\033[0m\n"
                 f"  -Porcentagem de Decremento do gradiente rápdido: (\033[1m{self.percentage_fromDOWN_fast_gradient:.3f}%)\033[0m\n"
             )
+            print("\n📊 Indicador MACD:")
+            print(f"MACD: {macd_values['MACD']:.5f}")
+            print(f"Linha de Sinal: {macd_values['Signal']:.5f}")
+            print(f"Histograma: {macd_values['Histograma']:.5f}")
+            print(f"Sinal de Compra: {macd_values['Buy_Signal']}")
+            print(f"Sinal de Venda: {macd_values['Sell_Signal']}\n")
             if ma_trade_decision is None:
                 print("Decisao: Manter Posição")
             else:
@@ -580,6 +592,12 @@ class getMovingAverageVergenceRSI:
                 f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })\n'
                 f"  -Porcentagem de crescimento do gradiente rapido: {self.percentage_fromUP_fast_gradient:.3f}%\n"
                 f"  -Porcentagem de Decremento do gradiente rapdido: {self.percentage_fromDOWN_fast_gradient:.3f}%\n"
+                f"\n📊 Indicador MACD:\n"
+                f"MACD: {macd_values['MACD']:.5f}\n"
+                f"Linha de Sinal: {macd_values['Signal']:.5f}\n"
+                f"Histograma: {macd_values['Histograma']:.5f}\n"
+                f"Sinal de Compra: {macd_values['Buy_Signal']}\n"
+                f"Sinal de Venda: {macd_values['Sell_Signal']}\n"
                 f'Decisao: {"Comprar" if ma_trade_decision == True else "Vender"}\n'
                 f"{'---------------'}\n"
             )
@@ -601,6 +619,12 @@ class getMovingAverageVergenceRSI:
                 f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })\n'
                 f"  -Porcentagem de crescimento do gradiente rapido: {self.percentage_fromUP_fast_gradient:.3f}%\n"
                 f"  -Porcentagem de Decremento do gradiente rapdido: {self.percentage_fromDOWN_fast_gradient:.3f}%\n"
+                f"\n📊 Indicador MACD:\n"
+                f"MACD: {macd_values['MACD']:.5f}\n"
+                f"Linha de Sinal: {macd_values['Signal']:.5f}\n"
+                f"Histograma: {macd_values['Histograma']:.5f}\n"
+                f"Sinal de Compra: {macd_values['Buy_Signal']}\n"
+                f"Sinal de Venda: {macd_values['Sell_Signal']}\n"
             )
 
             gemini = GeminiTradingBot(dados_from_gemini)

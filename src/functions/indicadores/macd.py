@@ -67,17 +67,3 @@ def calculate_macd(df):
         "Buy_Signal": df["Buy_Signal"].iloc[-1],
         "Sell_Signal": df["Sell_Signal"].iloc[-1],
     }
-
-
-# EXEMPLO: Utilizar o ativo SOLUSDT (Solana) com intervalo de 15 minutos e limite de 500 candlesticks
-# **Executar o código**
-df = get_historical_data(symbol="SOLUSDT", interval="15m", limit=500)
-macd_values = calculate_macd(df)
-
-# **Exibir os resultados**
-print("\n📊 Indicador MACD:")
-print(f"MACD: {macd_values['MACD']:.5f}")
-print(f"Linha de Sinal: {macd_values['Signal']:.5f}")
-print(f"Histograma: {macd_values['Histograma']:.5f}")
-print(f"Sinal de Compra: {macd_values['Buy_Signal']}")
-print(f"Sinal de Venda: {macd_values['Sell_Signal']}")
