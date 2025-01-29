@@ -53,7 +53,11 @@ trade_logger.addHandler(trade_handler)
 bot_logger = logging.getLogger("bot")
 bot_logger.setLevel(logging.INFO)
 bot_handler = TimedRotatingFileHandler(
-    os.path.join(bot_log_dir, "bot.log"), when="midnight", interval=1, backupCount=7
+    os.path.join(bot_log_dir, "bot.log"),
+    when="midnight",
+    interval=1,
+    backupCount=7,
+    encoding="utf-8",
 )
 bot_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 bot_handler.setFormatter(bot_formatter)
