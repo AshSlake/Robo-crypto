@@ -608,6 +608,7 @@ class getMovingAverageVergenceRSI:
             ma_trade_decision = decision_bool
 
             print(decision)
+            bot_logger.info(decision)
 
             #  if ma_trade_decision is not None:
             #       if ma_trade_decision != decision_bool:

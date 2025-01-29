@@ -1,7 +1,11 @@
+from email import message
 import google.generativeai as genai
 import os
 from tabulate import tabulate
 import textwrap
+from rich.console import Console
+
+from files import palavras_ignorar
 
 
 class GeminiTradingBot:
@@ -36,9 +40,12 @@ class GeminiTradingBot:
                         "parts": (
                             "Você é um analista de trading altamente especializado, com ampla experiência em mercados financeiros e criptomoedas. "
                             "Seu objetivo é analisar dados técnicos e fornecer estratégias precisas para tomada de decisão. "
-                            "Com base nas informações a seguir, analise os dados e forneça uma decisão de compra, "
-                            "venda ou manter a posição baseado na posição atual !SOMENTE UMA ESCOLHA JAMAIS MAIS DE UMA!, explicando seus motivos para a escolha. "
+                            "Com base nas informações a seguir, analise os dados e forneça uma decisão de manter, comprar, vender"
+                            "!SOMENTE UMA ESCOLHA JAMAIS MAIS DE UMA!, explicando seus motivos para a escolha. "
+                            "evite usar as palavras 'comprar','vender','manter' na mesma resposta para evitar meu codigo de não identificar sua resposta. "
+                            "a primeira linha ja defina a decisão que você deseja fazer. para eu capturar sua decisão posteriormente e trasformala em um booleano."
                             "Não use muitos caracteres para não ficar muito grande a resposta. "
+                            "!AS PALAVRAS manter, comprar, vender SÓ DEVEM SER USADAS UMA SÓ VEZ E SÓ DEVEM SER MENCIONADAS NA INTENSÃO DE INDICAR SUA DECISÃO,NÃO USE ELAS PARA COMPLEMENTAR FRASES E OUTROS AFINS ISSO PREJUDICA MEU CODIGO DE ANALISAR SUA DECISÃO!"
                             f"Dados para análise:\n{self.dados}"
                         ),
                     }
@@ -47,40 +54,88 @@ class GeminiTradingBot:
 
             # Envia a mensagem e coleta a resposta
             response = chat.send_message(self.dados, stream=True)
+            console = Console()
 
             # Processa a resposta do modelo
             decision = ""
             for chunk in response:
                 decision += chunk.text
 
-            print(f"Resposta do modelo: {decision}")
-
-            # Formata a resposta em uma tabela
+            # Formata a resposta para exibição em tabela
             formatted_response = self.format_response_as_table(decision)
-            decision_bool = self.convert_decision_to_bool(decision)
+            try:
+                # Converte a decisão para booleano
+                decision_bool = self.convert_decision_to_bool(decision)
 
+                # Formata a mensagem para o console
+                message = (
+                    f"\n ==> Resposta do modelo: '{decision}'\n"
+                    f" ==> Resultado: "
+                    + (
+                        "Compra"
+                        if decision_bool is True
+                        else "Venda" if decision_bool is False else "Manter"
+                    )
+                )
+
+                # Exibe no console com estilo apropriado
+                console.print(
+                    message,
+                    style=(
+                        "bold green"
+                        if decision_bool
+                        else "bold red" if decision_bool is False else "bold yellow"
+                    ),
+                )
+
+            except ValueError as e:
+                # Tratamento para erro de decisão inválida
+                print(f"Erro ao processar decisão: {e}")
+                decision_bool = None
+
+            # Retorna a resposta formatada e o resultado booleano
             return formatted_response, decision_bool
 
         except Exception as e:
-            raise RuntimeError(f"Erro ao processar os dados com o Gemini: {e}")
-        except ValueError as e:
-            print(f"Erro ao processar a decisão: {e}")
-            # Aqui você pode decidir o que fazer caso a decisão não seja clara
-            # Exemplo: Definir o valor como False por padrão ou continuar com outra lógica.
-            return decision, None  # Valor padrão como False em caso de erro
+            # Tratamento para erros gerais
+            print(f"Erro ao processar os dados com o Gemini: {e}")
+            return None, None
 
     def convert_decision_to_bool(self, decision_text):
         """
         Transforma a decisão de texto em um valor booleano.
-        Retorna True para 'comprar', False para 'vender' ou 'manter'.
+        Retorna:
+            - True para 'comprar'.
+            - False para 'vender'.
+            - None para 'manter'.
+
+        Ignora palavras irrelevantes como 'sobrevendido', 'sobrecomprado', etc.
+        Levanta ValueError para respostas inválidas ou incompletas.
         """
-        decision_text = decision_text.lower()
-        if "comprar" in decision_text:
-            return True  # Considera 'comprar' como True
-        elif "vender" in decision_text or "manter" in decision_text:
-            return False  # Considera 'vender' ou 'manter' como False
-        else:
-            raise ValueError("Decisão inválida ou incompleta fornecida pelo Gemini.")
+        # Normaliza a entrada
+        decision_text = decision_text.split("\n")[0].lower()
+
+        for palavra in palavras_ignorar.filtrar_palavras_irrelevantes():
+            decision_text = decision_text.replace(palavra, "")
+
+        # Verifica padrões de texto para decisões
+        if "comprar" in decision_text or "compra" in decision_text:
+            return True  # Sinal de compra
+        if "vender" in decision_text or "venda" in decision_text:
+            return False  # Sinal de venda
+        if (
+            "manter" in decision_text
+            or "segurar" in decision_text
+            or "aguardar" in decision_text
+            or " Mais observação é necessária antes de assumir uma posição"
+            in decision_text
+        ):
+            return None  # Sinal de manutenção
+
+        # Caso a decisão seja inválida ou desconhecida
+        raise ValueError(
+            f"Decisão inválida ou incompleta fornecida pelo Gemini: '{decision_text}'"
+        )
 
     @staticmethod
     def format_response_as_table(response, max_line_length=50):
