@@ -3,16 +3,17 @@ import time
 from typing import Self
 import pandas as pd
 from datetime import datetime
-import threading
 from dotenv import load_dotenv
 from binance.client import Client
 from binance.enums import *
 from binance.exceptions import BinanceAPIException, BinanceRequestException
 from db.neonDbConfig import create_tables
 from estrategias import getMovingAverageVergenceRSI
+from functions.calculators.profit_and_loss_Calculator import calculate_profit
 from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logger
 from decimal import ROUND_DOWN, Decimal
-from functions.calculate_max_buy_sell_quantity import QuantityCalculator
+from functions.calculators.calculate_max_buy_sell_quantity import QuantityCalculator
+from functions.get_current_price import get_current_price
 
 
 # Load environment variables
@@ -26,6 +27,7 @@ STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
 TRADED_QUANTITY = 0.073
+BACKTESMODE = True
 
 
 # Binance Trading Bot Class
@@ -52,6 +54,7 @@ class BinanceTraderBot:
         self.quantity_calculator = QuantityCalculator(
             self.client_binance, self.operation_code
         )  # Instancia a classe
+        self.current_price_from_buy_order = 0
         print("Robo Trader iniciado...")
         bot_logger.info("Robo Trader iniciado...")
 
@@ -159,6 +162,10 @@ class BinanceTraderBot:
         """
         if entry_price is None:
             return None
+        if current_price is not Decimal:
+            current_price = Decimal(current_price)
+        if entry_price is not Decimal:
+            entry_price = Decimal(entry_price)
         profit_per_unit = current_price - entry_price
         total_profit = profit_per_unit * quantity
         return total_profit
@@ -231,6 +238,9 @@ class BinanceTraderBot:
                     type=ORDER_TYPE_MARKET,
                     quantity=str(quantity),
                 )
+                self.current_price_from_buy_order = get_current_price(
+                    self.operation_code
+                )
 
             elif side == SIDE_SELL:
                 # Obtem o saldo disponível do ativo
@@ -268,7 +278,11 @@ class BinanceTraderBot:
                 )
 
             if order["status"] == "FILLED":
-                createLogOrder(order) if createLogOrder else "No log message"
+                (
+                    createLogOrder(order, OPERATION_CODE)
+                    if createLogOrder
+                    else "No log message"
+                )
                 self.actual_trade_position = True if side == SIDE_BUY else False
                 self.traded_quantity = float(order["executedQty"])
                 if self.actual_trade_position == True:
@@ -334,10 +348,8 @@ class BinanceTraderBot:
                 return float(asset["free"])
         return 0.0
 
-    def message_bot_logger_info(self, message):
-        bot_logger.info(message)
-
     def execute(self):
+
         try:
             self.updateAllData()
             # Obtém dados do símbolo
@@ -373,8 +385,9 @@ class BinanceTraderBot:
             # Cria uma instância da classe `estrategies`
             estrategias = getMovingAverageVergenceRSI.getMovingAverageVergenceRSI(
                 stock_data=self.stock_data,
-                operation_code=self.stock_code,  # Passa o código da operação
+                operation_code=OPERATION_CODE,  # Passa o código da operação
                 actual_trade_position=self.actual_trade_position,
+                current_price_from_buy_order=self.current_price_from_buy_order,
             )
 
             ma_trade_decision = estrategias.getMovingAverageVergenceRSI(
@@ -382,11 +395,10 @@ class BinanceTraderBot:
                 slow_window=40,
                 volatility_factor=0.3,
                 initial_purchase_price=self.traded_quantity,
-                current_price=Decimal(self.getLastStockAccountBalance()),
             )
 
             # Executa a ordem de compra/venda se a decisão da estratégia for verdadeira
-            if ma_trade_decision is not None:
+            if ma_trade_decision is not None and BACKTESMODE is not True:
                 if ma_trade_decision and not self.actual_trade_position:
                     self.execute_trade(SIDE_BUY)
                     self.actual_trade_position = (
