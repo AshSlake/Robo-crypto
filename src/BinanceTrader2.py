@@ -3,7 +3,6 @@ import time
 from typing import Self
 import pandas as pd
 from datetime import datetime
-import threading
 from dotenv import load_dotenv
 from binance.client import Client
 from binance.enums import *

@@ -1,10 +1,8 @@
-from email import message
 import google.generativeai as genai
 import os
 from tabulate import tabulate
 import textwrap
 from rich.console import Console
-
 from files import palavras_ignorar
 
 

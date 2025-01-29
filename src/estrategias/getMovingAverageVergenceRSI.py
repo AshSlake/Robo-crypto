@@ -13,12 +13,12 @@ from functions.InteligenciaArtificial.GeminiTradingBot import GeminiTradingBot
 from functions.binance.getActualTradePositionForBinance import (
     getActualTradePositionForBinance,
 )
-from functions.calculators.calculate_fast_gradients import calculate_fast_gradients
-from functions.calculators.calculate_gradient_percentage_change import (
+from functions.indicadores.calculate_fast_gradients import calculate_fast_gradients
+from functions.indicadores.calculate_gradient_percentage_change import (
     calculate_gradient_percentage_change,
 )
 from functions.calculators.calculate_jump_threshold import calculate_jump_threshold
-from functions.calculators.calculate_moving_average import calculate_moving_average
+from functions.indicadores.calculate_moving_average import calculate_moving_average
 from functions.calculators.calculate_recent_growth_value import (
     calculate_recent_growth_value,
 )
@@ -29,7 +29,7 @@ from functions.detect_new_price_jump import detect_new_price_jump
 from functions.get_current_price import get_current_price
 from functions.get_recent_prices import get_recent_prices
 from functions.logger import erro_logger, bot_logger
-from functions.RsiCalculationClass import TechnicalIndicators
+from functions.indicadores.RsiCalculationClass import TechnicalIndicators
 from functions.CandlestickDataExtractor import CandlestickDataExtractor
 from binance.client import Client
 

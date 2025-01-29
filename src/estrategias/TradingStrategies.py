@@ -1,8 +1,6 @@
-from email import message
-import pandas as pd
 import numpy as np
 from functions.logger import erro_logger, bot_logger
-from functions.RsiCalculationClass import TechnicalIndicators
+from functions.indicadores.RsiCalculationClass import TechnicalIndicators
 
 
 # strategies.py

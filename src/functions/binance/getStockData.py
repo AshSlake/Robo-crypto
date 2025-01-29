@@ -1,9 +1,15 @@
+import os
 import pandas as pd
+from binance.client import Client as client_binance
+
+api_key = os.getenv("BINANCE_API_KEY")
+secret_key = os.getenv("BINANCE_SECRET_KEY")
+client_binance = client_binance(api_key, secret_key)
 
 
-def getStockData(self):
-    candles = self.client_binance.get_klines(
-        symbol=self.operation_code, interval=self.candle_period, limit=500
+def getStockData(operation_code, candle_period):
+    candles = client_binance.get_klines(
+        symbol=operation_code, interval=candle_period, limit=500
     )
     prices = pd.DataFrame(
         candles,
