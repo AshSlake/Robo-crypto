@@ -36,15 +36,20 @@ class GeminiTradingBot:
                     {
                         "role": "user",
                         "parts": (
-                            "Você é um analista de trading altamente especializado, com ampla experiência em mercados financeiros e criptomoedas. "
-                            "Seu objetivo é analisar dados técnicos e fornecer estratégias precisas para tomada de decisão. "
-                            "Com base nas informações a seguir, analise os dados e forneça uma decisão de manter, comprar, vender"
-                            "!SOMENTE UMA ESCOLHA JAMAIS MAIS DE UMA!, explicando seus motivos para a escolha. "
-                            "evite usar as palavras 'comprar','vender','manter' na mesma resposta para evitar meu codigo de não identificar sua resposta. "
-                            "a primeira linha ja defina a decisão que você deseja fazer. para eu capturar sua decisão posteriormente e trasformala em um booleano."
-                            "Não use muitos caracteres para não ficar muito grande a resposta. "
-                            "!AS PALAVRAS manter, comprar, vender SÓ DEVEM SER USADAS UMA SÓ VEZ E SÓ DEVEM SER MENCIONADAS NA INTENSÃO DE INDICAR SUA DECISÃO,NÃO USE ELAS PARA COMPLEMENTAR FRASES E OUTROS AFINS ISSO PREJUDICA MEU CODIGO DE ANALISAR SUA DECISÃO!"
-                            f"Dados para análise:\n{self.dados}"
+                            "Você é um analista de trading altamente especializado, com ampla experiência em mercados financeiros e criptomoedas."
+                            "Seu objetivo é analisar dados técnicos e fornecer a melhor decisão entre **manter, comprar ou vender**. "
+                            "🔹 **IMPORTANTE:**  "
+                            " - **Diga a decisão na PRIMEIRA LINHA da resposta, isolada explicações nas demais linhas.**  "
+                            " - **Use apenas UMA das palavras: comprar, vender ou manter.**"
+                            " - **Não use essas palavras para explicar outros conceitos ou fazer comparações.**"
+                            "📊 **Análise Técnica:**"
+                            "- Priorize **pontos de entrada estratégicos**, considerando tendências e padrões de candles. "
+                            "- Se houver uma reversão clara ou forte tendência, ajuste a decisão conforme necessário. "
+                            "- Fique atento a **cruzamento de médias móveis, suporte/resistência, volume e RSI.**  "
+                            "- Busque maximizar ganhos identificando **melhores momentos para entrar e sair** da posição."
+                            "tente ao maximo fazer holding ao estar comprado"
+                            "🔍 **Dados do mercado:** "
+                            f"{self.dados}"
                         ),
                     }
                 ]

@@ -14,7 +14,7 @@ class TechnicalIndicators:
         calculate_rsi(): Calcula o Índice de Força Relativa (RSI) e adiciona ao DataFrame.
     """
 
-    def __init__(self, stock_data, rsi_period=14):
+    def __init__(self, stock_data, rsi_period=5, adjusted=1):
         """
         Inicializa a classe TechnicalIndicators.
 
@@ -24,6 +24,7 @@ class TechnicalIndicators:
         """
         self.stock_data = stock_data
         self.rsi_period = rsi_period
+        self.adjusted = adjusted
 
     def calculate_rsi(self):
         """
@@ -61,8 +62,8 @@ class TechnicalIndicators:
             loss = -delta.where(delta < 0, 0)
 
             # Calcula a SMMA dos ganhos e perdas
-            avg_gain = gain.ewm(span=self.rsi_period, adjust=False).mean()
-            avg_loss = loss.ewm(span=self.rsi_period, adjust=False).mean()
+            avg_gain = gain.ewm(span=self.rsi_period, adjust=self.adjusted).mean()
+            avg_loss = loss.ewm(span=self.rsi_period, adjust=self.adjusted).mean()
 
             # Calcula o RS e o RSI
             rs = avg_gain / avg_loss

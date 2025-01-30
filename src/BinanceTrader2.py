@@ -27,7 +27,7 @@ STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
 CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
 TRADED_QUANTITY = 0.073
-BACKTESMODE = True
+BACKTESMODE = False
 
 
 # Binance Trading Bot Class
@@ -141,7 +141,6 @@ class BinanceTraderBot:
                 "ignore",
             ],
         )
-        prices = prices[["close_price", "open_time"]]
         prices["open_time"] = (
             pd.to_datetime(prices["open_time"], unit="ms")
             .dt.tz_localize("UTC")

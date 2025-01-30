@@ -45,7 +45,7 @@ def get_historical_data(symbol, interval, limit):
 # **Função para calcular MACD e identificar sinais**
 def calculate_macd(df):
     macd, signal, hist = talib.MACD(
-        df["close"], fastperiod=14, slowperiod=20, signalperiod=10
+        df["close"], fastperiod=5, slowperiod=15, signalperiod=10
     )
     df["MACD"] = macd
     df["Signal"] = signal
@@ -64,6 +64,7 @@ def calculate_macd(df):
         "MACD": df["MACD"].iloc[-1],
         "Signal": df["Signal"].iloc[-1],
         "Histograma": df["Histograma"].iloc[-1],
+        "LastHistograma": df["Histograma"].iloc[-2],
         "Buy_Signal": df["Buy_Signal"].iloc[-1],
         "Sell_Signal": df["Sell_Signal"].iloc[-1],
     }
