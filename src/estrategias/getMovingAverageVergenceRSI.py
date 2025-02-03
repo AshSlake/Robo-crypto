@@ -54,7 +54,6 @@ class getMovingAverageVergenceRSI:
         stop_loss=0.05,
         stop_gain=0.10,
         operation_code=None,
-        actual_trade_position=None,
         current_price_from_buy_order=None,
     ):
         self.stock_data = stock_data
@@ -66,7 +65,6 @@ class getMovingAverageVergenceRSI:
         self.stop_gain = stop_gain
         self.entry_price = None
         self.operation_code = operation_code
-        self.actual_trade_position = actual_trade_position
 
         # Variáveis adicionais
         self.indicators = TechnicalIndicators(stock_data, rsi_period)
@@ -92,6 +90,9 @@ class getMovingAverageVergenceRSI:
         self.min_gradient_difference = 0.02
         self.actual_trade_position = None
         self.lastHistograma = None
+        self.actual_trade_position = getActualTradePositionForBinance(
+            self, self.operation_code
+        )
 
     def getMovingAverageVergenceRSI(
         self,

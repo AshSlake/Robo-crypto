@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from binance.client import Client
 from binance.enums import *
 from binance.exceptions import BinanceAPIException, BinanceRequestException
+import psycopg2
 from db.neonDbConfig import create_tables
 from estrategias import getMovingAverageVergenceRSI
 from functions.calculators.profit_and_loss_Calculator import calculate_profit
@@ -379,14 +380,16 @@ class BinanceTraderBot:
             message += f"-----------------------------\n"
             bot_logger.info(message)
 
-            # Usa getActualTradePositionForBinance para obter a posição atual do trade
-            self.actual_trade_position = self.getActualTradePositionForBinance()
-
             # Cria uma instância da classe `estrategies`
             estrategias = getMovingAverageVergenceRSI.getMovingAverageVergenceRSI(
                 stock_data=self.stock_data,
+                volume_threshold=1.5,
+                rsi_period=5,
+                rsi_upper=70,
+                rsi_lower=30,
+                stop_loss=0.05,
+                stop_gain=0.10,
                 operation_code=OPERATION_CODE,  # Passa o código da operação
-                actual_trade_position=self.actual_trade_position,
                 current_price_from_buy_order=self.current_price_from_buy_order,
             )
 
@@ -417,7 +420,12 @@ class BinanceTraderBot:
 
 
 # Cria as tabelas do banco de dados
-create_tables()
+try:
+    create_tables()
+except Exception as e:
+    print(f"Erro ao conectar ao banco de dados: {e}")
+except psycopg2.OperationalError as e:
+    print(f"Erro ao conectar ao banco de dados: {e}")
 # Main execution loop
 MaTrader = BinanceTraderBot(
     STOCK_CODE, OPERATION_CODE, TRADED_QUANTITY, 100, CANDLE_PERIOD
