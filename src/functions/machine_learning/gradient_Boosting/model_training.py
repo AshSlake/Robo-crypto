@@ -148,7 +148,7 @@ class ModelTraining:
             grid_search.fit(X_train, y_train)
 
             self.model = grid_search.best_estimator_
-            print(f"Melhores parâmetros: {grid_search.best_params_}")
+            # print(f"Melhores parâmetros: {grid_search.best_params_}")
             return self.model
 
         except Exception as e:

@@ -84,7 +84,7 @@ class ModelEvaluation:
         # Calcular AUC-ROC multiclasse
         auc_roc = roc_auc_score(self.y_test, self.y_prob, multi_class="ovr")  # ou 'ovo'
 
-        self._display_metrics(accuracy, precision, recall, f1, auc_roc)
+        # self._display_metrics(accuracy, precision, recall, f1, auc_roc)
 
         return accuracy, precision, recall, f1, auc_roc
 
@@ -177,32 +177,6 @@ class ModelEvaluation:
             plt.show()
         except Exception as e:
             logging.error(f"Erro ao plotar a curva Precisão-Recall: {e}")
-        except ValueError as e:
-            logging.error(f"Erro ao calcular métricas: {e}")
-
-    def plot_precision_vs_threshold(self):
-        """
-        Plota a precisão vs. limiar (threshold).
-        """
-        try:
-            if self.y_prob is None:
-                raise ValueError(
-                    "Chame 'evaluate' antes de plotar Precisão vs. Limiar."
-                )
-
-            precision, recall, thresholds = precision_recall_curve(
-                self.y_test, self.y_prob
-            )  # Usar self.y_prob
-
-            plt.figure(figsize=(8, 6))
-            plt.plot(thresholds, precision, color="blue", lw=2, label="Precisão")
-            plt.xlabel("Limiar")
-            plt.ylabel("Precisão")
-            plt.title("Precisão vs Limiar")
-            plt.legend(loc="best")
-            plt.show()
-        except Exception as e:
-            logging.error(f"Erro ao plotar Precisão vs. Limiar: {e}")
         except ValueError as e:
             logging.error(f"Erro ao calcular métricas: {e}")
 

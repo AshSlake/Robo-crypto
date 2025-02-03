@@ -133,7 +133,7 @@ class Result:
 
         try:
             joblib.dump(self.model, model_filename)
-            logging.info(f"Modelo Gradient Boosting salvo em {model_filename}")
+        # print(f"Modelo Gradient Boosting salvo em {model_filename}")
         except Exception as e:
             logging.error(f"Erro ao salvar o modelo Gradient Boosting: {e}")
 
@@ -210,24 +210,51 @@ class Result:
 
     def _plot_additional_metrics(self, model_evaluator):
         try:
+            # Supondo que self.y_test contenha os rótulos originais (0, 1 e -1)
+            # Convertemos para binário: 1 permanece 1; os demais tornam-se 0.
+            y_test_binary = (self.y_test == 1).astype(int)
+
+            # Obter as probabilidades preditas (supondo que a previsão seja para 3 classes)
+            y_prob = self.model.predict_proba(self.X_test)
+
+            # Se o modelo foi treinado em um problema multiclasse, precisamos identificar a probabilidade da classe 1.
+            # Vamos assumir que as classes foram ordenadas e que a classe 1 corresponde ao índice apropriado.
+            # Para garantir, podemos ordenar os rótulos:
+            positive_count = (self.y_test == 1).sum()
             class_labels = sorted(self.y_test.unique())
-            y_pred = model_evaluator.get_y_pred()
+            print("Classes originais:", class_labels)
+            # Encontre o índice correspondente à classe 1
+            if 1 in class_labels:
+                idx = class_labels.index(1)
+            else:
+                raise ValueError("A classe 1 não está presente em y_test.")
+
+            # Extraia as probabilidades para a classe 1
+            y_prob_positive_class = y_prob[:, idx]
             model_evaluator.plot_confusion_matrix(class_labels)
             y_prob = self.model.predict_proba(self.X_test)
             if y_prob.shape[1] < 2:
                 print(
                     "Aviso: Não é possível plotar a curva ROC. Apenas uma classe prevista."
                 )
-                return
-
-            if len(class_labels) == 2:
-                y_prob_positive_class = y_prob[:, 1]
             else:
-                y_prob_positive_class = y_prob[:, class_labels.index(1)]
+                if len(class_labels) == 2:
+                    y_prob_positive_class = y_prob[:, 1]
+                else:
+                    y_prob_positive_class = y_prob[:, class_labels.index(1)]
 
             model_evaluator.plot_roc_curve()
             model_evaluator.plot_precision_recall_curve()
-            model_evaluator.plot_precision_vs_threshold(y_prob_positive_class)
+            if positive_count == 0:
+                print(
+                    "Aviso: Não há amostras positivas em y_test. A curva Precisão-Recall não pode ser plotada."
+                )
+            else:
+                model_evaluator.plot_precision_vs_threshold(
+                    y_test_binary, y_prob_positive_class
+                )
+            print("Distribuição de y_test:", self.y_test.value_counts())
+
         except ValueError as e:
             print(f"Erro ao plotar métricas adicionais: {e}")
         except Exception as e:
