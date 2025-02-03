@@ -300,6 +300,7 @@ class BinanceTraderBot:
                 self.entry_price = None  # Reseta o entry_price
                 self.purchased_quantity = None
                 self.updateAllData()
+                time.sleep(300)
 
             elif order["status"] == "PARTIALLY_FILLED":
                 trade_logger.info(
