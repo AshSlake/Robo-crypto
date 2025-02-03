@@ -35,6 +35,7 @@ erro_handler = TimedRotatingFileHandler(
 erro_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 erro_handler.setFormatter(erro_formatter)
 erro_logger.addHandler(erro_handler)
+erro_logger.propagate = False
 
 # Logger para trades/ordens
 trade_logger = logging.getLogger("trades")
@@ -48,6 +49,7 @@ trade_handler = TimedRotatingFileHandler(
 trade_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 trade_handler.setFormatter(trade_formatter)
 trade_logger.addHandler(trade_handler)
+trade_logger.propagate = False
 
 # Logger para mensagens gerais do bot
 bot_logger = logging.getLogger("bot")
@@ -62,6 +64,7 @@ bot_handler = TimedRotatingFileHandler(
 bot_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 bot_handler.setFormatter(bot_formatter)
 bot_logger.addHandler(bot_handler)
+bot_logger.propagate = False
 
 
 def createLogOrder(order, operation_code):

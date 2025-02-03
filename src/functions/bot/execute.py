@@ -18,15 +18,6 @@ def execute(
     try:
         self.updateAllData()
         # Obtém dados do símbolo
-        print(f"\n-----------------------------")
-        print(
-            f'Executado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
-        )  # Adiciona o horário atual
-        print(f'Posição atual: {"Comprado" if actual_trade_position else "Vendido" }')
-        print(f"Balanço atual: {last_stock_account_balance} ({self.stock_code})")
-        if self.last_profit is not None:  # Exibe apenas se houver lucro registrado.
-            print(f"Lucro da última venda: {self.last_profit:.8f} USDT")
-        print(f"-----------------------------\n")
 
         message = (
             f"-----------------------------\n"
@@ -38,6 +29,7 @@ def execute(
         if self.last_profit is not None:
             message += f"Lucro da última venda: {self.last_profit:.8f} USDT\n"
         message += f"-----------------------------\n"
+        print(message)
         bot_logger.info(message)
 
         # Usa getActualTradePositionForBinance para obter a posição atual do trade

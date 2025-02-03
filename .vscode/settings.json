@@ -21,5 +21,8 @@
     "terminal.ansiRed": "#DB2D20",
     "terminal.ansiWhite": "#A5A2A2",
     "terminal.ansiYellow": "#FDED02"
-  }
+  },
+  "python.analysis.extraPaths": [
+    "./src/functions/machine_learning/gradient_Boosting"
+  ]
 }

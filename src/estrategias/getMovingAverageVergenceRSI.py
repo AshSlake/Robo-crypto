@@ -1,6 +1,7 @@
 from decimal import Decimal
 from http import client
 import os
+import pandas as pd
 
 from werkzeug import Client
 from db.neonDbConfig import (
@@ -34,7 +35,9 @@ from functions.indicadores.RsiCalculationClass import TechnicalIndicators
 from functions.CandlestickDataExtractor import CandlestickDataExtractor
 from binance.client import Client
 
+from functions.machine_learning.coletor_dados.DataCollector import DataCollector
 from functions.update_fast_gradients import update_fast_gradients
+from functions.machine_learning.gradient_Boosting.result import Result as result
 
 api_key = os.getenv("BINANCE_API_KEY")
 secret_key = os.getenv("BINANCE_SECRET_KEY")
@@ -652,6 +655,64 @@ class getMovingAverageVergenceRSI:
                 f"Sinal de Venda: {macd_values['Sell_Signal']}\n"
             )
 
+            # Dados extraídos da mensagem
+            dados = {
+                "Posição Atual do Ativo": [
+                    "Comprado" if self.actual_trade_position == True else "Vendido"
+                ],
+                "Código da Operação": [self.operation_code],
+                "Última Média Rápida": [round(last_ma_fast, 3)],
+                "Última Média Lenta": [round(last_ma_slow, 3)],
+                "Última Volatilidade": [round(last_volatility, 3)],
+                "Média da Volatilidade": [round(volatility, 3)],
+                "Diferença Atual": [round(current_difference, 3)],
+                "Último RSI": [round(last_rsi, 3)],
+                "Média Recente dos Gradientes Rápidos": [round(self.recent_average, 3)],
+                "Média Necessária para Tendência de Alta": [
+                    round(growth_threshold * prev_ma_fast, 3)
+                ],
+                "Gradiente Rápido Máximo para Sair da Tendência": [
+                    round(self.last_fast_gradient - correction_threshold, 3)
+                ],
+                "Gradiente Rápido": [round(fast_gradient, 3)],
+                "Direção do Gradiente Rápido": [
+                    "Subindo" if fast_gradient > self.last_fast_gradient else "Descendo"
+                ],
+                "Gradiente Lento": [round(slow_gradient, 3)],
+                "Direção do Gradiente Lento": [
+                    "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo"
+                ],
+                "Porcentagem de Crescimento do Gradiente Rápido": [
+                    round(self.percentage_fromUP_fast_gradient, 3)
+                ],
+                "Porcentagem de Decremento do Gradiente Rápido": [
+                    round(self.percentage_fromDOWN_fast_gradient, 3)
+                ],
+                "MACD": [round(macd_values["MACD"], 5)],
+                "Linha de Sinal": [round(macd_values["Signal"], 5)],
+                "Histograma do MACD": [round(macd_values["Histograma"], 5)],
+                "Taxa de Crescimento do Histograma do MACD": [
+                    round(macd_histogram_rate_of_change, 3)
+                ],
+                "Sinal de Compra": [macd_values["Buy_Signal"]],
+                "Sinal de Venda": [macd_values["Sell_Signal"]],
+            }
+
+            # Criando o DataFrame com os dados
+            analise_bot = pd.DataFrame(dados)
+
+            try:
+                data_coletor = DataCollector(min_data_size=10)
+                data_coletor.add_data(analise_bot)
+                if data_coletor.check_data_availability() == True:
+                    df = data_coletor.get_data()
+
+                    result(df)
+            except Exception as e:
+                message = f"Erro ao executar a coleta de dados : {str(e)}"
+                print(message)
+                erro_logger.error(message)
+
             try:
                 gemini = GeminiTradingBot(dados_from_gemini)
                 decision, decision_bool = gemini.geminiTrader()
@@ -663,8 +724,10 @@ class getMovingAverageVergenceRSI:
                     and decision_bool == False
                 ):
                     ma_trade_decision = False
+                    print(
+                        f"\n -- Bot decidiu Comprar mais Gemini achou mais sensato vender --\n"
+                    )
                     message = f"\n -- Bot decidiu Comprar mais Gemini achou mais sensato vender --\n"
-                    print(message)
                     bot_logger.info(message)
 
                 elif (
@@ -674,8 +737,10 @@ class getMovingAverageVergenceRSI:
                     and decision_bool == True
                 ):
                     ma_trade_decision = True
+                    print(
+                        f"\n -- Bot decidiu Vender mais Gemini achou mais sensato comprar --\n"
+                    )
                     message = f"\n -- Bot decidiu Vender mais Gemini achou mais sensato comprar --\n"
-                    print(message)
                     bot_logger.info(message)
 
             except Exception as e:
