@@ -23,6 +23,28 @@ class DataProcessor:
         # Preencher valores NaN com a média da coluna (ou outro valor adequado)
         df.fillna(df.mean(), inplace=True)
 
+        horizonte = 1
+        # Calcular retornos logarítmicos dos preços (mais robusto que variação percentual simples)
+        df["retorno"] = np.log(df["Preço de Fechamento"] / df["Preço de Abertura"])
+
+        # Calcular a variação percentual entre o preço de fechamento e:
+        df["variacao_maxima"] = (
+            (df["Maxima Alta"] - df["Preço de Fechamento"])
+            / df["Preço de Fechamento"]
+            * 100
+        )
+        df["variacao_minima"] = (
+            (df["Minima Baixa"] - df["Preço de Fechamento"])
+            / df["Preço de Fechamento"]
+            * 100
+        )
+        # Calcular a variação percentual do preço
+        df["variacao_preco"] = (
+            (df["Preço de Fechamento"].shift(-horizonte) - df["Preço de Fechamento"])
+            / df["Preço de Fechamento"]
+            * 100
+        )
+
         # Criar novas features
         df["gradiente_rapido_crescimento"] = (
             df["Porcentagem de Crescimento do Gradiente Rápido"] / 100
@@ -65,14 +87,19 @@ class DataProcessor:
             "MACD",
             "Linha de Sinal",
             "Histograma do MACD",
+            "retorno",  # Nova coluna
+            "variacao_maxima",  # Nova coluna
+            "variacao_minima",  # Nova coluna
         ]
 
         df[columns_to_scale] = self.scaler.fit_transform(df[columns_to_scale])
 
-        # Criar rótulo de compra/venda baseado na próxima variação de preço
-        df["target"] = np.where(
-            df["Sinal de Compra"], 1, np.where(df["Sinal de Venda"], -1, 0)
-        )
+        # Criar o alvo de classificação
+        df["target"] = 0
+        df.loc[df["variacao_preco"] > 0.5, "target"] = 1  # Comprar/Long (limiar menor)
+        df.loc[df["variacao_preco"] < -0.5, "target"] = (
+            -1
+        )  # Vender/Short (limiar menor)
 
         return df
 

@@ -1,52 +1,13 @@
-import os
 import talib
-import pandas as pd
-import numpy as np
 from binance.client import Client as client_binance
-
-# **Configurar a API da Binance**
-api_key = os.getenv("BINANCE_API_KEY")
-secret_key = os.getenv("BINANCE_SECRET_KEY")
-client_binance = client_binance(api_key, secret_key)
-
-
-# **Função para obter dados históricos do ativo**
-def get_historical_data(symbol, interval, limit):
-    klines = client_binance.get_klines(symbol=symbol, interval=interval, limit=limit)
-    df = pd.DataFrame(
-        klines,
-        columns=[
-            "timestamp",
-            "open",
-            "high",
-            "low",
-            "close",
-            "volume",
-            "close_time",
-            "quote_asset_volume",
-            "number_of_trades",
-            "taker_buy_base_vol",
-            "taker_buy_quote_vol",
-            "ignore",
-        ],
-    )
-    df["timestamp"] = (
-        pd.to_datetime(
-            df["timestamp"], unit="ms"
-        )  # Converte de milissegundos para datetime
-        .dt.tz_localize("UTC")  # Define o fuso horário como UTC
-        .dt.tz_convert("America/Sao_Paulo")  # Converte para o fuso horário de São Paulo
-    )
-    df["close"] = df["close"].astype(float)  # Converte o preço de fechamento para float
-
-    return df[["timestamp", "close"]]
 
 
 # **Função para calcular MACD e identificar sinais**
 def calculate_macd(df):
     macd, signal, hist = talib.MACD(
-        df["close"], fastperiod=5, slowperiod=15, signalperiod=10
+        df["close_price"], fastperiod=5, slowperiod=15, signalperiod=10
     )
+    df["close_price"] = df["close_price"].astype(float)
     df["MACD"] = macd
     df["Signal"] = signal
     df["Histograma"] = hist

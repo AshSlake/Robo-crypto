@@ -11,6 +11,7 @@ from db.neonDbConfig import (
 
 
 from functions.InteligenciaArtificial.GeminiTradingBot import GeminiTradingBot
+from functions.binance.getStockData import getStockData
 from functions.binance.getActualTradePositionForBinance import (
     getActualTradePositionForBinance,
 )
@@ -29,15 +30,19 @@ from functions.calculators.calculate_support_resistance_from_prices import (
 from functions.detect_new_price_jump import detect_new_price_jump
 from functions.get_current_price import get_current_price
 from functions.get_recent_prices import get_recent_prices
-from functions.indicadores.macd import calculate_macd, get_historical_data
+from functions.indicadores.macd import calculate_macd
 from functions.logger import erro_logger, bot_logger
 from functions.indicadores.RsiCalculationClass import TechnicalIndicators
 from functions.CandlestickDataExtractor import CandlestickDataExtractor
 from binance.client import Client
 
 from functions.machine_learning.coletor_dados.DataCollector import DataCollector
+from functions.machine_learning.coletor_dados.dynamic_dataFrame_saver import (
+    DynamicDataCollector,
+)
 from functions.update_fast_gradients import update_fast_gradients
 from functions.machine_learning.gradient_Boosting.result import Result as result
+from functions.indicadores.vortex import VortexIndicator as Vortex
 
 api_key = os.getenv("BINANCE_API_KEY")
 secret_key = os.getenv("BINANCE_SECRET_KEY")
@@ -90,9 +95,10 @@ class getMovingAverageVergenceRSI:
         self.min_gradient_difference = 0.02
         self.actual_trade_position = None
         self.lastHistograma = None
-        self.actual_trade_position = getActualTradePositionForBinance(
-            self, self.operation_code
-        )
+        self.actual_trade_position = None
+        self.max_high = float(self.stock_data["high_price"].iloc[-1])
+        self.min_low = float(self.stock_data["low_price"].iloc[-1])
+        self.closing_price = float(self.stock_data["close_price"].iloc[-1])
 
     def getMovingAverageVergenceRSI(
         self,
@@ -256,16 +262,50 @@ class getMovingAverageVergenceRSI:
             rsi_rate_of_change = (
                 last_rsi - self.prev_rsi
             ) / self.prev_rsi  # Representa a taxa de mudança percentual do RSI (Índice de Força Relativa).
-            # Recuperar posição atual
-            self.actual_trade_position = getActualTradePositionForBinance(
-                self, self.operation_code
-            )
 
-            df = get_historical_data(
-                symbol=self.operation_code, interval=self.interval, limit=500
+            self.actual_trade_position = getActualTradePositionForBinance(
+                symbol=self.operation_code, limit=1
             )
+            print(f"Posição atual: {self.actual_trade_position}")
+
+            # recuperando dados do ativo para calculando os valores de abertura e fechamento
+            df = getStockData(
+                operation_code=self.operation_code,
+                candle_period=self.interval,
+                limit=500,
+            )
+            # Cálculo do MACD
             macd_values = calculate_macd(df)
             self.lastHistograma = Decimal(macd_values["LastHistograma"])
+
+            # calculo do Vortex
+            dfVortex = getStockData(
+                operation_code=self.operation_code,
+                candle_period=self.interval,
+                limit=10,
+            )
+            vortex = Vortex(
+                dfVortex["high_price"],
+                dfVortex["low_price"],
+                dfVortex["close_price"],
+                period=6,
+            )
+            Vortex_Maxima, Vortex_Minima = vortex.calculate_vortex()
+            Vortex_Maxima = float(Vortex_Maxima)
+            Vortex_Minima = float(Vortex_Minima)
+
+            # calculo da taxa de crescimento do Vortex
+            dataColetor = DynamicDataCollector(file_name="vortex_data", min_data_size=0)
+            last_VIPlus = dataColetor.get_data().iloc[-2]["+VI"]
+
+            if last_VIPlus != 0:  # Evitar divisão por zero
+                vortex_rate_of_change = (
+                    (Vortex_Maxima - last_VIPlus) / abs(last_VIPlus)
+                ) * 100
+            else:
+                vortex_rate_of_change = (
+                    0  # ou outro valor apropriado, como float('inf') ou float('nan')
+                )
 
             # Cálculo da taxa de crescimento do RSI
             rsi_rate_of_change = (
@@ -596,6 +636,11 @@ class getMovingAverageVergenceRSI:
             )
             print(f"Sinal de Compra: {macd_values['Buy_Signal']}")
             print(f"Sinal de Venda: {macd_values['Sell_Signal']}\n")
+
+            print("\n📊 Indicador Vortex:")
+            print(f"📈 +VI: {Vortex_Maxima:.5f}")
+            print(f"📉 -VI: {Vortex_Minima:.5f}")
+            print(f"Taxa de crescimento do +VI : {vortex_rate_of_change:.3f}%\n")
             if ma_trade_decision is None:
                 print("Decisao do bot: Manter Posição")
             else:
@@ -626,6 +671,10 @@ class getMovingAverageVergenceRSI:
                 f"taxa de crescimento do histograma do MACD : {macd_histogram_rate_of_change:.3f}%"
                 f"Sinal de Compra: {macd_values['Buy_Signal']}\n"
                 f"Sinal de Venda: {macd_values['Sell_Signal']}\n"
+                f"\n📊 Indicador Vortex:"
+                f"📈 +VI: {Vortex_Maxima:.5f}"
+                f"📉 -VI: {Vortex_Minima:.5f}"
+                f"Taxa de crescimento do +VI : {vortex_rate_of_change:.3f}%\n"
                 f'Decisao do bot: {"Comprar" if ma_trade_decision == True else "Vender"}\n'
                 f"{'\n---------------'}\n"
             )
@@ -654,6 +703,10 @@ class getMovingAverageVergenceRSI:
                 f"taxa de crescimento do histograma do MACD : {macd_histogram_rate_of_change:.3f}%"
                 f"Sinal de Compra: {macd_values['Buy_Signal']}\n"
                 f"Sinal de Venda: {macd_values['Sell_Signal']}\n"
+                f"\n📊 Indicador Vortex:"
+                f"📈 +VI: {Vortex_Maxima:.5f}"
+                f"📉 -VI: {Vortex_Minima:.5f}"
+                f"Taxa de crescimento do +VI : {vortex_rate_of_change:.3f}%\n"
             )
 
             # Dados extraídos da mensagem
@@ -662,6 +715,10 @@ class getMovingAverageVergenceRSI:
                     "Comprado" if self.actual_trade_position == True else "Vendido"
                 ],
                 "Código da Operação": [self.operation_code],
+                "Preço de Abertura": [round(self.current_price, 3)],
+                "Maxima Alta": [round(self.max_high, 3)],
+                "Minima Baixa": [round(self.min_low, 3)],
+                "Preço de Fechamento": [round(self.closing_price, 3)],
                 "Última Média Rápida": [round(last_ma_fast, 3)],
                 "Última Média Lenta": [round(last_ma_slow, 3)],
                 "Última Volatilidade": [round(last_volatility, 3)],
@@ -697,13 +754,15 @@ class getMovingAverageVergenceRSI:
                 ],
                 "Sinal de Compra": [macd_values["Buy_Signal"]],
                 "Sinal de Venda": [macd_values["Sell_Signal"]],
+                "Indicador Vortex +VI": [round(Vortex_Maxima, 5)],
+                "Indicador Vortex -VI": [round(Vortex_Minima, 5)],
+                "Taxa de Crescimento do +VI": [round(vortex_rate_of_change, 3)],
             }
-
             # Criando o DataFrame com os dados
             analise_bot = pd.DataFrame(dados)
 
             try:
-                data_coletor = DataCollector(min_data_size=10)
+                data_coletor = DataCollector(min_data_size=500)
                 data_coletor.add_data(analise_bot)
                 if data_coletor.check_data_availability() == True:
                     df = data_coletor.get_data()
@@ -723,6 +782,8 @@ class getMovingAverageVergenceRSI:
                     and decision_bool == False
                     or ma_trade_decision is None
                     and decision_bool == False
+                    or ma_trade_decision == True
+                    and decision_bool is None
                 ):
                     ma_trade_decision = False
                     print(

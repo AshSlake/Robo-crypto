@@ -3,26 +3,25 @@ from rich.console import Console
 import os
 
 
-class DataCollector:
-    def __init__(self, min_data_size=500):
+class DynamicDataCollector:
+    def __init__(self, file_name, min_data_size=10):
         """
         Armazena os dados em um DataFrame até atingir um número mínimo de registros.
+        - file_name: Nome do arquivo CSV para salvar e carregar os dados
         - min_data_size: Número mínimo de registros necessários para treinamento
-        - file_path: Caminho do arquivo CSV para salvar e carregar os dados
         """
-        self.min_data_size = min_data_size
+        self.min_data_size = min_data_size if min_data_size > 0 else float("inf")
         self.console = Console()
 
         log_dir = "dataFrame"
         os.makedirs(log_dir, exist_ok=True)
-        dfTraine = os.path.join(log_dir, "dfTraine")
-        self.file_path = dfTraine + ".csv"
+        self.file_path = os.path.join(log_dir, f"{file_name}.csv")
 
         # Se o arquivo existir, carregamos os dados; caso contrário, criamos um DataFrame vazio
         if os.path.exists(self.file_path):
             self.data_buffer = pd.read_csv(self.file_path)
             self.console.print(
-                f"[bold green]Dados carregados do arquivo ({len(self.data_buffer)} registros).[/bold green]"
+                f"[bold green]Dados carregados do arquivo {file_name} ({len(self.data_buffer)} registros).[/bold green]"
             )
         else:
             self.data_buffer = pd.DataFrame()

@@ -7,9 +7,9 @@ secret_key = os.getenv("BINANCE_SECRET_KEY")
 client_binance = client_binance(api_key, secret_key)
 
 
-def getStockData(operation_code, candle_period):
+def getStockData(operation_code, candle_period, limit):
     candles = client_binance.get_klines(
-        symbol=operation_code, interval=candle_period, limit=500
+        symbol=operation_code, interval=candle_period, limit=limit
     )
     prices = pd.DataFrame(
         candles,
@@ -28,7 +28,6 @@ def getStockData(operation_code, candle_period):
             "ignore",
         ],
     )
-    prices = prices[["close_price", "open_time"]]
     prices["open_time"] = (
         pd.to_datetime(prices["open_time"], unit="ms")
         .dt.tz_localize("UTC")
