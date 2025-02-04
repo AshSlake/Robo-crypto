@@ -28,55 +28,65 @@ class FeatureEngineering:
         """
         Cria novas features para melhorar a qualidade dos dados de entrada do modelo.
         """
-        # 🔹 Variação percentual entre médias móveis
-        df["var_perc_media_rapida"] = self.safe_divide(
+
+        # 1. Variação percentual entre médias móveis (com tratamento de divisão por zero)
+        df["var_perc_media"] = self.safe_divide(
             df["Última Média Rápida"] - df["Última Média Lenta"],
             df["Última Média Lenta"],
         )
 
-        # 🔹 Normalização do MACD
-        df["macd_normalizado"] = df["MACD"] / (
-            df["Média da Volatilidade"] + df["Última Volatilidade"]
+        # 2. Diferença entre +VI e -VI do Vortex
+        df["vortex_diferenca"] = df["Indicador Vortex +VI"] - df["Indicador Vortex -VI"]
+
+        # 3. MACD Normalizado (com tratamento de divisão por zero)
+        df["macd_normalizado"] = self.safe_divide(
+            df["MACD"], df["Média da Volatilidade"] + df["Última Volatilidade"]
         )
 
-        # 🔹 Suavização do gradiente rápido e lento
-        df["gradiente_rapido_suave"] = df["Gradiente Rápido"].ewm(span=5).mean()
-        df["gradiente_lento_suave"] = df["Gradiente Lento"].ewm(span=5).mean()
+        # 4. Suavização de indicadores com Exponential Moving Average (EMA)
+        df["rsi_suave"] = df["Último RSI"].ewm(span=5).mean()
+        df["macd_suave"] = df["MACD"].ewm(span=5).mean()
+        df["linha_sinal_suave"] = df["Linha de Sinal"].ewm(span=5).mean()
 
-        # 🔹 Média simples de gradientes rápidos e lentos
-        df["gradiente_rapido_suave_sma"] = (
-            df["Gradiente Rápido"].rolling(window=10).mean()
+        # 5.  Médias Móveis dos gradientes (se ainda forem usadas)
+        if (
+            "Gradiente Rápido" in df.columns and "Gradiente Lento" in df.columns
+        ):  # Verifica se as colunas existem
+            df["gradiente_rapido_suave"] = (
+                df["Gradiente Rápido"].rolling(window=10).mean()
+            )
+            df["gradiente_lento_suave"] = (
+                df["Gradiente Lento"].rolling(window=10).mean()
+            )
+
+        # 6. Indicador de Reversão (usando médias suavizadas)
+        if (
+            "gradiente_rapido_suave" in df.columns
+            and "gradiente_lento_suave" in df.columns
+        ):  # Verifica se as colunas existem
+            df["indicador_reversao"] = np.where(
+                (df["gradiente_rapido_suave"] < 0) & (df["gradiente_lento_suave"] > 0),
+                1,
+                0,
+            )
+
+        # 7. Força da Tendência (considerando outros indicadores)
+        df["forca_tendencia"] = (
+            (df["MACD"] > df["Linha de Sinal"]).astype(int)
+            + (df["Indicador Vortex +VI"] > df["Indicador Vortex -VI"]).astype(int)
+            + (df["Último RSI"] > 50).astype(
+                int
+            )  # RSI acima de 50 sugere tendência de alta
         )
-        df["gradiente_lento_suave_sma"] = (
-            df["Gradiente Lento"].rolling(window=10).mean()
-        )
 
-        # 🔹 Criação de uma pontuação de tendência
-        df["tendencia_score"] = (
-            (
-                df["Média Recente dos Gradientes Rápidos"]
-                > df["Média Necessária para Tendência de Alta"]
-            ).astype(int)
-            + (df["gradiente_rapido_suave"] > df["gradiente_lento_suave"]).astype(int)
-            + (df["macd_normalizado"] > 0).astype(int)
-        )
-
-        # 🔹 Transformação logarítmica para volatilidade
-        df["log_volatilidade"] = np.log1p(df["Última Volatilidade"])
-
-        # 🔹 Indicador de reversão
-        df["indicador_reversao"] = np.where(
-            (df["gradiente_rapido_suave"] < 0) & (df["gradiente_lento_suave"] > 0), 1, 0
-        )
-
-        # 🔹 Criar a coluna de target com base nos sinais de compra e venda
-        df["column_target"] = df["target"].copy()
-
-        # 🔹 Filtragem de colunas irrelevantes
+        # Remover colunas irrelevantes ou redundantes (incluindo as originais se as transformadas forem usadas)
         columns_to_drop = [
             "Gradiente Rápido",
             "Gradiente Lento",
-            "Média Recente dos Gradientes Rápidos",
+            "Média Recente dos Gradientes Rápidos",  # Remova se não estiver sendo usada
+            "Média Necessária para Tendência de Alta",  # Remova se não estiver sendo usada
+            "Gradiente Rápido Máximo para Sair da Tendência",  # Remova se não estiver sendo usada
+            # Adicione outras colunas irrelevantes aqui
         ]
         df.drop(columns=columns_to_drop, inplace=True, errors="ignore")
 
@@ -158,3 +168,7 @@ class FeatureEngineering:
             return -1  # Venda
         else:
             return 0  # Neutro
+
+    def safe_divide(self, numerator, denominator):
+        """Função auxiliar para evitar divisão por zero."""
+        return np.where(denominator != 0, numerator / denominator, 0)

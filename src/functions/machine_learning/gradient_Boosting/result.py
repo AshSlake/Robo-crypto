@@ -19,6 +19,7 @@ from functions.machine_learning.gradient_Boosting.predictor import (
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import joblib
+from imblearn.over_sampling import SMOTE
 
 model_dir = "model"
 os.makedirs(model_dir, exist_ok=True)
@@ -26,6 +27,7 @@ gradient_Boosting = os.path.join(model_dir, "model_gradient_boosting")
 gradient_Boosting = os.path.abspath(gradient_Boosting)  # Tornar o caminho absoluto
 
 os.makedirs(gradient_Boosting, exist_ok=True)
+os.environ["LOKY_MAX_CPU_COUNT"] = "4"  # Define um número seguro de núcleos
 
 
 class Result:
@@ -71,6 +73,7 @@ class Result:
 
         # Verificar distribuição das classes antes de seguir
         if processed_data["target"].nunique() < 2:
+            print(processed_data["target"].value_counts())
             raise ValueError("Erro: Apenas uma classe detectada. Revise os dados.")
 
         processed_data = fe.clean_data(processed_data)
@@ -84,12 +87,12 @@ class Result:
             "Criando novas features para melhorar a qualidade dos dados de entrada do modelo."
         )
         new_columns = fe.evaluate_feature_importance(
-            processed_data, target_column="column_target"
+            processed_data, target_column="target"
         )
         # Pegamos os nomes das features selecionadas
         selected_columns = new_columns["Feature"].tolist()
         # Garantir que a variável alvo ainda está no DataFrame
-        selected_columns.append("column_target")
+        selected_columns.append("target")
         # Aplicar a seleção ao DataFrame original
         self.features = self.features[selected_columns]
         print("Engenharia de características concluída.")
@@ -101,7 +104,7 @@ class Result:
 
         # Passo 4: Treinamento do modelo
         print("Iniciando o treinamento do modelo...")
-        model_trainer = model_training(self.features, target_column="column_target")
+        model_trainer = model_training(self.features, target_column="target")
         model_trainer.preprocess_data()
         self.model = model_trainer.train_model()
         print("Modelo treinado com sucesso.")
@@ -161,16 +164,14 @@ class Result:
         selected_columns = (
             fe.get_selected_features()
         )  # Obter as features selecionadas durante o treinamento (importante!)
-        selected_columns.append(
-            "column_target"
-        )  # Adicionar o target (se ainda não estiver)
+        selected_columns.append("target")  # Adicionar o target (se ainda não estiver)
         processed_new_data = processed_new_data[selected_columns]
         print("novos dados engenharia de features concluída.")
 
         # 3. Selecionar apenas as colunas usadas no treinamento (IMPORTANTE!)
         print("Selecionando apenas as colunas usadas no treinamento...")
         X_new = processed_new_data.drop(
-            columns=["column_target"]
+            columns=["target"]
         )  # Remover a coluna alvo, se presente
 
         # 4. Aplicar o mesmo scaler usado no treinamento (se aplicável):
@@ -186,15 +187,22 @@ class Result:
         return predictions
 
     def _split_data(self):
-        # Garantir que "column_target" está no dataset
-        if "column_target" not in self.features.columns:
-            raise ValueError(
-                "Erro: A variável alvo 'column_target' não foi encontrada."
-            )
+        # Garantir que "target" está no dataset
+        if "target" not in self.features.columns:
+            raise ValueError("Erro: A variável alvo 'target' não foi encontrada.")
 
         # Separar X e y corretamente
-        X = self.features.drop(columns=["column_target"])
-        y = self.features["column_target"]
+        X = self.features.drop(columns=["target"])
+        y = self.features["target"]
+
+        print("Distribuição de classes ANTES da divisão:")
+        print(y.value_counts())
+
+        # Aplique SMOTE antes da divisão treino/teste
+        oversample = SMOTE()
+        X, y = oversample.fit_resample(
+            X, y
+        )  # X e y são seus dados de features e target
 
         # Divisão treino/teste usando train_test_split
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -203,10 +211,15 @@ class Result:
 
         # Imprimir os shapes para verificar se a divisão foi bem-sucedida
 
-    # print(
-    #     f"X_train shape: {self.X_train.shape}, y_train shape: {self.y_train.shape}"
-    # )
-    # print(f"X_test shape: {self.X_test.shape}, y_test shape: {self.y_test.shape}")
+        print(
+            f"X_train shape: {self.X_train.shape}, y_train shape: {self.y_train.shape}"
+        )
+        print(f"X_test shape: {self.X_test.shape}, y_test shape: {self.y_test.shape}")
+
+        print("Distribuição de classes no conjunto de TREINO:")
+        print(self.y_train.value_counts())
+        print("Distribuição de classes no conjunto de TESTE:")
+        print(self.y_test.value_counts())
 
     def _plot_additional_metrics(self, model_evaluator):
         try:
