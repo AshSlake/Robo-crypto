@@ -13,13 +13,11 @@ from functions.machine_learning.gradient_Boosting.data_processing import (
 from functions.machine_learning.gradient_Boosting.model_evaluation import (
     ModelEvaluation as model_evaluation,
 )
-from functions.machine_learning.gradient_Boosting.predictor import (
-    Predictor as predictor,
-)
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import joblib
 from imblearn.over_sampling import SMOTE
+from functions.machine_learning.ModelVisualizer import ModelVisualizer
 
 model_dir = "model"
 os.makedirs(model_dir, exist_ok=True)
@@ -45,13 +43,19 @@ class Result:
         self.dados = dados
         self.test_size = test_size
         self.use_grid_search = use_grid_search
-        self.model = None  # O modelo será treinado durante a execução
+        self.model = self.load_model(
+            model_filename=os.path.join(
+                gradient_Boosting, "gradient_boosting_model.joblib"
+            )
+        )  # Carrega o modelo caso ele já tenha sido treinado anteriormente
+
         self.features = None  # As features processadas serão armazenadas aqui
         self.X_test = None
         self.y_test = None
         self.X_train = None
         self.y_train = None
-        self.train_model()  # Treina o modelo assim que a classe for instanciada
+        self.predictions = None  # Inicializa predictions como None
+        self.train_model()  # Chama o treinamento
 
     def train_model(self):
         """
@@ -64,7 +68,7 @@ class Result:
         data_processor = data_processing(False)
         processed_data = data_processor.process_raw_data(self.dados)
 
-        fe = feature_engineering()
+        fe = feature_engineering(processed_data)
         # Criar a variável alvo após a engenharia de features para evitar problemas
         processed_data = fe.create_features(processed_data)
 
@@ -122,11 +126,40 @@ class Result:
         # print("Exibindo métricas adicionais...")
         # self._plot_additional_metrics(model_evaluator)
 
+        # visualizer = ModelVisualizer(self.model, self.X_test, self.y_test)
+        # visualizer.run_dashboard(epochs=5, sleep_time=2)
+
         self.train_and_save_model(
             model_filename=os.path.join(
                 gradient_Boosting, "gradient_boosting_model.joblib"
             )
         )  # passar explicitamente
+
+        # Fazer a predição e armazenar em self.predictions
+        predicao = self.model.predict(self.X_test)
+        self.predictions = {
+            "predicoes": predicao.tolist(),
+            "shape": predicao.shape,
+            "tipo": str(type(predicao)),
+        }
+        return self.predictions  # Retorna as predições
+
+    def predict(self):
+        """
+        Retorna as predições do modelo para os dados de teste.
+        """
+        if self.model is None:
+            raise ValueError("Modelo não treinado. Execute train_model primeiro.")
+
+        if self.predictions is None:
+            predicao = self.model.predict(self.X_test)
+            self.predictions = {
+                "predicoes": predicao.tolist(),
+                "shape": predicao.shape,
+                "tipo": str(type(predicao)),
+            }
+
+        return self.predictions
 
     def train_and_save_model(self, model_filename=None):
         if model_filename is None:  # Manter o if para permitir flexibilidade
@@ -139,6 +172,32 @@ class Result:
         # print(f"Modelo Gradient Boosting salvo em {model_filename}")
         except Exception as e:
             logging.error(f"Erro ao salvar o modelo Gradient Boosting: {e}")
+
+    def load_model(self, model_filename=None):
+        """Carrega o modelo Gradient Boosting salvo a partir de um arquivo.
+
+        Args:
+            model_filename (str, optional): O caminho para o arquivo do modelo.
+                                            Se None, usa o caminho padrão.
+        """
+        if model_filename is None:
+            model_filename = os.path.join(
+                gradient_Boosting, "gradient_boosting_model.joblib"
+            )
+
+        try:
+            self.model = joblib.load(model_filename)
+            logging.info(f"Modelo Gradient Boosting carregado de {model_filename}")
+        except FileNotFoundError:
+            logging.error(
+                f"Arquivo do modelo Gradient Boosting não encontrado: {model_filename}"
+            )
+            self.model = (
+                None  # Garante que o modelo seja None se o arquivo não for encontrado
+            )
+        except Exception as e:
+            logging.error(f"Erro ao carregar o modelo Gradient Boosting: {e}")
+            self.model = None  # Garante que o modelo seja None em caso de erro
 
     def make_predictions_on_new_data(self, new_data_raw):
         """Faz previsões em novos dados brutos (unseen)."""
@@ -258,6 +317,7 @@ class Result:
 
             model_evaluator.plot_roc_curve()
             model_evaluator.plot_precision_recall_curve()
+
             if positive_count == 0:
                 print(
                     "Aviso: Não há amostras positivas em y_test. A curva Precisão-Recall não pode ser plotada."
@@ -273,33 +333,6 @@ class Result:
         except Exception as e:
             print(f"Erro inesperado ao plotar: {e}")
 
-    def get_prediction(self):
-        """
-        Faz a previsão usando o modelo treinado e retorna a decisão.
-
-        Retorna:
-        str: A decisão de compra, venda ou manutenção.
-        """
-        if self.model is None:
-            raise ValueError("O modelo não foi treinado ainda.")
-
-        # Usa a classe Predictor para fazer a previsão
-        predictor = predictor(self.dados, self.model)
-        return predictor.make_prediction()
-
-    def get_additional_metrics(self):
-        """
-        Retorna métricas adicionais de avaliação como MSE e AUC-ROC.
-
-        Retorna:
-        tuple: mse (erro quadrático médio), auc_roc (AUC-ROC)
-        """
-        y_pred = self.model.predict(self.X_test)
-        y_prob = self.model.predict_proba(self.X_test)[:, 1]
-        model_evaluator = model_evaluation(self.model, self.X_test, self.y_test)
-        mse, auc_roc = model_evaluator.get_additional_metrics(y_pred, y_prob)
-        return mse, auc_roc
-
     def analyze_model_errors(self):
         """
         Analisa e exibe amostras mal classificadas pelo modelo.
@@ -307,12 +340,3 @@ class Result:
         y_pred = self.model.predict(self.X_test)
         model_evaluator = model_evaluation(self.model, self.X_test, self.y_test)
         model_evaluator.analyze_errors(y_pred)
-
-    def make_final_prediction(self):
-        """
-        Chama a classe Predictor para gerar a previsão final após o treinamento e avaliação.
-
-        Retorna:
-        str: A decisão de compra, venda ou manutenção.
-        """
-        return self.get_prediction()

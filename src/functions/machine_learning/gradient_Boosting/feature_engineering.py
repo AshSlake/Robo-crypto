@@ -6,8 +6,9 @@ from sklearn.utils import compute_sample_weight  # Importar a função correta
 
 
 class FeatureEngineering:
-    def __init__(self):
+    def __init__(self, df):
         pass
+        self.df = df
 
     def safe_divide(self, numerator, denominator):
         """

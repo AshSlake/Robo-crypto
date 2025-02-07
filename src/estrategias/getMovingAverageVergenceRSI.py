@@ -43,6 +43,10 @@ from functions.machine_learning.coletor_dados.dynamic_dataFrame_saver import (
 from functions.update_fast_gradients import update_fast_gradients
 from functions.machine_learning.gradient_Boosting.result import Result as result
 from functions.indicadores.vortex import VortexIndicator as Vortex
+from functions.machine_learning.gradient_Boosting.sinal_operacao import (
+    gerar_sinal_janela_deslizante_ultimo,
+)
+
 
 api_key = os.getenv("BINANCE_API_KEY")
 secret_key = os.getenv("BINANCE_SECRET_KEY")
@@ -99,6 +103,8 @@ class getMovingAverageVergenceRSI:
         self.max_high = float(self.stock_data["high_price"].iloc[-1])
         self.min_low = float(self.stock_data["low_price"].iloc[-1])
         self.closing_price = float(self.stock_data["close_price"].iloc[-1])
+        self.messegeBot = []
+        self.sinal_previsto = None
 
     def getMovingAverageVergenceRSI(
         self,
@@ -347,6 +353,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
 
             # 2 - Divergência Positiva e Crescimento no RSI
             elif (
@@ -375,6 +382,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
 
             # 3 - Aceleração Agressiva do Gradiente e Volatilidade Elevada
             elif (
@@ -400,6 +408,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
 
             # 4 - Reversão de Tendência após Forte Queda
             elif (
@@ -424,6 +433,7 @@ class getMovingAverageVergenceRSI:
 
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
                 ma_trade_decision = True  # Sinal de compra
 
             # 5
@@ -451,6 +461,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
 
             # CONDIÇÕES DE VENDA
             # 1
@@ -469,6 +480,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
 
             # 2
             elif (
@@ -481,6 +493,7 @@ class getMovingAverageVergenceRSI:
                 message = f"Venda: A MA rápida cruzou abaixo da MA lenta ajustada por histerese, sinalizando uma possível reversão de tendência para baixa.\n"
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
             # 3
             elif (
                 last_ma_fast > last_ma_slow
@@ -497,6 +510,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
             # 4
             elif (
                 fast_gradient < self.last_fast_gradient - hysteresis
@@ -512,6 +526,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
 
             # 5
             # Verificar se o preço atual caiu abaixo do stop-loss
@@ -523,6 +538,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
 
             # 6
             elif (
@@ -539,6 +555,7 @@ class getMovingAverageVergenceRSI:
                 )
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
                 ma_trade_decision = False  # Sinal de venda
             # 7
             # Detectar queda apos atingir preço maximo do preço
@@ -551,6 +568,7 @@ class getMovingAverageVergenceRSI:
                 message = f"detectado queda apos atingir preço máximo do preço: O preço atual de {self.current_price:.3f} está abaixo do nível de preço máximo e caindo\n"
                 print(message)
                 bot_logger.info(message)
+                self.messegeBot = message
             # 8
             # Detectar crescimento rápido no gradiente rápido
             if self.recent_average > growth_threshold * prev_ma_fast:
@@ -559,6 +577,7 @@ class getMovingAverageVergenceRSI:
                 )
                 message = f"Crescimento Consistente Detectado: O gradiente médio recente aumentou significativamente, indicando uma forte tendência de alta.\n"
                 bot_logger.info(message)
+                self.messegeBot = message
                 ma_trade_decision = True  # Sinal de compra
                 self.alerta_de_crescimento_rapido = True
 
@@ -576,6 +595,7 @@ class getMovingAverageVergenceRSI:
                         f"indicando uma possível reversão ou ajuste no mercado."
                     )
                     print(message)
+                    self.messegeBot = message
                     bot_logger.info(message)
 
                 elif self.state_after_correction:
@@ -591,6 +611,7 @@ class getMovingAverageVergenceRSI:
                     else:
                         message = f"Espera: Ainda não foi detectado um novo salto no preço ou gradiente. Continuar monitorando.\n"
                         print(message)
+                        self.messegeBot = message
                         bot_logger.info(message)
             else:
                 self.alerta_de_crescimento_rapido = False
@@ -598,6 +619,7 @@ class getMovingAverageVergenceRSI:
             if ma_trade_decision == None:
                 print("\n Nenhuma condição de compra ou venda atendida.")
                 bot_logger.info("\n Nenhuma condição de compra ou venda atendida.")
+                self.messegeBot = "\n Nenhuma condição de compra ou venda atendida."
 
             print("-----")
             print(
@@ -680,35 +702,6 @@ class getMovingAverageVergenceRSI:
             )
             bot_logger.info(message)
 
-            dados_from_gemini = (
-                f'posição atual do ativo: {"Comprado" if self.actual_trade_position == True else "Vendido"}\n'
-                f"{self.operation_code}:\n"
-                f"{last_ma_fast:.3f} - Ultima Media Rapida \n{last_ma_slow:.3f} - Ultima Media Lenta\n"
-                f"Ultima Volatilidade: {last_volatility:.3f}\n"
-                f"Media da Volatilidade: {volatility:.3f}\n"
-                f"Diferenca Atual: {current_difference:.3f}\n"
-                f"Ultimo RSI: {last_rsi:.3f}\n"
-                f"^indicador de tendencia de alta:\n"
-                f"  - Media recente dos Gradientes rapidos: {self.recent_average:.3f}\n"
-                f"  - Media necessaria para tendecia de alta: {growth_threshold * prev_ma_fast:.3f}\n"
-                f"  - gradiente rapido maximo para sair da tendencia: ({ self.last_fast_gradient - correction_threshold:.3f})\n"
-                f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > self.last_fast_gradient else "Descendo" })\n'
-                f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })\n'
-                f"  -Porcentagem de crescimento do gradiente rapido: {self.percentage_fromUP_fast_gradient:.3f}%\n"
-                f"  -Porcentagem de Decremento do gradiente rapdido: {self.percentage_fromDOWN_fast_gradient:.3f}%\n"
-                f"\n📊 Indicador MACD:\n"
-                f"MACD: {macd_values['MACD']:.5f}\n"
-                f"Linha de Sinal: {macd_values['Signal']:.5f}\n"
-                f"Histograma: {macd_values['Histograma']:.5f}\n"
-                f"taxa de crescimento do histograma do MACD : {macd_histogram_rate_of_change:.3f}%"
-                f"Sinal de Compra: {macd_values['Buy_Signal']}\n"
-                f"Sinal de Venda: {macd_values['Sell_Signal']}\n"
-                f"\n📊 Indicador Vortex:"
-                f"📈 +VI: {Vortex_Maxima:.5f}"
-                f"📉 -VI: {Vortex_Minima:.5f}"
-                f"Taxa de crescimento do +VI : {vortex_rate_of_change:.3f}%\n"
-            )
-
             # Dados extraídos da mensagem
             dados = {
                 "Posição Atual do Ativo": [
@@ -767,11 +760,57 @@ class getMovingAverageVergenceRSI:
                 if data_coletor.check_data_availability() == True:
                     df = data_coletor.get_data()
 
-                    result(df)
+                    # Criar uma instância da classe Result
+                    result_instance = result(df)
+
+                    # Obtendo as predições da instância
+                    predicoes = result_instance.predict()
+                    predicoes = predicoes["predicoes"]
+
+                    self.sinal_previsto = gerar_sinal_janela_deslizante_ultimo(
+                        predicoes=predicoes,
+                        tamanho_janela=10,
+                        limiar_compra=5,
+                        limiar_venda=-5,
+                        horizonte_maximo=30,
+                    )
+                print(f"\n -- Sinal Previsto: {self.sinal_previsto} --\n")
             except Exception as e:
                 message = f"Erro ao executar a coleta de dados : {str(e)}"
                 print(message)
                 erro_logger.error(message)
+
+            dados_from_gemini = (
+                f'posição atual do ativo: {"Comprado" if self.actual_trade_position == True else "Vendido"}\n'
+                f"{self.operation_code}:\n"
+                f"{last_ma_fast:.3f} - Ultima Media Rapida \n{last_ma_slow:.3f} - Ultima Media Lenta\n"
+                f"Ultima Volatilidade: {last_volatility:.3f}\n"
+                f"Media da Volatilidade: {volatility:.3f}\n"
+                f"Diferenca Atual: {current_difference:.3f}\n"
+                f"Ultimo RSI: {last_rsi:.3f}\n"
+                f"^indicador de tendencia de alta:\n"
+                f"  - Media recente dos Gradientes rapidos: {self.recent_average:.3f}\n"
+                f"  - Media necessaria para tendecia de alta: {growth_threshold * prev_ma_fast:.3f}\n"
+                f"  - gradiente rapido maximo para sair da tendencia: ({ self.last_fast_gradient - correction_threshold:.3f})\n"
+                f'Gradiente rápido: {fast_gradient:.3f} ({ "Subindo" if fast_gradient > self.last_fast_gradient else "Descendo" })\n'
+                f'Gradiente lento: {slow_gradient:.3f} ({ "Subindo" if slow_gradient > self.last_slow_gradient else "Descendo" })\n'
+                f"  -Porcentagem de crescimento do gradiente rapido: {self.percentage_fromUP_fast_gradient:.3f}%\n"
+                f"  -Porcentagem de Decremento do gradiente rapdido: {self.percentage_fromDOWN_fast_gradient:.3f}%\n"
+                f"\n📊 Indicador MACD:\n"
+                f"MACD: {macd_values['MACD']:.5f}\n"
+                f"Linha de Sinal: {macd_values['Signal']:.5f}\n"
+                f"Histograma: {macd_values['Histograma']:.5f}\n"
+                f"taxa de crescimento do histograma do MACD : {macd_histogram_rate_of_change:.3f}%"
+                f"Sinal de Compra: {macd_values['Buy_Signal']}\n"
+                f"Sinal de Venda: {macd_values['Sell_Signal']}\n"
+                f"\n📊 Indicador Vortex:"
+                f"📈 +VI: {Vortex_Maxima:.5f}"
+                f"📉 -VI: {Vortex_Minima:.5f}"
+                f"Taxa de crescimento do +VI : {vortex_rate_of_change:.3f}%\n"
+                f'Decisao do bot: {"Comprar" if ma_trade_decision == True else "Vender"}\n'
+                f"explicação do bot: \n{self.messegeBot}\n"
+                f"previsão do modelo de aprendizado gradienteBoosting: \n{self.sinal_previsto}\n"
+            )
 
             try:
                 gemini = GeminiTradingBot(dados_from_gemini)

@@ -48,7 +48,10 @@ class GeminiTradingBot:
                             "- Fique atento a **cruzamento de médias móveis, suporte/resistência, volume e RSI.**  "
                             "- Busque maximizar ganhos identificando **melhores momentos para entrar e sair** da posição."
                             "tente ao maximo fazer holding ao estar comprado"
-                            "🔍 **Dados do mercado:** "
+                            "baseado nos mesmos dados fornecidos um bot trader ira passar a opnião dele de compra,venda ou manter posição,utilize a analise dele como reforço para a sua!"
+                            "um modelo machine learning está passando dados de compra,venda ou manter posição leve em consideração os dados dele tambem!"
+                            "!!LEVE EM CONSIDERAÇÃO OS DADOS DOS BOT E DO MODELO DE APRENDZADO!!\n"
+                            "🔍 **Dados do mercado junto dos dados do bot e do modelo de aprendizado:** "
                             f"{self.dados}"
                         ),
                     }
@@ -65,6 +68,7 @@ class GeminiTradingBot:
                 decision += chunk.text
 
             # Formata a resposta para exibição em tabela
+            print(f"\n ==> Resposta do modelo sem formatação: '{decision}'")
             formatted_response = self.format_response_as_table(decision)
             try:
                 # Converte a decisão para booleano
