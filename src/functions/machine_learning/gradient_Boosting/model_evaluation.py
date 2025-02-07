@@ -30,14 +30,13 @@ class ModelEvaluation:
         self.validate_data()
         try:
             self.y_pred = self.model.predict(self.X_test)
-            if hasattr(self.model, "predict_proba"):
-                self.y_prob = self.model.predict_proba(self.X_test)
-                self.y_prob = np.clip(self.y_prob, 1e-7, 1 - 1e-7)
-            else:
-                logging.warning(
-                    "O modelo não possui o método predict_proba. Algumas métricas não serão calculadas."
-                )
-                self.y_prob = None
+            self.y_prob = self.model.predict_proba(self.X_test)
+            self.y_prob = np.clip(self.y_prob, 1e-7, 1 - 1e-7)
+        except AttributeError:
+            logging.error(
+                "O modelo não possui o método predict_proba. Algumas métricas não serão calculadas."
+            )
+            self.y_prob = None
         except Exception as e:
             logging.error(f"Erro ao obter previsões: {e}")
             self.y_pred = None
@@ -56,32 +55,29 @@ class ModelEvaluation:
         return probs
 
     def evaluate(self):
+        self.y_pred = self.model.predict(self.X_test)
+        self.y_prob = self.get_model_probabilities()
         y_true = self.y_test
         accuracy = accuracy_score(y_true, self.y_pred)
         precision = precision_score(y_true, self.y_pred, average="weighted")
         recall = recall_score(y_true, self.y_pred, average="weighted")
         f1 = f1_score(y_true, self.y_pred, average="weighted")
-
-        try:
-            if self.y_prob is not None and len(np.unique(y_true)) > 1:
-                auc_roc = roc_auc_score(y_true, self.y_prob, multi_class="ovr")
-            else:
-                auc_roc = None
-                logging.warning(
-                    "AUC-ROC não pode ser calculado pois há apenas uma classe."
-                )
-        except Exception as e:
-            auc_roc = None
-            logging.error(f"Erro ao calcular AUC-ROC: {e}")
-
+        auc_roc = roc_auc_score(y_true, self.y_prob, multi_class="ovr")
         return accuracy, precision, recall, f1, auc_roc
 
-    def plot_confusion_matrix(self):
+    def plot_confusion_matrix(self, class_labels):
         if self.y_pred is None:
             self.y_pred = self.model.predict(self.X_test)
         confusion = confusion_matrix(self.y_test, self.y_pred)
         plt.figure(figsize=(8, 6))
-        sns.heatmap(confusion, annot=True, fmt="d", cmap="Blues")
+        sns.heatmap(
+            confusion,
+            annot=True,
+            fmt="d",
+            cmap="Blues",
+            xticklabels=class_labels,
+            yticklabels=class_labels,
+        )
         plt.xlabel("Previsão")
         plt.ylabel("Real")
         plt.title("Matriz de Confusão")
@@ -91,25 +87,21 @@ class ModelEvaluation:
         try:
             if self.y_prob is None:
                 raise ValueError("Chame 'evaluate' antes de plotar a curva ROC.")
-
-            classes = (
-                self.model.classes_
-                if hasattr(self.model, "classes_")
-                else np.unique(self.y_test)
-            )
+            classes = self.model.classes_
             y_test_bin = label_binarize(self.y_test, classes=classes)
             n_classes = y_test_bin.shape[1]
-            fpr, tpr, roc_auc = {}, {}, {}
-
+            fpr = dict()
+            tpr = dict()
+            roc_auc = dict()
             for i in range(n_classes):
                 fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], self.y_prob[:, i])
                 roc_auc[i] = auc(fpr[i], tpr[i])
-
             plt.figure(figsize=(10, 8))
             for i, cl in enumerate(classes):
                 plt.plot(fpr[i], tpr[i], label=f"Classe {cl} (AUC = {roc_auc[i]:.2f})")
-
             plt.plot([0, 1], [0, 1], "k--")
+            plt.xlim([0.0, 1.0])
+            plt.ylim([0.0, 1.05])
             plt.xlabel("Taxa de Falsos Positivos")
             plt.ylabel("Taxa de Verdadeiros Positivos")
             plt.title("Curva ROC (multiclasse)")
@@ -124,22 +116,15 @@ class ModelEvaluation:
                 raise ValueError(
                     "Chame 'evaluate' antes de plotar a curva Precisão-Recall."
                 )
-
-            classes = (
-                self.model.classes_
-                if hasattr(self.model, "classes_")
-                else np.unique(self.y_test)
-            )
+            classes = self.model.classes_
             y_test_bin = label_binarize(self.y_test, classes=classes)
             n_classes = y_test_bin.shape[1]
             plt.figure(figsize=(10, 8))
-
             for i in range(n_classes):
                 precision, recall, _ = precision_recall_curve(
                     y_test_bin[:, i], self.y_prob[:, i]
                 )
                 plt.plot(recall, precision, lw=2, label=f"Classe {classes[i]}")
-
             plt.xlabel("Recall")
             plt.ylabel("Precisão")
             plt.title("Curva Precisão-Recall (One-vs-Rest)")
@@ -162,6 +147,8 @@ class ModelEvaluation:
 
     @staticmethod
     def calculate_metrics(y_test, y_pred, y_prob=None):
+        import numpy as np
+
         unique, counts = np.unique(y_test, return_counts=True)
         print(
             f"Distribuição das classes no conjunto de teste: {dict(zip(unique, counts))}"
@@ -170,6 +157,8 @@ class ModelEvaluation:
             print(
                 "⚠️ AVISO: O conjunto de teste contém apenas uma classe. Algumas métricas podem não ser calculadas."
             )
+        from sklearn.metrics import classification_report, accuracy_score, roc_auc_score
+
         print("\nRelatório de Classificação:\n", classification_report(y_test, y_pred))
         print(f"Acurácia: {accuracy_score(y_test, y_pred):.4f}")
         if y_prob is not None and len(unique) > 1:
@@ -181,11 +170,10 @@ class ModelEvaluation:
 
     @staticmethod
     def plot_precision_recall(y_test, y_prob):
-        if y_prob is None:
-            print(
-                "⚠️ Não há probabilidades disponíveis para plotar a curva Precisão-Recall."
-            )
-            return
+        from sklearn.metrics import precision_recall_curve
+        from sklearn.preprocessing import label_binarize
+        import numpy as np
+
         classes = np.unique(y_test)
         if len(classes) == 1:
             print(
@@ -208,12 +196,13 @@ class ModelEvaluation:
 
     @staticmethod
     def plot_precision_vs_threshold(y_test, y_prob):
-        if y_prob is None or len(np.unique(y_test)) > 2:
-            print(
-                "⚠️ plot_precision_vs_threshold suporta apenas classificação binária com probabilidades válidas."
-            )
+        from sklearn.metrics import precision_recall_curve
+        import numpy as np
+
+        if len(np.unique(y_test)) > 2:
+            print("⚠️ plot_precision_vs_threshold suporta apenas classificação binária.")
             return
-        precision, recall, thresholds = precision_recall_curve(y_test, y_prob[:, 1])
+        precision, recall, thresholds = precision_recall_curve(y_test, y_prob)
         plt.figure(figsize=(8, 6))
         plt.plot(thresholds, precision[:-1], label="Precisão", linestyle="--")
         plt.plot(thresholds, recall[:-1], label="Recall")

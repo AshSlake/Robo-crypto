@@ -123,8 +123,8 @@ class Result:
         self.evaluation_results = evaluation_results
 
         # Exibindo métricas adicionais
-        # print("Exibindo métricas adicionais...")
-        # self._plot_additional_metrics(model_evaluator)
+        print("Exibindo métricas adicionais...")
+        self._plot_additional_metrics(model_evaluator)
 
         # visualizer = ModelVisualizer(self.model, self.X_test, self.y_test)
         # visualizer.run_dashboard(epochs=5, sleep_time=2)
@@ -254,14 +254,14 @@ class Result:
         X = self.features.drop(columns=["target"])
         y = self.features["target"]
 
-        print("Distribuição de classes ANTES da divisão:")
-        print(y.value_counts())
+        # print("Distribuição de classes ANTES da divisão:")
+        # print(y.value_counts())
 
         # Aplique SMOTE antes da divisão treino/teste
-        oversample = SMOTE()
-        X, y = oversample.fit_resample(
-            X, y
-        )  # X e y são seus dados de features e target
+        # oversample = SMOTE()
+        # X, y = oversample.fit_resample(
+        #    X, y
+        # )  # X e y são seus dados de features e target
 
         # Divisão treino/teste usando train_test_split
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -270,15 +270,15 @@ class Result:
 
         # Imprimir os shapes para verificar se a divisão foi bem-sucedida
 
-        print(
-            f"X_train shape: {self.X_train.shape}, y_train shape: {self.y_train.shape}"
-        )
-        print(f"X_test shape: {self.X_test.shape}, y_test shape: {self.y_test.shape}")
+        # print(
+        #    f"X_train shape: {self.X_train.shape}, y_train shape: {self.y_train.shape}"
+        # )
+        # print(f"X_test shape: {self.X_test.shape}, y_test shape: {self.y_test.shape}")
 
-        print("Distribuição de classes no conjunto de TREINO:")
-        print(self.y_train.value_counts())
-        print("Distribuição de classes no conjunto de TESTE:")
-        print(self.y_test.value_counts())
+        # print("Distribuição de classes no conjunto de TREINO:")
+        # print(self.y_train.value_counts())
+        # print("Distribuição de classes no conjunto de TESTE:")
+        # print(self.y_test.value_counts())
 
     def _plot_additional_metrics(self, model_evaluator):
         try:
