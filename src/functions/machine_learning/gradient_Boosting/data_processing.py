@@ -57,7 +57,7 @@ class DataProcessor:
             df["Histograma do MACD"] - df["Taxa de Crescimento do Histograma do MACD"]
         )
 
-        # Criar uma feature de tendência baseada nos gradientes
+        # Criar tendência baseada em gradientes
         df["tendencia_alta"] = np.where(
             (
                 df["Média Recente dos Gradientes Rápidos"]
@@ -71,7 +71,7 @@ class DataProcessor:
             0,
         )
 
-        # Criar relação entre gradiente rápido e lento
+        # Relação entre gradientes
         df["relacao_gradientes"] = df["Gradiente Rápido"] / (
             df["Gradiente Lento"] + 1e-6
         )
@@ -87,23 +87,46 @@ class DataProcessor:
             "MACD",
             "Linha de Sinal",
             "Histograma do MACD",
-            "retorno",  # Nova coluna
-            "variacao_maxima",  # Nova coluna
-            "variacao_minima",  # Nova coluna
+            "retorno",
+            "variacao_maxima",
+            "variacao_minima",
         ]
-
         df[columns_to_scale] = self.scaler.fit_transform(df[columns_to_scale])
 
-        # Criar o alvo de classificação
+        # Substitua a seção de criação do target por algo como:
         df["target"] = 0
-        df.loc[df["variacao_preco"] > 0.5, "target"] = 1  # Comprar/Long (limiar menor)
-        df.loc[df["variacao_preco"] < -0.5, "target"] = (
-            -1
-        )  # Vender/Short (limiar menor)
+        window_size = 30  # Janela móvel de 30 períodos
+
+        for i in range(len(df)):
+            if i < window_size:
+                continue
+        # Limiares dinâmicos
+        limiar_superior = df["variacao_preco"].iloc[i - window_size : i].quantile(0.75)
+        limiar_inferior = df["variacao_preco"].iloc[i - window_size : i].quantile(0.25)
+
+        if df["variacao_preco"].iloc[i] > limiar_superior:
+            df["target"].iloc[i] = 1
+        elif df["variacao_preco"].iloc[i] < limiar_inferior:
+            df["target"].iloc[i] = -1
+
+        # Condição de Compra (1)
+        ma_50 = df["Preço de Fechamento"].rolling(window=50).mean()
+        ma_200 = df["Preço de Fechamento"].rolling(window=200).mean()
+        df.loc[
+            (df["Último RSI"] < 30)  # RSI indica sobrevenda
+            & (df["MACD"] > df["Linha de Sinal"])  # MACD cruza para cima
+            & (df["Preço de Fechamento"] > ma_50)  # Preço acima da MA de 50 períodos
+            & (df["variacao_preco"] > limiar_superior),  # Variação positiva forte
+            "target",
+        ] = 1
+
+        # Condição de Venda (-1)
+        df.loc[
+            (df["Último RSI"] > 70)  # RSI indica sobrecompra
+            & (df["MACD"] < df["Linha de Sinal"])  # MACD cruza para baixo
+            & (df["Preço de Fechamento"] < ma_200)  # Preço abaixo da MA de 200 períodos
+            & (df["variacao_preco"] < limiar_inferior),  # Variação negativa forte
+            "target",
+        ] = -1
 
         return df
-
-
-# Exemplo de uso:
-# processor = DataProcessor(use_standard_scaler=True)  # Alternar entre MinMax e StandardScaler
-# df = processor.process_raw_data(dataframe_com_dados)

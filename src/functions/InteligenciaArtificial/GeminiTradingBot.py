@@ -37,21 +37,24 @@ class GeminiTradingBot:
                         "role": "user",
                         "parts": (
                             "Você é um analista de trading altamente especializado, com ampla experiência em mercados financeiros e criptomoedas."
-                            "Seu objetivo é analisar dados técnicos e fornecer a melhor decisão entre **manter, comprar ou vender**. "
-                            "🔹 **IMPORTANTE:**  "
-                            " - **Diga a decisão na PRIMEIRA LINHA da resposta, isolada explicações nas demais linhas.**  "
+                            "Seu objetivo é analisar dados técnicos e fornecer a melhor decisão entre **manter, comprar ou vender**, visando **maximizar lucro e minimizar perdas**."
+                            "🔹 **IMPORTANTE:**"
+                            " - **Diga a decisão na PRIMEIRA LINHA da resposta, isolada explicações nas demais linhas.**"
                             " - **Use apenas UMA das palavras: comprar, vender ou manter.**"
                             " - **Não use essas palavras para explicar outros conceitos ou fazer comparações.**"
-                            "📊 **Análise Técnica:**"
-                            "- Priorize **pontos de entrada estratégicos**, considerando tendências e padrões de candles. "
-                            "- Se houver uma reversão clara ou forte tendência, ajuste a decisão conforme necessário. "
-                            "- Fique atento a **cruzamento de médias móveis, suporte/resistência, volume e RSI.**  "
-                            "- Busque maximizar ganhos identificando **melhores momentos para entrar e sair** da posição."
-                            "tente ao maximo fazer holding ao estar comprado"
-                            "baseado nos mesmos dados fornecidos um bot trader ira passar a opnião dele de compra,venda ou manter posição,utilize a analise dele como reforço para a sua!"
-                            "um modelo machine learning está passando dados de compra,venda ou manter posição leve em consideração os dados dele tambem!"
-                            "!!LEVE EM CONSIDERAÇÃO OS DADOS DOS BOT E DO MODELO DE APRENDZADO!!\n"
-                            "🔍 **Dados do mercado junto dos dados do bot e do modelo de aprendizado:** "
+                            "📊 **Análise Técnica Avançada:**"
+                            "- Priorize **pontos de entrada estratégicos**, considerando tendências, rompimentos e padrões de candles."
+                            "- **Se houver um forte sinal de reversão ou breakout, aja imediatamente!**"
+                            "- **Dê preferência a trades lucrativos, mesmo que envolvam maior risco calculado.**"
+                            "- Fique atento a **cruzamento de médias móveis, suporte/resistência, volume, RSI, MACD, Vortex e volatilidade.**"
+                            "- **Se o mercado está lateral, busque estratégias para tirar proveito da oscilação!**"
+                            "- **Se já estiver comprado, maximize o lucro utilizando trailing stop e previsões futuras.**"
+                            "📈 **Integração com Modelos de Aprendizado e Bot:**"
+                            "- Considere as recomendações do modelo machine learning e do bot trader ao tomar decisões!"
+                            "- **Se houver um forte alinhamento entre os dados técnicos e a recomendação do modelo/bot, siga a ação recomendada!**"
+                            "!!LEVE EM CONSIDERAÇÃO OS DADOS DOS BOT E DO MODELO DE APRENDIZADO, MAS PRIORIZANDO LUCRO MÁXIMO!!"
+                            "!!NÃO ESPERE DEMAIS POR CONFIRMAÇÕES SE OS SINAIS JÁ FOREM CLAROS!!"
+                            "🔍 **Dados do mercado junto dos dados do bot e do modelo de aprendizado:**"
                             f"{self.dados}"
                         ),
                     }
@@ -68,7 +71,6 @@ class GeminiTradingBot:
                 decision += chunk.text
 
             # Formata a resposta para exibição em tabela
-            print(f"\n ==> Resposta do modelo sem formatação: '{decision}'")
             formatted_response = self.format_response_as_table(decision)
             try:
                 # Converte a decisão para booleano

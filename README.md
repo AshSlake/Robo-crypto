@@ -36,7 +36,7 @@ Configurar as Variáveis de Ambiente: Crie um arquivo .env e defina as seguintes
 
 - STOCK_CODE: Código do ativo (ex: "SOL").
 - OPERATION_CODE: Par de negociação (ex: "SOLUSDT").
-- CANDLE_PERIOD: Intervalo das velas (ex: Client.KLINE_INTERVAL_15MINUTE).
+- CANDLE_PERIOD: Intervalo das velas (ex: Client.KLINE_INTERVAL_30MINUTE).
 
 
 # Executar o Bot:

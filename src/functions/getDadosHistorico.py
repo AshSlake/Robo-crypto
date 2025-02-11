@@ -1,7 +1,5 @@
 import os
-from numpy import mean
 import pandas as pd
-import time
 from datetime import datetime, timedelta
 from binance.client import Client
 from estrategias.getMovingAverageVergenceRSI import getMovingAverageVergenceRSI
@@ -13,21 +11,25 @@ api_key = os.getenv("BINANCE_API_KEY")
 secret_key = os.getenv("BINANCE_SECRET_KEY")
 OPERATION_CODE = "SOLUSDT"
 
-# ... (importe outras classes e funções necessárias)
-
 
 class DadosHistoricosParaTreinamento:
     def __init__(self, simbolo, intervalo, inicio, fim):
-        self.simbolo = simbolo
-        self.intervalo = intervalo
-        self.inicio = inicio
-        self.fim = fim
-        self.client_binance = Client(
-            api_key, secret_key
-        )  # Inicialize o cliente Binance aqui
-        self.estrategia = (
-            None  # Inicialize a estratégia aqui ou dentro de 'coletar_dados'
-        )
+        try:
+            self.simbolo = simbolo
+            self.intervalo = intervalo
+            self.inicio = inicio
+            self.fim = fim
+            self.client_binance = Client(
+                api_key, secret_key
+            )  # Inicialize o cliente Binance aqui
+            self.estrategia = (
+                None  # Inicialize a estratégia aqui ou dentro de 'coletar_dados'
+            )
+            self.inicio = self.inicio.strftime("%Y-%m-%d %H:%M:%S")
+            self.fim = self.fim.strftime("%Y-%m-%d %H:%M:%S")
+        except Exception as e:
+            print(f"Erro ao inicializar a classe DadosHistoricosParaTreinamento: {e}")
+            return None
 
     def obter_dados_historicos(self):
         """Obtém dados históricos do gráfico dentro do intervalo especificado."""
@@ -40,9 +42,9 @@ class DadosHistoricosParaTreinamento:
                 columns=[
                     "timestamp",
                     "open",
-                    "high",
-                    "low",
-                    "close",
+                    "high_price",
+                    "low_price",
+                    "close_price",
                     "volume",
                     "close_time",
                     "quote_asset_volume",
@@ -54,7 +56,7 @@ class DadosHistoricosParaTreinamento:
             )
 
             # Converta as colunas relevantes para o tipo numérico
-            for col in ["open", "high", "low", "close", "volume"]:
+            for col in ["open", "high_price", "low_price", "close_price", "volume"]:
                 df[col] = pd.to_numeric(df[col])
 
             df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
@@ -64,7 +66,7 @@ class DadosHistoricosParaTreinamento:
             print(f"Erro ao obter dados históricos: {e}")
             return None
 
-    def aplicar_estrategia(self, df):
+    def aplicar_estrategia(self, df, current_price_from_buy_order):
         """Aplica a estratégia a cada linha do DataFrame."""
         resultados = []
         for i in range(len(df)):
@@ -76,8 +78,8 @@ class DadosHistoricosParaTreinamento:
                     self.estrategia is None
                 ):  # Inicializa a estratégia se ainda não estiver
                     # Cria uma instância da classe `estrategies`
-                    self.estrategia = getMovingAverageVergenceRSI(
-                        stock_data=df,
+                    estrategias = getMovingAverageVergenceRSI(
+                        stock_data=df_parte,
                         volume_threshold=1.5,
                         rsi_period=5,
                         rsi_upper=70,
@@ -85,14 +87,14 @@ class DadosHistoricosParaTreinamento:
                         stop_loss=0.05,
                         stop_gain=0.10,
                         operation_code=OPERATION_CODE,  # Passa o código da operação
-                        current_price_from_buy_order=self.current_price_from_buy_order,
+                        current_price_from_buy_order=current_price_from_buy_order,
                     )
 
-                dados_estrategia = self.estrategia.getMovingAverageVergenceRSI(
+                dados_estrategia = estrategias.getMovingAverageVergenceRSI(
                     fast_window=7,
                     slow_window=40,
                     volatility_factor=0.3,
-                    initial_purchase_price=self.traded_quantity,
+                    initial_purchase_price=0,
                 )
 
                 # Salva os indicadores em um dicionário
@@ -181,13 +183,3 @@ class DadosHistoricosParaTreinamento:
             dataColetor.add_data(df)
         except Exception as e:
             print(f"Erro ao salvar dados treinamento: {e}")
-
-
-simbolo = "SOLUSDT"  # Substitua pelo símbolo desejado
-intervalo = Client.KLINE_INTERVAL_15MINUTE  # Substitua pelo intervalo desejado
-fim = datetime.now()
-inicio = fim - timedelta(days=7)  # Pegue uma semana de dados para teste
-coletor = DadosHistoricosParaTreinamento(simbolo, intervalo, inicio, fim)
-df = coletor.obter_dados_historicos()
-df_treinamento = coletor.aplicar_estrategia(df)
-coletor.salvar_dados_treinamento(df_treinamento)

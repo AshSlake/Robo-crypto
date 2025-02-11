@@ -97,7 +97,7 @@ class FeatureEngineering:
         """
         Avalia a importância das features utilizando Gradient Boosting com tratamento de erros e balanceamento de classes.
         """
-        try:  # Movendo o try para fora do loop para capturar erros de pré-processamento também
+        try:
             X = df.drop(columns=[target_column])
             y = df[target_column]
 

@@ -2,7 +2,7 @@ import os
 import time
 from typing import Self
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from binance.client import Client
 from binance.enums import *
@@ -15,6 +15,7 @@ from functions.logger import createLogOrder, erro_logger, trade_logger, bot_logg
 from decimal import ROUND_DOWN, Decimal
 from functions.calculators.calculate_max_buy_sell_quantity import QuantityCalculator
 from functions.get_current_price import get_current_price
+from functions.getDadosHistorico import DadosHistoricosParaTreinamento
 
 
 # Load environment variables
@@ -26,8 +27,8 @@ secret_key = os.getenv("BINANCE_SECRET_KEY")
 # Configurations
 STOCK_CODE = "SOL"
 OPERATION_CODE = "SOLUSDT"
-CANDLE_PERIOD = Client.KLINE_INTERVAL_15MINUTE
-TRADED_QUANTITY = 0.83
+CANDLE_PERIOD = Client.KLINE_INTERVAL_30MINUTE
+TRADED_QUANTITY = 0.090
 BACKTESMODE = True
 
 

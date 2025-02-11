@@ -18,7 +18,7 @@ class CandlestickDataExtractor:
         Args:
             client: Instância do cliente Binance.
             symbol: Símbolo do par de trading (ex: 'BTCUSDT').
-            interval: Intervalo de tempo dos candlesticks (ex: Client.KLINE_INTERVAL_15MINUTE).
+            interval: Intervalo de tempo dos candlesticks (ex: Client.KLINE_INTERVAL_30MINUTE).
             limit: Número máximo de candlesticks a serem retornados (padrão: 500).
         """
 

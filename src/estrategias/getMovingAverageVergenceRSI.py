@@ -11,9 +11,9 @@ from db.neonDbConfig import (
 
 
 from functions.InteligenciaArtificial.GeminiTradingBot import GeminiTradingBot
-from functions.binance.getStockData import getStockData
+from functions.binance.getStockData import StockDataCollector
 from functions.binance.getActualTradePositionForBinance import (
-    getActualTradePositionForBinance,
+    BinancePositionManager as position_manager,
 )
 from functions.indicadores.calculate_fast_gradients import calculate_fast_gradients
 from functions.indicadores.calculate_gradient_percentage_change import (
@@ -33,7 +33,6 @@ from functions.get_recent_prices import get_recent_prices
 from functions.indicadores.macd import calculate_macd
 from functions.logger import erro_logger, bot_logger
 from functions.indicadores.RsiCalculationClass import TechnicalIndicators
-from functions.CandlestickDataExtractor import CandlestickDataExtractor
 from binance.client import Client
 
 from functions.machine_learning.coletor_dados.DataCollector import DataCollector
@@ -85,7 +84,7 @@ class getMovingAverageVergenceRSI:
         self.fast_gradients = []
         self.current_price = Decimal
         self.current_price_from_buy_order = current_price_from_buy_order
-        self.interval = Client.KLINE_INTERVAL_15MINUTE
+        self.interval = Client.KLINE_INTERVAL_30MINUTE
         self.recent_average = None
         self.state_after_correction = None
         self.percentage_fromUP_fast_gradient = None
@@ -269,27 +268,30 @@ class getMovingAverageVergenceRSI:
                 last_rsi - self.prev_rsi
             ) / self.prev_rsi  # Representa a taxa de mudança percentual do RSI (Índice de Força Relativa).
 
-            self.actual_trade_position = getActualTradePositionForBinance(
-                symbol=self.operation_code, limit=1
+            position_manager(symbol=self.operation_code, limit=1)
+            self.actual_trade_position = (
+                position_manager.getActualTradePositionForBinance(self)
             )
             print(f"Posição atual: {self.actual_trade_position}")
 
             # recuperando dados do ativo para calculando os valores de abertura e fechamento
-            df = getStockData(
+            data_coletor = StockDataCollector(
                 operation_code=self.operation_code,
                 candle_period=self.interval,
-                limit=500,
             )
+            df = data_coletor.getStockData()
             # Cálculo do MACD
             macd_values = calculate_macd(df)
             self.lastHistograma = Decimal(macd_values["LastHistograma"])
 
             # calculo do Vortex
-            dfVortex = getStockData(
+            data_collector = StockDataCollector(
                 operation_code=self.operation_code,
                 candle_period=self.interval,
                 limit=10,
             )
+            dfVortex = data_collector.getStockData()
+
             vortex = Vortex(
                 dfVortex["high_price"],
                 dfVortex["low_price"],
@@ -769,10 +771,10 @@ class getMovingAverageVergenceRSI:
 
                     self.sinal_previsto = gerar_sinal_janela_deslizante_ultimo(
                         predicoes=predicoes,
-                        tamanho_janela=10,
+                        tamanho_janela=30,
                         limiar_compra=5,
                         limiar_venda=-5,
-                        horizonte_maximo=30,
+                        horizonte_maximo=60,
                     )
                 print(f"\n -- Sinal Previsto: {self.sinal_previsto} --\n")
             except Exception as e:
@@ -800,14 +802,14 @@ class getMovingAverageVergenceRSI:
                 f"MACD: {macd_values['MACD']:.5f}\n"
                 f"Linha de Sinal: {macd_values['Signal']:.5f}\n"
                 f"Histograma: {macd_values['Histograma']:.5f}\n"
-                f"taxa de crescimento do histograma do MACD : {macd_histogram_rate_of_change:.3f}%"
-                f"Sinal de Compra: {macd_values['Buy_Signal']}\n"
+                f"taxa de crescimento do histograma do MACD : {macd_histogram_rate_of_change:.3f}%\n"
+                f"\nSinal de Compra: {macd_values['Buy_Signal']}\n"
                 f"Sinal de Venda: {macd_values['Sell_Signal']}\n"
-                f"\n📊 Indicador Vortex:"
-                f"📈 +VI: {Vortex_Maxima:.5f}"
-                f"📉 -VI: {Vortex_Minima:.5f}"
-                f"Taxa de crescimento do +VI : {vortex_rate_of_change:.3f}%\n"
-                f'Decisao do bot: {"Comprar" if ma_trade_decision == True else "Vender"}\n'
+                f"\n📊 Indicador Vortex:\n"
+                f"\n📈 +VI: {Vortex_Maxima:.5f}\n"
+                f"\n📉 -VI: {Vortex_Minima:.5f}\n"
+                f"\nTaxa de crescimento do +VI : {vortex_rate_of_change:.3f}%\n"
+                f'\nDecisao do bot: {"Comprar" if ma_trade_decision is True else "Vender" if ma_trade_decision is False else "Manter Posição"}\n'
                 f"explicação do bot: \n{self.messegeBot}\n"
                 f"previsão do modelo de aprendizado gradienteBoosting: \n{self.sinal_previsto}\n"
             )

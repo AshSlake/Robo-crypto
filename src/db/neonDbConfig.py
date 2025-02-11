@@ -1,27 +1,5 @@
-from decimal import Decimal
 import os
 import psycopg2
-from psycopg2 import sql
-from datetime import datetime
-import psycopg2
-
-
-def connect_to_db():
-    """Conecta ao banco de dados e retorna a conexão."""
-    connection_string = os.getenv("STRING_CONNECTION_NEONDB")
-
-    try:
-        # Substitua connection_string pelos parâmetros do seu banco de dados (host, db, user, password)
-        conn = psycopg2.connect(connection_string)
-        return conn
-    except psycopg2.OperationalError as e:
-        # Captura erros específicos de conexão
-        print(f"Erro operacional ao conectar ao banco de dados: {e}")
-        return None
-    except Exception as e:
-        # Captura outros erros genéricos
-        print(f"Erro ao conectar ao banco de dados: {e}")
-        return None
 
 
 def create_tables():
@@ -336,4 +314,22 @@ def get_last_gradients_from_db():
     except Exception as e:
         print(f"Erro ao recuperar gradientes do banco de dados: {e}")
         conn.close()  # Fecha a conexão com o banco de dados
+        return None
+
+
+def connect_to_db():
+    """Conecta ao banco de dados e retorna a conexão."""
+    connection_string = os.getenv("STRING_CONNECTION_NEONDB")
+
+    try:
+        # Substitua connection_string pelos parâmetros do seu banco de dados (host, db, user, password)
+        conn = psycopg2.connect(connection_string)
+        return conn
+    except psycopg2.OperationalError as e:
+        # Captura erros específicos de conexão
+        print(f"Erro operacional ao conectar ao banco de dados: {e}")
+        return None
+    except Exception as e:
+        # Captura outros erros genéricos
+        print(f"Erro ao conectar ao banco de dados: {e}")
         return None

@@ -38,6 +38,7 @@ def gerar_sinal_janela_deslizante_ultimo(
         return None  # Não há dados suficientes
 
     ultima_janela = predicoes_limitadas[-tamanho_janela:]
+    print(f"ultima janela: {ultima_janela}")
     soma = sum(ultima_janela)
 
     if soma > limiar_compra:

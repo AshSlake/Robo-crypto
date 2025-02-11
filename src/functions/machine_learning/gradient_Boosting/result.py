@@ -65,7 +65,7 @@ class Result:
         """
         # Passo 1: Pré-processamento dos dados
         print("Pré-processando os dados...")
-        data_processor = data_processing(False)
+        data_processor = data_processing(True)
         processed_data = data_processor.process_raw_data(self.dados)
 
         fe = feature_engineering(processed_data)
@@ -123,8 +123,8 @@ class Result:
         self.evaluation_results = evaluation_results
 
         # Exibindo métricas adicionais
-        print("Exibindo métricas adicionais...")
-        self._plot_additional_metrics(model_evaluator)
+        # print("Exibindo métricas adicionais...")
+        # self._plot_additional_metrics(model_evaluator)
 
         # visualizer = ModelVisualizer(self.model, self.X_test, self.y_test)
         # visualizer.run_dashboard(epochs=5, sleep_time=2)
@@ -198,52 +198,6 @@ class Result:
         except Exception as e:
             logging.error(f"Erro ao carregar o modelo Gradient Boosting: {e}")
             self.model = None  # Garante que o modelo seja None em caso de erro
-
-    def make_predictions_on_new_data(self, new_data_raw):
-        """Faz previsões em novos dados brutos (unseen)."""
-
-        if self.model is None:
-            raise ValueError("Modelo não treinado. Não é possível fazer previsões.")
-
-        # 1. Pré-processamento dos novos dados (igual ao treinamento)
-        print("iniciando pré-processamento dos novos dados...")
-        data_processor = data_processing(False)
-        processed_new_data = data_processor.process_raw_data(new_data_raw)
-        print("novos dados processados concluídos.")
-
-        fe = feature_engineering()
-        # 2. Engenharia de features (igual ao treinamento)
-        print("iniciando engenharia de features...")
-        processed_new_data = fe.create_features(processed_new_data)
-        processed_new_data["target"] = processed_new_data.apply(
-            fe.generate_target, axis=1
-        )
-        processed_new_data = fe.clean_data(processed_new_data)
-
-        selected_columns = (
-            fe.get_selected_features()
-        )  # Obter as features selecionadas durante o treinamento (importante!)
-        selected_columns.append("target")  # Adicionar o target (se ainda não estiver)
-        processed_new_data = processed_new_data[selected_columns]
-        print("novos dados engenharia de features concluída.")
-
-        # 3. Selecionar apenas as colunas usadas no treinamento (IMPORTANTE!)
-        print("Selecionando apenas as colunas usadas no treinamento...")
-        X_new = processed_new_data.drop(
-            columns=["target"]
-        )  # Remover a coluna alvo, se presente
-
-        # 4. Aplicar o mesmo scaler usado no treinamento (se aplicável):
-        print("Aplicando o mesmo scaler...")
-        X_new[self.model_trainer.num_cols] = self.model_trainer.scaler.transform(
-            X_new[self.model_trainer.num_cols]
-        )
-
-        # 5. Fazer as previsões
-        print("Fazendo previsões...")
-        predictions = self.model.predict(X_new)
-
-        return predictions
 
     def _split_data(self):
         # Garantir que "target" está no dataset
