@@ -30,7 +30,7 @@ class GeminiTradingBot:
 
         try:
             # Inicializa o modelo de chat
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel("gemini-1.5-pro")
             chat = model.start_chat(
                 history=[
                     {

@@ -10,7 +10,6 @@ from functions.bot.execute import StockAccount
 from functions.calculators.calculate_max_buy_sell_quantity import QuantityCalculator
 from functions.logger import bot_logger, erro_logger
 import traceback
-
 from functions.serverStatus import CheckBinanceStatus
 
 
@@ -20,16 +19,16 @@ api_key = os.getenv("BINANCE_API_KEY")
 secret_key = os.getenv("BINANCE_SECRET_KEY")
 
 # CONFIGURAÇÔES DO BOT
-STOCK_CODE = "SOL"  # Código do ativo negociado
+STOCK_CODE = "BAKE"  # Código do ativo negociado
 OPERATION_CODE = (
-    "SOLUSDT"  # Código da operação no formato de par de moedas (ex: "SOLUSDT")
+    "BAKEUSDT"  # Código da operação no formato de par de moedas (ex: "SOLUSDT")
 )
 CANDLE_PERIOD = (
-    Client.KLINE_INTERVAL_30MINUTE
+    Client.KLINE_INTERVAL_15MINUTE
 )  # Período dos candles para análise (ex: Client.KLINE_INTERVAL_30MINUTE)
 TRADED_QUANTITY = 0.090  # Quantidade do ativo a ser negociada (ex: 0.090)
 BACKTESMODE = True  # Modo de backtest (True para simulação, False para operações reais)
-TIME_SLEEP = 60  # Tempo de espera entre cada iteração do loop principal (em segundos)
+TIME_SLEEP = 900  # Tempo de espera entre cada iteração do loop principal (em segundos)
 
 
 class BinanceTraderBot:
@@ -81,8 +80,8 @@ class BinanceTraderBot:
         self.candle_period = candle_period
         self.execute = StockAccount()
         self.current_price_from_buy_order = 0
-        print("Robo Trader iniciado...")
-        bot_logger.info("Robo Trader iniciado...")
+        print("Robo Trader V3. iniciado...")
+        bot_logger.info("Robo Trader V3. iniciado...")
 
     def iniciar_bot(self):
         """
